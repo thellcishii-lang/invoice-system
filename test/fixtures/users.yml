@@ -1,0 +1,15 @@
+<% password_digest = BCrypt::Password.create("password") %>
+
+one:
+  tenant: one
+  name: 管理者
+  email_address: admin@example.co.jp
+  password_digest: <%= password_digest %>
+  disabled: false
+
+two:
+  tenant: two
+  name: 担当者
+  email_address: staff@example.co.jp
+  password_digest: <%= password_digest %>
+  disabled: false

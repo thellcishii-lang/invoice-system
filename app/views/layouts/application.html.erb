@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "請求書システム（仮）" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="application-name" content="Invoice System">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Includes all stylesheet files in app/assets/stylesheets %>
+    <%= stylesheet_link_tag :app, "data-turbo-track": "reload" %>
+    <%= javascript_importmap_tags %>
+  </head>
+
+  <body>
+    <% if authenticated? %>
+      <header class="border-b border-gray-200">
+        <div class="container mx-auto px-5 py-3 flex items-center gap-4">
+          <span class="font-bold">請求書システム（仮）</span>
+          <span class="text-gray-500 text-sm"><%= Current.tenant&.name %></span>
+          <nav class="ml-auto flex items-center gap-4 text-sm">
+            <%= link_to "ダッシュボード", root_path, class: "text-gray-700 hover:underline" %>
+            <%= link_to "設定", setting_path, class: "text-gray-700 hover:underline" %>
+            <%= button_to "ログアウト", session_path, method: :delete, class: "text-gray-700 hover:underline cursor-pointer" %>
+          </nav>
+        </div>
+      </header>
+    <% end %>
+
+    <main class="container mx-auto mt-10 px-5">
+      <% if notice = flash[:notice] %>
+        <p class="py-2 px-3 bg-green-50 mb-5 text-green-600 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+      <% end %>
+      <% if alert = flash[:alert] %>
+        <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

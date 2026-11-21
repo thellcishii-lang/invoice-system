@@ -1,0 +1,139 @@
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='InvoiceSystem'*/[0m
+  [1m[35m (245.6ms)[0m  [1m[35mCREATE DATABASE "invoice_system_development" ENCODING = 'unicode' /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='InvoiceSystem'*/[0m
+  [1m[35m (105.7ms)[0m  [1m[35mCREATE DATABASE "invoice_system_test" ENCODING = 'unicode' /*application='InvoiceSystem'*/[0m
+  [1m[35m (5.0ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='InvoiceSystem'*/[0m
+  [1m[35m (2.4ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_try_advisory_lock(3647121719176173210) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (1.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (1.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (1.1ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'development', '2026-11-21 23:34:39.879659', '2026-11-21 23:34:39.879665') RETURNING "key" /*application='InvoiceSystem'*/[0m
+Migrating to CreateTenants (20261121233302)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[35m (6.6ms)[0m  [1m[35mCREATE TABLE "tenants" ("id" bigserial primary key, "name" character varying NOT NULL, "invoice_registration_number" character varying, "postal_code" character varying, "address" character varying, "phone" character varying, "email" character varying, "document_number_prefix" character varying DEFAULT '' NOT NULL, "tax_rounding" character varying DEFAULT 'floor' NOT NULL, "tax_display" character varying DEFAULT 'exclusive' NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.6ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20261121233302') RETURNING "version" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(3647121719176173210) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(3647121719176173210) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.4ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+Migrating to CreateUsers (20261121233318)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[35m (3.7ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "tenant_id" bigint NOT NULL, "name" character varying NOT NULL, "email_address" character varying NOT NULL, "password_digest" character varying NOT NULL, "disabled" boolean DEFAULT FALSE NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_135c8f54b2"
+FOREIGN KEY ("tenant_id")
+  REFERENCES "tenants" ("id")
+) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE INDEX "index_users_on_tenant_id" ON "users" ("tenant_id") /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.8ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email_address" ON "users" ("email_address") /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.3ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20261121233318') RETURNING "version" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(3647121719176173210) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.1ms)[0m  [1m[34mSELECT pg_try_advisory_lock(3647121719176173210) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.2ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+Migrating to CreateSessions (20261121233320)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[35m (4.4ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" bigserial primary key, "user_id" bigint NOT NULL, "ip_address" character varying, "user_agent" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_758836b4f0"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.7ms)[0m  [1m[35mCREATE INDEX "index_sessions_on_user_id" ON "sessions" ("user_id") /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.2ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20261121233320') RETURNING "version" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_advisory_unlock(3647121719176173210) /*application='InvoiceSystem'*/[0m
+  [1m[35m (3.1ms)[0m  [1m[35mCREATE TABLE "schema_migrations" ("version" character varying NOT NULL PRIMARY KEY) /*application='InvoiceSystem'*/[0m
+  [1m[35m (2.0ms)[0m  [1m[35mCREATE TABLE "ar_internal_metadata" ("key" character varying NOT NULL PRIMARY KEY, "value" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(7682348583432771045) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.9ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Create (0.6ms)[0m  [1m[32mINSERT INTO "ar_internal_metadata" ("key", "value", "created_at", "updated_at") VALUES ('environment', 'test', '2026-11-21 23:34:40.007554', '2026-11-21 23:34:40.007558') RETURNING "key" /*application='InvoiceSystem'*/[0m
+Migrating to CreateTenants (20261121233302)
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[35m (6.0ms)[0m  [1m[35mCREATE TABLE "tenants" ("id" bigserial primary key, "name" character varying NOT NULL, "invoice_registration_number" character varying, "postal_code" character varying, "address" character varying, "phone" character varying, "email" character varying, "document_number_prefix" character varying DEFAULT '' NOT NULL, "tax_rounding" character varying DEFAULT 'floor' NOT NULL, "tax_display" character varying DEFAULT 'exclusive' NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.7ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20261121233302') RETURNING "version" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(7682348583432771045) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(7682348583432771045) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.9ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+Migrating to CreateUsers (20261121233318)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[35m (6.8ms)[0m  [1m[35mCREATE TABLE "users" ("id" bigserial primary key, "tenant_id" bigint NOT NULL, "name" character varying NOT NULL, "email_address" character varying NOT NULL, "password_digest" character varying NOT NULL, "disabled" boolean DEFAULT FALSE NOT NULL, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_135c8f54b2"
+FOREIGN KEY ("tenant_id")
+  REFERENCES "tenants" ("id")
+) /*application='InvoiceSystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_users_on_tenant_id" ON "users" ("tenant_id") /*application='InvoiceSystem'*/[0m
+  [1m[35m (1.1ms)[0m  [1m[35mCREATE UNIQUE INDEX "index_users_on_email_address" ON "users" ("email_address") /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20261121233318') RETURNING "version" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.7ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.4ms)[0m  [1m[34mSELECT pg_advisory_unlock(7682348583432771045) /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.2ms)[0m  [1m[34mSELECT pg_try_advisory_lock(7682348583432771045) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::InternalMetadata Load (0.7ms)[0m  [1m[34mSELECT * FROM "ar_internal_metadata" WHERE "ar_internal_metadata"."key" = 'environment' ORDER BY "ar_internal_metadata"."key" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+Migrating to CreateSessions (20261121233320)
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[35m (5.1ms)[0m  [1m[35mCREATE TABLE "sessions" ("id" bigserial primary key, "user_id" bigint NOT NULL, "ip_address" character varying, "user_agent" character varying, "created_at" timestamp(6) NOT NULL, "updated_at" timestamp(6) NOT NULL, CONSTRAINT "fk_rails_758836b4f0"
+FOREIGN KEY ("user_id")
+  REFERENCES "users" ("id")
+) /*application='InvoiceSystem'*/[0m
+  [1m[35m (1.0ms)[0m  [1m[35mCREATE INDEX "index_sessions_on_user_id" ON "sessions" ("user_id") /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Create (0.4ms)[0m  [1m[32mINSERT INTO "schema_migrations" ("version") VALUES ('20261121233320') RETURNING "version" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.5ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[35m (0.3ms)[0m  [1m[34mSELECT pg_advisory_unlock(7682348583432771045) /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.7ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InvoiceSystem'*/[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.6ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.1ms)[0m  [1m[35mSET search_path TO public /*application='InvoiceSystem'*/[0m
+  [1m[35mSQL (0.2ms)[0m  [1m[35mSET search_path TO "$user", public /*application='InvoiceSystem'*/[0m
+  [1m[36mTenant Load (0.9ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants" WHERE "tenants"."name" = 'Everyone''s合同会社' LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.1ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[36mTenant Create (1.0ms)[0m  [1m[32mINSERT INTO "tenants" ("name", "invoice_registration_number", "postal_code", "address", "phone", "email", "document_number_prefix", "tax_rounding", "tax_display", "created_at", "updated_at") VALUES ('Everyone''s合同会社', NULL, '357-0123', '埼玉県飯能市中藤下郷23-21', '050-6881-6160', 'admin@example.co.jp', '', 'floor', 'exclusive', '2026-11-21 23:34:40.391028', '2026-11-21 23:34:40.391028') RETURNING "id" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.4ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+  [1m[36mUser Load (0.7ms)[0m  [1m[34mSELECT "users".* FROM "users" WHERE "users"."tenant_id" = 1 AND "users"."email_address" = 'admin@example.co.jp' LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.2ms)[0m  [1m[35mBEGIN /*application='InvoiceSystem'*/[0m
+  [1m[36mUser Exists? (3.1ms)[0m  [1m[34mSELECT 1 AS one FROM "users" WHERE "users"."email_address" = 'admin@example.co.jp' LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mUser Count (0.5ms)[0m  [1m[34mSELECT COUNT(*) FROM "users" WHERE "users"."tenant_id" = 1 /*application='InvoiceSystem'*/[0m
+  ↳ app/models/tenant.rb:14:in `member_limit_reached?'
+  [1m[36mUser Create (1.1ms)[0m  [1m[32mINSERT INTO "users" ("tenant_id", "name", "email_address", "password_digest", "disabled", "created_at", "updated_at") VALUES (1, '管理者', 'admin@example.co.jp', '$2a$12$bg4VfQbVFkf2HCrq8ijqneIcQgfDtdUQYU0MuURYYquqvzWpC117.', FALSE, '2026-11-21 23:34:40.852868', '2026-11-21 23:34:40.852868') RETURNING "id" /*application='InvoiceSystem'*/[0m
+  [1m[36mTRANSACTION (0.3ms)[0m  [1m[35mCOMMIT /*application='InvoiceSystem'*/[0m
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+  [1m[36mTenant Count (18.1ms)[0m  [1m[34mSELECT COUNT(*) FROM "tenants" /*application='InvoiceSystem'*/[0m
+  [1m[36mUser Count (0.9ms)[0m  [1m[34mSELECT COUNT(*) FROM "users" /*application='InvoiceSystem'*/[0m
+  [1m[36mTenant Load (0.4ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants" ORDER BY "tenants"."id" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mUser Load (0.4ms)[0m  [1m[34mSELECT "users".* FROM "users" ORDER BY "users"."id" ASC LIMIT 1 /*application='InvoiceSystem'*/[0m
+  [1m[36mTenant Load (0.6ms)[0m  [1m[34mSELECT "tenants".* FROM "tenants" WHERE "tenants"."id" = 1 LIMIT 1 /*application='InvoiceSystem'*/[0m
+Using vips to process variants requires the libvips library. Please install libvips using the instructions on the libvips website.
+Started GET "/session/new" for ::1 at 2026-11-21 23:35:54 +0000
+  [1m[36mActiveRecord::SchemaMigration Load (1.8ms)[0m  [1m[34mSELECT "schema_migrations"."version" FROM "schema_migrations" ORDER BY "schema_migrations"."version" ASC /*application='InvoiceSystem'*/[0m
+Processing by SessionsController#new as */*
+  Rendering layout layouts/application.html.erb
+  Rendering sessions/new.html.erb within layouts/application
+  Rendered sessions/new.html.erb within layouts/application (Duration: 6.9ms | GC: 0.5ms)
+  Rendered layout layouts/application.html.erb (Duration: 22.0ms | GC: 1.7ms)
+Completed 200 OK in 46ms (Views: 26.9ms | ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 3.3ms)
+
+
+Started GET "/" for ::1 at 2026-11-21 23:35:54 +0000
+Processing by DashboardController#index as */*
+Redirected to http://localhost:3123/session/new
+↳ app/controllers/concerns/authentication.rb:37:in `request_authentication'
+Filter chain halted as :require_authentication rendered or redirected
+Completed 302 Found in 2ms (ActiveRecord: 0.0ms (0 queries, 0 cached) | GC: 0.0ms)
+
+
