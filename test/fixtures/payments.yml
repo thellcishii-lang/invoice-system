@@ -1,0 +1,7 @@
+payment_one:
+  tenant: one
+  document: invoice_one
+  amount: 20000
+  paid_on: 2026-11-10
+  method: bank_transfer
+  note: 一部入金

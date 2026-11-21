@@ -7,6 +7,7 @@ class Document < ApplicationRecord
     "receipt" => "領収書"
   }.freeze
   STATUS_LABELS = { "draft" => "下書き", "issued" => "発行済み" }.freeze
+  PAYMENT_STATUS_LABELS = { "unpaid" => "未入金", "partial" => "一部入金", "paid" => "入金済み" }.freeze
   # 変換できる組み合わせ（変換元の種別 => 変換先の種別）
   CONVERSIONS = {
     "estimate" => %w[ delivery invoice ],
@@ -17,6 +18,9 @@ class Document < ApplicationRecord
 
   enum :kind, { estimate: "estimate", delivery: "delivery", invoice: "invoice", receipt: "receipt" }, validate: true
   enum :status, { draft: "draft", issued: "issued" }, validate: true
+  # 入金ステータスは請求書だけが持つ（他の種別は NULL のため、
+  # enum の validate は使わず allow_nil 付きで自前検証する）
+  enum :payment_status, { unpaid: "unpaid", partial: "partial", paid: "paid" }, prefix: :payment
 
   belongs_to :tenant
   belongs_to :client
@@ -27,6 +31,8 @@ class Document < ApplicationRecord
            dependent: :destroy, inverse_of: :document
   has_many :document_deliveries, -> { order(sent_at: :desc, id: :desc) },
            dependent: :destroy, inverse_of: :document
+  has_many :payments, -> { order(paid_on: :asc, id: :asc) },
+           dependent: :destroy, inverse_of: :document
   # この帳票をテンプレートにする定期請求。使われている間は削除できない
   has_many :recurring_schedules, class_name: "RecurringDocument", foreign_key: :template_document_id,
            dependent: :restrict_with_error, inverse_of: :template_document
@@ -34,6 +40,7 @@ class Document < ApplicationRecord
   accepts_nested_attributes_for :document_lines, allow_destroy: true,
     reject_if: ->(attrs) { attrs["name"].blank? && attrs["quantity"].blank? && attrs["unit_price"].blank? }
 
+  validates :payment_status, inclusion: { in: PAYMENT_STATUS_LABELS.keys }, allow_nil: true
   validates :issue_date, presence: true
   validates :number, presence: true, uniqueness: { scope: %i[ tenant_id kind ] }
   validate :must_have_lines
@@ -41,6 +48,7 @@ class Document < ApplicationRecord
   validate :converted_from_must_belong_to_tenant
 
   before_validation :set_default_issue_date
+  before_validation :set_default_payment_status
   # 帳票番号は作成時に採番する（発行時ではない）。一度振った番号は、
   # 発行日や種別を後から変えても振り直さない。
   before_validation :assign_number, on: :create
@@ -54,6 +62,49 @@ class Document < ApplicationRecord
     STATUS_LABELS[status]
   end
 
+  def payment_status_label
+    PAYMENT_STATUS_LABELS[payment_status]
+  end
+
+  # 入金済み金額（入金レコードの合計）
+  def received_amount
+    payments.sum(&:amount)
+  end
+
+  # 未入金残高（過入金の場合はマイナスになる）
+  def balance
+    total - received_amount
+  end
+
+  # 支払期限を過ぎても未入金・一部入金の請求書かどうか
+  def overdue?(today = Date.current)
+    invoice? && issued? && due_date.present? && due_date < today &&
+      (payment_unpaid? || payment_partial?)
+  end
+
+  # 発行済みで未入金・一部入金の請求書（未入金一覧用）。支払期限の早い順
+  scope :unpaid_invoices, -> {
+    invoice.issued.where(payment_status: %w[ unpaid partial ]).order(due_date: :asc, id: :asc)
+  }
+
+  # 入金合計から入金ステータスを再計算して保存する。入金の登録・変更・
+  # 削除時と、合計金額が変わったときに呼ぶ。請求書以外では何もしない。
+  def recalculate_payment_status!
+    return self unless invoice?
+
+    received = payments.sum(:amount)
+    new_status =
+      if received <= 0
+        "unpaid"
+      elsif received < total
+        "partial"
+      else
+        "paid"
+      end
+    update!(payment_status: new_status) if payment_status != new_status
+    self
+  end
+
   def convertible_kinds
     CONVERSIONS.fetch(kind)
   end
@@ -64,6 +115,7 @@ class Document < ApplicationRecord
     result = DocumentTaxCalculator.new(tenant: tenant, lines: document_lines.to_a).call
     update!(subtotal: result.subtotal, tax_amount: result.tax_amount,
             total: result.total, tax_breakdown: result.breakdown)
+    recalculate_payment_status!
     self
   end
 
@@ -125,6 +177,10 @@ class Document < ApplicationRecord
   private
     def set_default_issue_date
       self.issue_date ||= Date.current
+    end
+
+    def set_default_payment_status
+      self.payment_status ||= "unpaid" if invoice?
     end
 
     def assign_number

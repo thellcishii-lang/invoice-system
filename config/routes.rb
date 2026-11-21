@@ -12,8 +12,11 @@ Rails.application.routes.draw do
       post :convert
     end
     resource :delivery, only: %i[ new create ], controller: "document_deliveries"
+    resources :payments, only: %i[ create edit update destroy ]
   end
   resources :recurring_documents, except: %i[ show ]
+  resources :unpaid_invoices, only: %i[ index ]
+  resource :report, only: %i[ show ], controller: "reports"
   # リンク共有：署名付きトークンでログインなしに帳票の印刷画面を見せる
   get "public/documents/:token", to: "public_documents#show", as: :public_document
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html

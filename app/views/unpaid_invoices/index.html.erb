@@ -1,0 +1,43 @@
+<div class="mx-auto w-full">
+  <h1 class="font-bold text-3xl mb-5">未入金一覧</h1>
+
+  <% if @invoices.empty? %>
+    <p class="text-gray-500">未入金の請求書はありません。</p>
+  <% else %>
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b border-gray-200 text-gray-500">
+          <th class="py-2 pr-4">請求書番号</th>
+          <th class="py-2 pr-4">取引先</th>
+          <th class="py-2 pr-4">入金ステータス</th>
+          <th class="py-2 pr-4 text-right">請求額</th>
+          <th class="py-2 pr-4 text-right">入金済み</th>
+          <th class="py-2 pr-4 text-right">残高</th>
+          <th class="py-2">支払期限</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @invoices.each do |invoice| %>
+          <tr class="border-b border-gray-100 <%= "bg-red-50" if invoice.overdue?(@today) %>">
+            <td class="py-2 pr-4"><%= link_to invoice.number, invoice, class: "text-blue-600 hover:underline font-mono" %></td>
+            <td class="py-2 pr-4"><%= invoice.client.name %></td>
+            <td class="py-2 pr-4"><%= invoice.payment_status_label %></td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter(invoice.total) %>円</td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter(invoice.received_amount) %>円</td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter(invoice.balance) %>円</td>
+            <td class="py-2 <%= "text-red-600 font-medium" if invoice.overdue?(@today) %>">
+              <%= invoice.due_date %><% if invoice.overdue?(@today) %>（期限超過）<% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+      <tfoot>
+        <tr class="font-bold">
+          <td class="py-2 pr-4" colspan="5">残高合計</td>
+          <td class="py-2 pr-4 text-right"><%= number_with_delimiter(@total_balance) %>円</td>
+          <td></td>
+        </tr>
+      </tfoot>
+    </table>
+  <% end %>
+</div>

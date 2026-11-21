@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_235011) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_235601) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -88,6 +88,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_235011) do
     t.jsonb "tax_breakdown", default: {}, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "payment_status"
     t.index ["client_id"], name: "index_documents_on_client_id"
     t.index ["converted_from_id"], name: "index_documents_on_converted_from_id"
     t.index ["tenant_id", "kind", "number"], name: "index_documents_on_tenant_id_and_kind_and_number", unique: true
@@ -108,6 +109,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_235011) do
     t.datetime "updated_at", null: false
     t.index ["tenant_id", "code"], name: "index_items_on_tenant_id_and_code", unique: true
     t.index ["tenant_id"], name: "index_items_on_tenant_id"
+  end
+
+  create_table "payments", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "document_id", null: false
+    t.integer "amount", null: false
+    t.date "paid_on", null: false
+    t.string "method", null: false
+    t.text "note"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id"], name: "index_payments_on_document_id"
+    t.index ["tenant_id"], name: "index_payments_on_tenant_id"
   end
 
   create_table "recurring_documents", force: :cascade do |t|
@@ -172,6 +186,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_235011) do
   add_foreign_key "documents", "documents", column: "converted_from_id"
   add_foreign_key "documents", "tenants"
   add_foreign_key "items", "tenants"
+  add_foreign_key "payments", "documents"
+  add_foreign_key "payments", "tenants"
   add_foreign_key "recurring_documents", "clients"
   add_foreign_key "recurring_documents", "documents", column: "template_document_id"
   add_foreign_key "recurring_documents", "tenants"

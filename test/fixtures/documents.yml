@@ -23,6 +23,7 @@ invoice_one:
   due_date: 2026-11-30
   title: 10月分システム利用料
   status: issued
+  payment_status: partial
   converted_from: estimate_one
   subtotal: 43800
   tax_amount: 4300
@@ -44,6 +45,7 @@ invoice_two:
   due_date: 2026-11-30
   title: 工事代金
   status: draft
+  payment_status: unpaid
   subtotal: 50000
   tax_amount: 5000
   total: 55000

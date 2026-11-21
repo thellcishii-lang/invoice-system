@@ -13,6 +13,7 @@ class Tenant < ApplicationRecord
   has_many :document_sequences, dependent: :restrict_with_error
   has_many :document_deliveries, dependent: :restrict_with_error
   has_many :recurring_documents, dependent: :restrict_with_error
+  has_many :payments, dependent: :restrict_with_error
 
   validates :name, presence: true
 

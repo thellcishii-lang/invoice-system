@@ -1,0 +1,33 @@
+<% if payment.errors.any? %>
+  <div class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg">
+    <ul>
+      <% payment.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: [ document, payment ], class: "contents" do |form| %>
+  <div class="flex flex-wrap items-end gap-4">
+    <div>
+      <%= form.label :paid_on, "入金日" %>
+      <%= form.date_field :paid_on, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2" %>
+    </div>
+    <div>
+      <%= form.label :method, "方法" %>
+      <%= form.select :method, Payment::METHOD_LABELS.invert.to_a, {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2" %>
+    </div>
+    <div>
+      <%= form.label :amount, "金額（円）" %>
+      <%= form.number_field :amount, required: true, min: 1, step: 1, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2" %>
+    </div>
+    <div class="grow">
+      <%= form.label :note, "備考" %>
+      <%= form.text_field :note, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+    <div>
+      <%= form.submit payment.persisted? ? "更新する" : "入金を登録", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    </div>
+  </div>
+<% end %>

@@ -120,5 +120,51 @@
     </table>
   <% end %>
 
+  <% if @document.invoice? %>
+    <h2 class="font-bold text-lg mb-2">入金</h2>
+    <p class="text-sm mb-4">
+      入金ステータス：<span class="font-medium"><%= @document.payment_status_label %></span>
+      ／ 請求額 <%= number_with_delimiter(@document.total) %>円
+      ／ 入金済み <%= number_with_delimiter(@document.received_amount) %>円
+      <% if @document.balance.negative? %>
+        ／ <span class="text-amber-600 font-medium">過入金 <%= number_with_delimiter(-@document.balance) %>円</span>
+      <% else %>
+        ／ 残高 <%= number_with_delimiter(@document.balance) %>円
+      <% end %>
+    </p>
+
+    <% if @document.payments.any? %>
+      <table class="w-full text-left mb-6 text-sm">
+        <thead>
+          <tr class="border-b border-gray-200 text-gray-500">
+            <th class="py-2 pr-4">入金日</th>
+            <th class="py-2 pr-4">方法</th>
+            <th class="py-2 pr-4 text-right">金額</th>
+            <th class="py-2 pr-4">備考</th>
+            <th class="py-2"></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @document.payments.each do |payment| %>
+            <tr class="border-b border-gray-100">
+              <td class="py-2 pr-4"><%= payment.paid_on %></td>
+              <td class="py-2 pr-4"><%= payment.method_label %></td>
+              <td class="py-2 pr-4 text-right"><%= number_with_delimiter(payment.amount) %>円</td>
+              <td class="py-2 pr-4"><%= payment.note %></td>
+              <td class="py-2 text-right whitespace-nowrap">
+                <%= link_to "編集", edit_document_payment_path(@document, payment), class: "text-blue-600 hover:underline" %>
+                <%= button_to "削除", document_payment_path(@document, payment), method: :delete, data: { turbo_confirm: "この入金を削除しますか？" }, class: "text-red-600 hover:underline cursor-pointer inline" %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    <% end %>
+
+    <div class="mb-8">
+      <%= render "payments/form", document: @document, payment: @payment || @document.payments.build(paid_on: Date.current, method: "bank_transfer") %>
+    </div>
+  <% end %>
+
   <%= link_to "一覧に戻る", documents_path(kind: @document.kind), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
 </div>
