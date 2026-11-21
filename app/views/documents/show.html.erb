@@ -10,11 +10,18 @@
       </p>
     </div>
     <div class="flex gap-2">
+      <%= link_to "メール送信", new_document_delivery_path(@document), class: "rounded-md px-3.5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium" %>
       <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
       <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
       <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "rounded-md px-3.5 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium cursor-pointer" %>
     </div>
   </div>
+
+  <% if @document.invoice? %>
+    <div class="flex items-center gap-2 mb-5">
+      <%= link_to "定期請求にする", new_recurring_document_path(template_document_id: @document.id), class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium" %>
+    </div>
+  <% end %>
 
   <% if @document.convertible_kinds.any? %>
     <div class="flex items-center gap-2 mb-5">
@@ -89,6 +96,28 @@
         <li><%= link_to "#{converted.kind_label} #{converted.number}", converted, class: "text-blue-600 hover:underline" %></li>
       <% end %>
     </ul>
+  <% end %>
+
+  <% if @document.document_deliveries.any? %>
+    <h2 class="font-bold text-lg mb-2">送信履歴</h2>
+    <table class="w-full text-left mb-8 text-sm">
+      <thead>
+        <tr class="border-b border-gray-200 text-gray-500">
+          <th class="py-2 pr-4">送信日時</th>
+          <th class="py-2 pr-4">方法</th>
+          <th class="py-2">送信先</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @document.document_deliveries.each do |delivery| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4"><%= delivery.sent_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td class="py-2 pr-4"><%= delivery.channel_label %></td>
+            <td class="py-2"><%= delivery.recipient_email %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
   <% end %>
 
   <%= link_to "一覧に戻る", documents_path(kind: @document.kind), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>

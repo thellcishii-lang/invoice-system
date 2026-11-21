@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_234143) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_21_235011) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -29,6 +29,19 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_234143) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["tenant_id"], name: "index_clients_on_tenant_id"
+  end
+
+  create_table "document_deliveries", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "document_id", null: false
+    t.string "channel", null: false
+    t.string "recipient_email", null: false
+    t.datetime "sent_at", null: false
+    t.string "token_digest"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id"], name: "index_document_deliveries_on_document_id"
+    t.index ["tenant_id"], name: "index_document_deliveries_on_tenant_id"
   end
 
   create_table "document_lines", force: :cascade do |t|
@@ -97,6 +110,22 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_234143) do
     t.index ["tenant_id"], name: "index_items_on_tenant_id"
   end
 
+  create_table "recurring_documents", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "client_id", null: false
+    t.bigint "template_document_id", null: false
+    t.integer "day_of_month", null: false
+    t.boolean "active", default: true, null: false
+    t.boolean "auto_send", default: false, null: false
+    t.date "last_run_date"
+    t.date "next_run_date", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["client_id"], name: "index_recurring_documents_on_client_id"
+    t.index ["template_document_id"], name: "index_recurring_documents_on_template_document_id"
+    t.index ["tenant_id"], name: "index_recurring_documents_on_tenant_id"
+  end
+
   create_table "sessions", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "ip_address"
@@ -134,6 +163,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_234143) do
   end
 
   add_foreign_key "clients", "tenants"
+  add_foreign_key "document_deliveries", "documents"
+  add_foreign_key "document_deliveries", "tenants"
   add_foreign_key "document_lines", "documents"
   add_foreign_key "document_lines", "items"
   add_foreign_key "document_sequences", "tenants"
@@ -141,6 +172,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_234143) do
   add_foreign_key "documents", "documents", column: "converted_from_id"
   add_foreign_key "documents", "tenants"
   add_foreign_key "items", "tenants"
+  add_foreign_key "recurring_documents", "clients"
+  add_foreign_key "recurring_documents", "documents", column: "template_document_id"
+  add_foreign_key "recurring_documents", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "users", "tenants"
 end

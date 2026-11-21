@@ -1,0 +1,17 @@
+monthly_invoice:
+  tenant: one
+  client: document_client
+  template_document: invoice_one
+  day_of_month: 10
+  active: true
+  auto_send: false
+  next_run_date: 2027-01-10
+
+other_tenant_schedule:
+  tenant: two
+  client: two
+  template_document: invoice_two
+  day_of_month: 15
+  active: true
+  auto_send: true
+  next_run_date: 2027-01-15

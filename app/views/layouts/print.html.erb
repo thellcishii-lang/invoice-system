@@ -32,7 +32,9 @@
 
     <div class="screen-actions">
       <button onclick="window.print()">印刷する（PDFとして保存できます）</button>
-      <%= link_to "帳票の詳細に戻る", document_path(@document) %>
+      <% unless @public_view %>
+        <%= link_to "帳票の詳細に戻る", document_path(@document) %>
+      <% end %>
     </div>
   </body>
 </html>

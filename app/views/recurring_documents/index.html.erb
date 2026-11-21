@@ -1,0 +1,44 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-5">
+    <h1 class="font-bold text-3xl">定期請求</h1>
+    <%= link_to "新規登録", new_recurring_document_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+  </div>
+
+  <% if @recurring_documents.empty? %>
+    <p class="text-gray-500">定期請求はまだ登録されていません。請求書の詳細画面の「定期請求にする」からも登録できます。</p>
+  <% else %>
+    <table class="w-full text-left">
+      <thead>
+        <tr class="border-b border-gray-200 text-sm text-gray-500">
+          <th class="py-2 pr-4">取引先</th>
+          <th class="py-2 pr-4">テンプレート</th>
+          <th class="py-2 pr-4">実行日</th>
+          <th class="py-2 pr-4">次回実行日</th>
+          <th class="py-2 pr-4">前回実行日</th>
+          <th class="py-2 pr-4">自動送信</th>
+          <th class="py-2 pr-4">状態</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @recurring_documents.each do |schedule| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4"><%= schedule.client.name %></td>
+            <td class="py-2 pr-4">
+              <%= link_to "#{schedule.template_document.number} #{schedule.template_document.title}", schedule.template_document, class: "text-blue-600 hover:underline" %>
+            </td>
+            <td class="py-2 pr-4">毎月<%= schedule.day_of_month %>日</td>
+            <td class="py-2 pr-4"><%= schedule.next_run_date %></td>
+            <td class="py-2 pr-4"><%= schedule.last_run_date || "―" %></td>
+            <td class="py-2 pr-4"><%= schedule.auto_send? ? "する" : "しない" %></td>
+            <td class="py-2 pr-4"><%= schedule.active? ? "有効" : "停止中" %></td>
+            <td class="py-2 text-right whitespace-nowrap">
+              <%= link_to "編集", edit_recurring_document_path(schedule), class: "text-gray-700 hover:underline text-sm" %>
+              <%= button_to "削除", schedule, method: :delete, data: { turbo_confirm: "この定期請求を削除しますか？" }, class: "text-red-600 hover:underline text-sm cursor-pointer inline" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

@@ -1,0 +1,7 @@
+invoice_one_email:
+  tenant: one
+  document: invoice_one
+  channel: email
+  recipient_email: billing@document-client.example.co.jp
+  sent_at: 2026-10-10 10:00:00
+  token_digest: 0123456789abcdef

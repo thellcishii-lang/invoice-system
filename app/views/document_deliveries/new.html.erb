@@ -1,0 +1,30 @@
+<div class="mx-auto md:w-5/6 w-full">
+  <h1 class="font-bold text-3xl mb-5">メール送信</h1>
+
+  <dl class="grid grid-cols-2 gap-x-6 gap-y-3 mb-8 text-sm">
+    <div><dt class="text-gray-500">帳票</dt><dd class="mt-0.5"><%= @document.kind_label %>（<%= @document.number %>）</dd></div>
+    <div><dt class="text-gray-500">取引先</dt><dd class="mt-0.5"><%= @document.client.name %></dd></div>
+    <div><dt class="text-gray-500">件名</dt><dd class="mt-0.5"><%= @document.title %></dd></div>
+    <div><dt class="text-gray-500">合計（税込）</dt><dd class="mt-0.5"><%= number_with_delimiter(@document.total) %>円</dd></div>
+    <% if @document.due_date %>
+      <div><dt class="text-gray-500">支払期限</dt><dd class="mt-0.5"><%= @document.due_date %></dd></div>
+    <% end %>
+  </dl>
+
+  <%= form_with url: document_delivery_path(@document), method: :post, class: "contents" do |form| %>
+    <div class="my-5">
+      <%= form.label :recipient_email, "送信先メールアドレス" %>
+      <%= form.email_field :recipient_email, value: @recipient_email, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <p class="text-sm text-gray-500 mb-5">
+      メールには、ログインなしで帳票を確認できるリンク（有効期限30日）が含まれます。<br>
+      送信すると、この帳票は「発行済み」になり、送信履歴に残ります。
+    </p>
+
+    <div class="flex gap-2">
+      <%= form.submit "送信する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+      <%= link_to "キャンセル", @document, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 font-medium" %>
+    </div>
+  <% end %>
+</div>

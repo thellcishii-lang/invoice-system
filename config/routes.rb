@@ -11,7 +11,11 @@ Rails.application.routes.draw do
       get :print
       post :convert
     end
+    resource :delivery, only: %i[ new create ], controller: "document_deliveries"
   end
+  resources :recurring_documents, except: %i[ show ]
+  # リンク共有：署名付きトークンでログインなしに帳票の印刷画面を見せる
+  get "public/documents/:token", to: "public_documents#show", as: :public_document
   # Define your application routes per the DSL in https://guides.rubyonrails.org/routing.html
 
   # Reveal health status on /up that returns 200 if the app boots with no exceptions, otherwise 500.

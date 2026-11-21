@@ -25,6 +25,11 @@ class Document < ApplicationRecord
            dependent: :nullify, inverse_of: :converted_from
   has_many :document_lines, -> { order(:position, :id) },
            dependent: :destroy, inverse_of: :document
+  has_many :document_deliveries, -> { order(sent_at: :desc, id: :desc) },
+           dependent: :destroy, inverse_of: :document
+  # この帳票をテンプレートにする定期請求。使われている間は削除できない
+  has_many :recurring_schedules, class_name: "RecurringDocument", foreign_key: :template_document_id,
+           dependent: :restrict_with_error, inverse_of: :template_document
 
   accepts_nested_attributes_for :document_lines, allow_destroy: true,
     reject_if: ->(attrs) { attrs["name"].blank? && attrs["quantity"].blank? && attrs["unit_price"].blank? }
@@ -60,6 +65,33 @@ class Document < ApplicationRecord
     update!(subtotal: result.subtotal, tax_amount: result.tax_amount,
             total: result.total, tax_breakdown: result.breakdown)
     self
+  end
+
+  # 公開リンク（リンク共有）用。署名付きIDで、ログインなしに印刷画面を
+  # 見られる。目的（purpose）を分け、有効期限を過ぎたものは無効になる。
+  PUBLIC_LINK_PURPOSE = "public_view"
+  PUBLIC_LINK_TTL = 30.days
+
+  def public_link_token
+    signed_id(purpose: PUBLIC_LINK_PURPOSE, expires_in: PUBLIC_LINK_TTL)
+  end
+
+  # 署名が不正・期限切れの場合は nil を返す
+  def self.find_by_public_link_token(token)
+    find_signed(token, purpose: PUBLIC_LINK_PURPOSE)
+  end
+
+  # メールで送信する。下書きなら発行済みにし、送信履歴を残す。
+  def deliver_by_email!(recipient_email)
+    raise ArgumentError, "送信先メールアドレスがありません" if recipient_email.blank?
+
+    token = public_link_token
+    DocumentMailer.document_email(document: self, recipient_email: recipient_email, token: token).deliver_now
+    update!(status: :issued) if draft?
+    document_deliveries.create!(
+      tenant: tenant, channel: "email", recipient_email: recipient_email,
+      sent_at: Time.current, token_digest: Digest::SHA256.hexdigest(token)
+    )
   end
 
   # 別の種別へ変換した新しい帳票を作る。変換元は変更しない。

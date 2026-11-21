@@ -1,0 +1,33 @@
+<%= @document.client.name %> 様
+
+いつもお世話になっております。<%= @document.tenant.name %> です。
+<%= @document.kind_label %>をお送りいたします。
+
+帳票番号：<%= @document.number %>
+発行日：<%= @document.issue_date.strftime("%Y年%m月%d日") %>
+<% if @document.title.present? -%>
+件名：<%= @document.title %>
+<% end -%>
+合計金額：<%= number_with_delimiter(@document.total) %>円（税込）
+<% if @document.invoice? && @document.due_date -%>
+お支払期限：<%= @document.due_date.strftime("%Y年%m月%d日") %>
+<% end -%>
+
+帳票の内容は、以下のリンクからご確認いただけます。
+（リンクの有効期限は発行から30日間です）
+
+<%= @public_url %>
+
+ご不明な点がございましたら、お気軽にお問い合わせください。
+
+――
+<%= @document.tenant.name %>
+<% if @document.tenant.postal_code.present? -%>
+〒<%= @document.tenant.postal_code %>
+<% end -%>
+<% if @document.tenant.address.present? -%>
+<%= @document.tenant.address %>
+<% end -%>
+<% if @document.tenant.phone.present? -%>
+TEL: <%= @document.tenant.phone %>
+<% end -%>
