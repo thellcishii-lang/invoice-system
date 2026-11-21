@@ -1,0 +1,53 @@
+estimate_one:
+  tenant: one
+  client: document_client
+  kind: estimate
+  number: "202610-001"
+  issue_date: 2026-10-05
+  title: システム導入見積もり
+  status: issued
+  subtotal: 39800
+  tax_amount: 3980
+  total: 43780
+  tax_breakdown:
+    standard:
+      subtotal: 39800
+      tax: 3980
+
+invoice_one:
+  tenant: one
+  client: document_client
+  kind: invoice
+  number: "202610-001"
+  issue_date: 2026-10-10
+  due_date: 2026-11-30
+  title: 10月分システム利用料
+  status: issued
+  converted_from: estimate_one
+  subtotal: 43800
+  tax_amount: 4300
+  total: 48100
+  tax_breakdown:
+    standard:
+      subtotal: 39800
+      tax: 3980
+    reduced:
+      subtotal: 4000
+      tax: 320
+
+invoice_two:
+  tenant: two
+  client: two
+  kind: invoice
+  number: "TS-202610-001"
+  issue_date: 2026-10-15
+  due_date: 2026-11-30
+  title: 工事代金
+  status: draft
+  subtotal: 50000
+  tax_amount: 5000
+  total: 55000
+  tax_breakdown:
+    standard:
+      subtotal: 50000
+      tax: 5000

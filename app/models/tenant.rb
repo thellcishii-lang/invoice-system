@@ -9,6 +9,8 @@ class Tenant < ApplicationRecord
   has_many :users, dependent: :restrict_with_error
   has_many :clients, dependent: :restrict_with_error
   has_many :items, dependent: :restrict_with_error
+  has_many :documents, dependent: :restrict_with_error
+  has_many :document_sequences, dependent: :restrict_with_error
 
   validates :name, presence: true
 

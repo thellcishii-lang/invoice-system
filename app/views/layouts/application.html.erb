@@ -31,6 +31,10 @@
           <span class="text-gray-500 text-sm"><%= Current.tenant&.name %></span>
           <nav class="ml-auto flex items-center gap-4 text-sm">
             <%= link_to "ダッシュボード", root_path, class: "text-gray-700 hover:underline" %>
+            <%= link_to "見積書", documents_path(kind: "estimate"), class: "text-gray-700 hover:underline" %>
+            <%= link_to "納品書", documents_path(kind: "delivery"), class: "text-gray-700 hover:underline" %>
+            <%= link_to "請求書", documents_path(kind: "invoice"), class: "text-gray-700 hover:underline" %>
+            <%= link_to "領収書", documents_path(kind: "receipt"), class: "text-gray-700 hover:underline" %>
             <%= link_to "取引先", clients_path, class: "text-gray-700 hover:underline" %>
             <%= link_to "品目", items_path, class: "text-gray-700 hover:underline" %>
             <%= link_to "設定", setting_path, class: "text-gray-700 hover:underline" %>

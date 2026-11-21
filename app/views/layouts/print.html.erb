@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "帳票印刷" %></title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <%= csrf_meta_tags %>
+    <style>
+      @page { size: A4; margin: 15mm; }
+      * { box-sizing: border-box; }
+      body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif; color: #000; font-size: 12px; line-height: 1.6; margin: 0; }
+      h1 { font-size: 22px; text-align: center; letter-spacing: 0.5em; margin: 0 0 16px; }
+      table { border-collapse: collapse; width: 100%; }
+      th, td { border: 1px solid #666; padding: 4px 6px; text-align: left; vertical-align: top; }
+      th { background: #f0f0f0; font-weight: normal; }
+      .right { text-align: right; }
+      .plain th, .plain td { border: none; padding: 1px 4px; background: none; }
+      .meta { text-align: right; margin-bottom: 8px; }
+      .parties { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 20px; }
+      .client-name { font-size: 16px; border-bottom: 1px solid #000; padding-bottom: 2px; }
+      .issuer { font-size: 11px; min-width: 240px; }
+      .totals { width: 320px; margin-left: auto; margin-top: 12px; }
+      .grand-total td { font-weight: bold; font-size: 14px; }
+      .section { margin-top: 16px; }
+      .notes { white-space: pre-wrap; border: 1px solid #666; padding: 6px; min-height: 48px; }
+      .screen-actions { margin: 20px 0; }
+      @media print { .screen-actions { display: none; } }
+    </style>
+  </head>
+  <body>
+    <%= yield %>
+
+    <div class="screen-actions">
+      <button onclick="window.print()">印刷する（PDFとして保存できます）</button>
+      <%= link_to "帳票の詳細に戻る", document_path(@document) %>
+    </div>
+  </body>
+</html>

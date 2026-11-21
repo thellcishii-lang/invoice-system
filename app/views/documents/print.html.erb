@@ -1,0 +1,96 @@
+<% content_for(:title, "#{@document.kind_label} #{@document.number}") %>
+<% tenant = @document.tenant %>
+
+<h1><%= @document.kind_label %></h1>
+
+<div class="meta">
+  発行日：<%= @document.issue_date.strftime("%Y年%m月%d日") %><br>
+  番号：<%= @document.number %>
+  <% if @document.invoice? && @document.due_date %>
+    <br>お支払期限：<%= @document.due_date.strftime("%Y年%m月%d日") %>
+  <% end %>
+</div>
+
+<div class="parties">
+  <div>
+    <div class="client-name"><%= @document.client.name %> 様</div>
+    <% if @document.client.postal_code.present? || @document.client.address.present? %>
+      <div>
+        <%= "〒#{@document.client.postal_code}" if @document.client.postal_code.present? %>
+        <%= @document.client.address %>
+      </div>
+    <% end %>
+    <% if @document.title.present? %>
+      <div class="section">件名：<%= @document.title %></div>
+    <% end %>
+    <div class="section">下記の通り<%= @document.kind_label.sub(/書$/, "") %>申し上げます。</div>
+  </div>
+
+  <div class="issuer">
+    <div><strong><%= tenant.name %></strong></div>
+    <% if tenant.postal_code.present? %><div>〒<%= tenant.postal_code %></div><% end %>
+    <% if tenant.address.present? %><div><%= tenant.address %></div><% end %>
+    <% if tenant.phone.present? %><div>TEL: <%= tenant.phone %></div><% end %>
+    <% if tenant.invoice_registration_number.present? %>
+      <div>登録番号：<%= tenant.invoice_registration_number %></div>
+    <% end %>
+  </div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>品名</th>
+      <th class="right" style="width: 70px;">数量</th>
+      <th style="width: 50px;">単位</th>
+      <th class="right" style="width: 110px;">単価<%= tenant.inclusive? ? "（税込）" : "（税抜）" %></th>
+      <th style="width: 50px;">税率</th>
+      <th class="right" style="width: 120px;">金額</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @document.document_lines.each do |line| %>
+      <tr>
+        <td><%= line.name %></td>
+        <td class="right"><%= format_quantity(line.quantity) %></td>
+        <td><%= line.unit %></td>
+        <td class="right"><%= number_with_delimiter(line.unit_price) %>円</td>
+        <td><%= tax_rate_label(line.tax_rate) %></td>
+        <td class="right"><%= number_with_delimiter(line.amount) %>円</td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<table class="totals">
+  <tr><td>小計（税抜）</td><td class="right"><%= number_with_delimiter(@document.subtotal) %>円</td></tr>
+  <tr><td>消費税</td><td class="right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
+  <tr class="grand-total"><td>合計（税込）</td><td class="right"><%= number_with_delimiter(@document.total) %>円</td></tr>
+</table>
+
+<% if @document.tax_breakdown.any? %>
+  <div class="section">
+    <table class="totals" style="margin-left: 0;">
+      <thead>
+        <tr><th>税率</th><th class="right">対象金額（税抜）</th><th class="right">消費税額</th></tr>
+      </thead>
+      <tbody>
+        <% DocumentTaxCalculator::RATES.each_key do |tax_rate| %>
+          <% next unless (group = @document.tax_breakdown[tax_rate]) %>
+          <tr>
+            <td><%= tax_rate_label(tax_rate) %></td>
+            <td class="right"><%= number_with_delimiter(group["subtotal"]) %>円</td>
+            <td class="right"><%= number_with_delimiter(group["tax"]) %>円</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>
+
+<% if @document.notes.present? %>
+  <div class="section">
+    <div>備考</div>
+    <div class="notes"><%= @document.notes %></div>
+  </div>
+<% end %>

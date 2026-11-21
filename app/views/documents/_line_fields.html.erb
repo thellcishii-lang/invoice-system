@@ -1,0 +1,40 @@
+<div class="flex flex-wrap gap-2 items-end my-3 p-3 border border-gray-200 rounded-md" data-line-row>
+  <div class="w-44">
+    <%= line_form.label :item_id, "品目マスタ", class: "text-xs text-gray-500" %>
+    <%= line_form.select :item_id,
+          options_for_select(@items.map { |item| [ "#{item.code} #{item.name}", item.id ] }, line_form.object.item_id),
+          { include_blank: "（直接入力）" },
+          class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full",
+          data: { action: "change->document-lines#itemChanged" } %>
+  </div>
+
+  <div class="flex-1 min-w-40">
+    <%= line_form.label :name, "品名", class: "text-xs text-gray-500" %>
+    <%= line_form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full" %>
+  </div>
+
+  <div class="w-20">
+    <%= line_form.label :quantity, "数量", class: "text-xs text-gray-500" %>
+    <%= line_form.number_field :quantity, min: 0, step: "0.01", required: true, class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full" %>
+  </div>
+
+  <div class="w-16">
+    <%= line_form.label :unit, "単位", class: "text-xs text-gray-500" %>
+    <%= line_form.text_field :unit, class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full" %>
+  </div>
+
+  <div class="w-28">
+    <%= line_form.label :unit_price, Current.tenant.inclusive? ? "単価（税込）" : "単価（税抜）", class: "text-xs text-gray-500" %>
+    <%= line_form.number_field :unit_price, min: 0, step: 1, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full" %>
+  </div>
+
+  <div class="w-28">
+    <%= line_form.label :tax_rate, "税率", class: "text-xs text-gray-500" %>
+    <%= line_form.select :tax_rate,
+          [ [ "標準（10%）", "standard" ], [ "軽減（8%）", "reduced" ] ],
+          {}, class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full" %>
+  </div>
+
+  <%= line_form.hidden_field :_destroy %>
+  <button type="button" data-action="document-lines#remove" class="rounded-md px-2.5 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm cursor-pointer">削除</button>
+</div>

@@ -1,0 +1,41 @@
+estimate_line:
+  document: estimate_one
+  name: システム利用料
+  quantity: 1
+  unit: 月
+  unit_price: 39800
+  tax_rate: standard
+  position: 0
+  amount: 39800
+
+invoice_line_standard:
+  document: invoice_one
+  name: システム利用料
+  quantity: 1
+  unit: 月
+  unit_price: 39800
+  tax_rate: standard
+  position: 0
+  amount: 39800
+
+invoice_line_reduced:
+  document: invoice_one
+  item: two
+  name: 新聞購読料
+  quantity: 1
+  unit: 月
+  unit_price: 4000
+  tax_rate: reduced
+  position: 1
+  amount: 4000
+
+invoice_two_line:
+  document: invoice_two
+  item: other_tenant
+  name: 工事作業費
+  quantity: 1
+  unit: 式
+  unit_price: 50000
+  tax_rate: standard
+  position: 0
+  amount: 50000

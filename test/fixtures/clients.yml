@@ -24,6 +24,14 @@ two:
   registration_number:
   archived: false
 
+document_client:
+  tenant: one
+  name: 帳票用取引先株式会社
+  postal_code: 150-0001
+  address: 東京都渋谷区神宮前1-1
+  phone: 03-4444-4444
+  archived: false
+
 archived_one:
   tenant: one
   name: 旧取引先株式会社

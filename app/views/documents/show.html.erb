@@ -1,0 +1,95 @@
+<div class="mx-auto md:w-5/6 w-full">
+  <div class="flex items-start justify-between mb-5">
+    <div>
+      <h1 class="font-bold text-3xl"><%= @document.kind_label %></h1>
+      <p class="text-gray-500 mt-1">
+        番号：<span class="font-mono"><%= @document.number %></span> ／ <%= @document.status_label %>
+        <% if @document.converted_from %>
+          ／ 変換元：<%= link_to "#{@document.converted_from.kind_label} #{@document.converted_from.number}", @document.converted_from, class: "text-blue-600 hover:underline" %>
+        <% end %>
+      </p>
+    </div>
+    <div class="flex gap-2">
+      <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+      <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+      <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "rounded-md px-3.5 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium cursor-pointer" %>
+    </div>
+  </div>
+
+  <% if @document.convertible_kinds.any? %>
+    <div class="flex items-center gap-2 mb-5">
+      <span class="text-sm text-gray-500">変換：</span>
+      <% @document.convertible_kinds.each do |target_kind| %>
+        <%= button_to "#{Document::KIND_LABELS[target_kind]}に変換", convert_document_path(@document, target_kind: target_kind),
+              method: :post, class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium cursor-pointer" %>
+      <% end %>
+    </div>
+  <% end %>
+
+  <dl class="grid grid-cols-2 gap-x-6 gap-y-3 mb-8 text-sm">
+    <div><dt class="text-gray-500">取引先</dt><dd class="mt-0.5"><%= link_to @document.client.name, @document.client, class: "text-blue-600 hover:underline" %></dd></div>
+    <div><dt class="text-gray-500">発行日</dt><dd class="mt-0.5"><%= @document.issue_date %></dd></div>
+    <div><dt class="text-gray-500">件名</dt><dd class="mt-0.5"><%= @document.title %></dd></div>
+    <% if @document.due_date %>
+      <div><dt class="text-gray-500">支払期限</dt><dd class="mt-0.5"><%= @document.due_date %></dd></div>
+    <% end %>
+  </dl>
+
+  <table class="w-full text-left mb-6">
+    <thead>
+      <tr class="border-b border-gray-200 text-sm text-gray-500">
+        <th class="py-2 pr-4">品名</th>
+        <th class="py-2 pr-4 text-right">数量</th>
+        <th class="py-2 pr-4">単位</th>
+        <th class="py-2 pr-4 text-right">単価<%= Current.tenant.inclusive? ? "（税込）" : "（税抜）" %></th>
+        <th class="py-2 pr-4">税率</th>
+        <th class="py-2 text-right">金額</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @document.document_lines.each do |line| %>
+        <tr class="border-b border-gray-100">
+          <td class="py-2 pr-4"><%= line.name %></td>
+          <td class="py-2 pr-4 text-right"><%= format_quantity(line.quantity) %></td>
+          <td class="py-2 pr-4"><%= line.unit %></td>
+          <td class="py-2 pr-4 text-right"><%= number_with_delimiter(line.unit_price) %>円</td>
+          <td class="py-2 pr-4"><%= tax_rate_label(line.tax_rate) %></td>
+          <td class="py-2 text-right"><%= number_with_delimiter(line.amount) %>円</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <div class="flex justify-end mb-8">
+    <table class="text-left w-80">
+      <% DocumentTaxCalculator::RATES.each_key do |tax_rate| %>
+        <% next unless (group = @document.tax_breakdown[tax_rate]) %>
+        <tr class="border-b border-gray-100 text-sm">
+          <td class="py-1.5 pr-4 text-gray-500"><%= tax_rate_label(tax_rate) %>対象（税抜）</td>
+          <td class="py-1.5 text-right"><%= number_with_delimiter(group["subtotal"]) %>円</td>
+          <td class="py-1.5 pl-4 text-gray-500">消費税</td>
+          <td class="py-1.5 text-right"><%= number_with_delimiter(group["tax"]) %>円</td>
+        </tr>
+      <% end %>
+      <tr class="border-b border-gray-100"><td class="py-1.5 pr-4" colspan="3">小計（税抜）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.subtotal) %>円</td></tr>
+      <tr class="border-b border-gray-100"><td class="py-1.5 pr-4" colspan="3">消費税</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
+      <tr class="font-bold"><td class="py-1.5 pr-4" colspan="3">合計（税込）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.total) %>円</td></tr>
+    </table>
+  </div>
+
+  <% if @document.notes.present? %>
+    <h2 class="font-bold text-lg mb-2">備考</h2>
+    <p class="whitespace-pre-wrap text-sm mb-8"><%= @document.notes %></p>
+  <% end %>
+
+  <% if @document.conversions.any? %>
+    <h2 class="font-bold text-lg mb-2">変換先</h2>
+    <ul class="text-sm mb-8">
+      <% @document.conversions.each do |converted| %>
+        <li><%= link_to "#{converted.kind_label} #{converted.number}", converted, class: "text-blue-600 hover:underline" %></li>
+      <% end %>
+    </ul>
+  <% end %>
+
+  <%= link_to "一覧に戻る", documents_path(kind: @document.kind), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+</div>
