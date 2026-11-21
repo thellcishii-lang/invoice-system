@@ -1,0 +1,48 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-3xl mb-5"><%= @client.name %></h1>
+
+  <dl class="space-y-3">
+    <div>
+      <dt class="text-sm text-gray-500">フリガナ</dt>
+      <dd><%= @client.name_kana %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">郵便番号</dt>
+      <dd><%= @client.postal_code %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">住所</dt>
+      <dd><%= @client.address %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">電話番号</dt>
+      <dd><%= @client.phone %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">メールアドレス</dt>
+      <dd><%= @client.email %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">担当者名</dt>
+      <dd><%= @client.contact_person %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">支払条件メモ</dt>
+      <dd class="whitespace-pre-wrap"><%= @client.payment_terms %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">インボイス登録番号</dt>
+      <dd><%= @client.registration_number %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">状態</dt>
+      <dd><%= @client.archived? ? "アーカイブ済み" : "利用中" %></dd>
+    </div>
+  </dl>
+
+  <div class="mt-8 flex items-center gap-4">
+    <%= link_to "編集", edit_client_path(@client), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+    <%= link_to "一覧に戻る", clients_path, class: "text-gray-700 hover:underline" %>
+    <%= button_to "削除", @client, method: :delete, class: "text-red-600 hover:underline cursor-pointer", data: { turbo_confirm: "この取引先を削除しますか？" } %>
+  </div>
+</div>

@@ -1,0 +1,33 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-5">
+    <h1 class="font-bold text-3xl">取引先</h1>
+    <%= link_to "新規登録", new_client_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+  </div>
+
+  <% if @clients.empty? %>
+    <p class="text-gray-500">取引先はまだ登録されていません。</p>
+  <% else %>
+    <table class="w-full text-left">
+      <thead>
+        <tr class="border-b border-gray-200 text-sm text-gray-500">
+          <th class="py-2 pr-4">会社名・氏名</th>
+          <th class="py-2 pr-4">担当者名</th>
+          <th class="py-2 pr-4">電話番号</th>
+          <th class="py-2 pr-4">状態</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @clients.each do |client| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4"><%= link_to client.name, client, class: "text-blue-600 hover:underline" %></td>
+            <td class="py-2 pr-4"><%= client.contact_person %></td>
+            <td class="py-2 pr-4"><%= client.phone %></td>
+            <td class="py-2 pr-4"><%= client.archived? ? "アーカイブ済み" : "利用中" %></td>
+            <td class="py-2 text-right"><%= link_to "編集", edit_client_path(client), class: "text-gray-700 hover:underline text-sm" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

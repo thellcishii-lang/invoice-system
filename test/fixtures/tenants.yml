@@ -8,6 +8,7 @@ one:
   document_number_prefix: ""
   tax_rounding: floor
   tax_display: exclusive
+  item_code_counter: 2
 
 two:
   name: テスト商事株式会社
@@ -19,3 +20,4 @@ two:
   document_number_prefix: "TS-"
   tax_rounding: round
   tax_display: inclusive
+  item_code_counter: 1

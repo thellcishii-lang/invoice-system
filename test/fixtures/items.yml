@@ -1,0 +1,29 @@
+one:
+  tenant: one
+  code: I000001
+  name: システム利用料
+  unit_price: 39800
+  unit: 月
+  tax_rate: standard
+  description: 月額のシステム利用料
+  active: true
+
+two:
+  tenant: one
+  code: I000002
+  name: 新聞購読料
+  unit_price: 4000
+  unit: 月
+  tax_rate: reduced
+  description:
+  active: false
+
+other_tenant:
+  tenant: two
+  code: I000001
+  name: 工事作業費
+  unit_price: 50000
+  unit: 式
+  tax_rate: standard
+  description:
+  active: true

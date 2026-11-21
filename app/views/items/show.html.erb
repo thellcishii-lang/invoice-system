@@ -1,0 +1,36 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-3xl mb-5"><%= @item.name %></h1>
+
+  <dl class="space-y-3">
+    <div>
+      <dt class="text-sm text-gray-500">品目コード</dt>
+      <dd class="font-mono"><%= @item.code %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">単価（税抜）</dt>
+      <dd><%= number_with_delimiter(@item.unit_price) %>円</dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">単位</dt>
+      <dd><%= @item.unit %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">税率</dt>
+      <dd><%= @item.standard? ? "標準税率（10%）" : "軽減税率（8%）" %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">説明</dt>
+      <dd class="whitespace-pre-wrap"><%= @item.description %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">状態</dt>
+      <dd><%= @item.active? ? "有効" : "無効" %></dd>
+    </div>
+  </dl>
+
+  <div class="mt-8 flex items-center gap-4">
+    <%= link_to "編集", edit_item_path(@item), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+    <%= link_to "一覧に戻る", items_path, class: "text-gray-700 hover:underline" %>
+    <%= button_to "削除", @item, method: :delete, class: "text-red-600 hover:underline cursor-pointer", data: { turbo_confirm: "この品目を削除しますか？" } %>
+  </div>
+</div>

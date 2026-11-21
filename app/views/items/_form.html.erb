@@ -1,0 +1,56 @@
+<% if item.errors.any? %>
+  <div class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg">
+    <ul>
+      <% item.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: item, class: "contents" do |form| %>
+  <% if item.persisted? %>
+    <div class="my-5">
+      <p class="text-sm text-gray-500">品目コード</p>
+      <p class="mt-1 font-mono"><%= item.code %></p>
+    </div>
+  <% end %>
+
+  <div class="my-5">
+    <%= form.label :name, "品名" %>
+    <%= form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :unit_price, "単価（税抜）" %>
+    <%= form.number_field :unit_price, min: 0, step: 1, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :unit, "単位" %>
+    <%= form.text_field :unit, placeholder: "個・式・時間・月 など", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :tax_rate, "税率" %>
+    <%= form.select :tax_rate,
+          [ [ "標準税率（10%）", "standard" ], [ "軽減税率（8%）", "reduced" ] ],
+          {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :description, "説明" %>
+    <%= form.text_area :description, rows: 3, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :active, class: "flex items-center gap-2" do %>
+      <%= form.check_box :active, class: "shadow-sm rounded-md border border-gray-400" %>
+      有効（帳票の明細に選択できる）
+    <% end %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit item.persisted? ? "更新する" : "登録する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+  </div>
+<% end %>

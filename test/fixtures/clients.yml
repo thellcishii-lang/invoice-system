@@ -1,0 +1,33 @@
+one:
+  tenant: one
+  name: 株式会社サンプル商事
+  name_kana: カブシキガイシャサンプルショウジ
+  postal_code: 100-0001
+  address: 東京都千代田区千代田1-1
+  phone: 03-1111-1111
+  email: info@sample.example.co.jp
+  contact_person: 山田太郎
+  payment_terms: 月末締め・翌月末払い
+  registration_number: T1111111111111
+  archived: false
+
+two:
+  tenant: two
+  name: 有限会社テスト工務店
+  name_kana: ユウゲンガイシャテストコウムテン
+  postal_code: 530-0001
+  address: 大阪府大阪市北区梅田1-1
+  phone: 06-2222-2222
+  email: info@test-koumuten.example.co.jp
+  contact_person: 佐藤花子
+  payment_terms: 納品後30日以内
+  registration_number:
+  archived: false
+
+archived_one:
+  tenant: one
+  name: 旧取引先株式会社
+  postal_code: 060-0001
+  address: 北海道札幌市中央区北1条西1-1
+  phone: 011-3333-3333
+  archived: true

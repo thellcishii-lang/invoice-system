@@ -7,6 +7,8 @@ class Tenant < ApplicationRecord
   enum :tax_display, { exclusive: "exclusive", inclusive: "inclusive" }, validate: true
 
   has_many :users, dependent: :restrict_with_error
+  has_many :clients, dependent: :restrict_with_error
+  has_many :items, dependent: :restrict_with_error
 
   validates :name, presence: true
 

@@ -1,0 +1,67 @@
+<% if client.errors.any? %>
+  <div class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg">
+    <ul>
+      <% client.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: client, class: "contents" do |form| %>
+  <div class="my-5">
+    <%= form.label :name, "会社名・氏名" %>
+    <%= form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name_kana, "フリガナ" %>
+    <%= form.text_field :name_kana, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :postal_code, "郵便番号" %>
+    <%= form.text_field :postal_code, placeholder: "100-0001", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :address, "住所" %>
+    <%= form.text_field :address, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :phone, "電話番号" %>
+    <%= form.text_field :phone, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :email, "メールアドレス" %>
+    <%= form.email_field :email, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :contact_person, "担当者名" %>
+    <%= form.text_field :contact_person, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :payment_terms, "支払条件メモ" %>
+    <%= form.text_area :payment_terms, placeholder: "例: 月末締め・翌月末払い", rows: 3, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :registration_number, "インボイス登録番号" %>
+    <%= form.text_field :registration_number, placeholder: "T1234567890123", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :archived, class: "flex items-center gap-2" do %>
+      <%= form.check_box :archived, class: "shadow-sm rounded-md border border-gray-400" %>
+      アーカイブ済み（通常の選択肢に表示しない）
+    <% end %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit client.persisted? ? "更新する" : "登録する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+  </div>
+<% end %>
