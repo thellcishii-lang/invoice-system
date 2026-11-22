@@ -1,0 +1,62 @@
+# Render Blueprint for invoice-system — placed in repo 2026-11-22 after Core 6 landed
+# (draft was ~/workspace/your_files/invoice-system-render.yaml.DRAFT)
+# Template: ~/workspace/agency-system/render.yaml, with the lessons learned there baked in:
+#  - Paid plans from day one (Web Starter + DB Basic-256mb): avoids the free-DB 30-day expiry
+#    that agency-system had to escape on 2026-11-15.
+#  - STRIPE_PRICE_ID / STRIPE_TAX_RATE_ID are deliberately NOT declared here (dashboard-only).
+#    On 2026-11-18 agency-system learned that declaring them (even sync: false) left the
+#    running process with length 0; the fix (commit 166e897) removed the declarations.
+#  - Region singapore, health check /up (route already exists in invoice-system).
+#  - Mail already wired to Zoho SMTP via INFOMAIL_USER / INFOMAIL_PASS (production.rb).
+# Still to decide before first deploy: GitHub repo name, product name, APP_HOST value
+# (Render assigns the onrender.com URL on first deploy — update APP_HOST then), Stripe
+# price/tax-rate IDs (Core 6 uses env-var placeholders for the undecided price).
+services:
+  - type: web
+    name: invoice-system
+    runtime: docker
+    plan: starter
+    region: singapore
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /up
+    autoDeploy: true
+    envVars:
+      - key: RAILS_ENV
+        value: production
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      # Solid Queue jobs run inside Puma (single-web setup, same as agency-system)
+      - key: SOLID_QUEUE_IN_PUMA
+        value: "true"
+      - key: DATABASE_URL
+        fromDatabase:
+          name: invoice-system-db
+          property: connectionString
+      # Stripe (operator billing, Core 6). Values entered in the Render dashboard (sync: false).
+      - key: STRIPE_SECRET_KEY
+        sync: false
+      - key: STRIPE_PUBLISHABLE_KEY
+        sync: false
+      - key: STRIPE_WEBHOOK_SECRET
+        sync: false
+      # STRIPE_PRICE_ID / STRIPE_TAX_RATE_ID: dashboard-only, DO NOT declare here (see header).
+      # Mail (Zoho SMTP, same INFOMAIL_USER / INFOMAIL_PASS as the other products).
+      - key: INFOMAIL_USER
+        sync: false
+      - key: INFOMAIL_PASS
+        sync: false
+      # Mail-link host — update to the real onrender.com URL after first deploy.
+      - key: APP_HOST
+        value: invoice-system.onrender.com
+
+databases:
+  - name: invoice-system-db
+    databaseName: invoice_system_production
+    plan: basic-256mb
+    region: singapore
+
+# --- Pre-push fix (DONE 2026-11-22, commit 178d724) ---------------------------
+# The two agency-system CI failures were fixed before first push:
+#  1. Ruby raised 3.2.3 -> 3.2.11 (.ruby-version + Dockerfile); tests 205 green.
+#  2. test/system/login_test.rb added (system-test scaffold exists).
