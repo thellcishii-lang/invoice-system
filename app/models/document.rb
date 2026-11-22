@@ -46,6 +46,7 @@ class Document < ApplicationRecord
   validate :must_have_lines
   validate :client_must_belong_to_tenant
   validate :converted_from_must_belong_to_tenant
+  validate :invoice_monthly_limit_not_exceeded, on: :create
 
   before_validation :set_default_issue_date
   before_validation :set_default_payment_status
@@ -193,6 +194,16 @@ class Document < ApplicationRecord
 
     def assign_line_positions
       document_lines.each_with_index { |line, index| line.position = index }
+    end
+
+    # 請求書はテナントの月間上限（発行日の属する月）までしか作れない。
+    # 上限が NULL のテナントは無制限。
+    def invoice_monthly_limit_not_exceeded
+      return unless invoice?
+      return if tenant.blank? || issue_date.blank?
+      return unless tenant.invoice_limit_reached?(issue_date)
+
+      errors.add(:base, "今月の請求書の発行上限（#{tenant.monthly_invoice_limit}通）に達しました。これ以上は作成できません。")
     end
 
     def must_have_lines

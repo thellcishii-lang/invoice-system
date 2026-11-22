@@ -8,5 +8,8 @@ class DashboardController < ApplicationController
     unpaid = @tenant.documents.unpaid_invoices.includes(:payments)
     @unpaid_balance = unpaid.sum(&:balance)
     @overdue_count = unpaid.count { |document| document.overdue? }
+
+    @invoice_usage = @tenant.invoice_count_for(Date.current)
+    @invoice_limit = @tenant.monthly_invoice_limit
   end
 end

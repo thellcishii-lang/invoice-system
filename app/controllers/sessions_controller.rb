@@ -8,7 +8,9 @@ class SessionsController < ApplicationController
   def create
     user = User.authenticate_by(params.permit(:email_address, :password))
 
-    if user && !user.disabled?
+    if user && !user.disabled? && user.tenant.billing_blocked?
+      redirect_to new_session_path, alert: user.tenant.billing_blocked_message
+    elsif user && !user.disabled?
       start_new_session_for user
       redirect_to after_authentication_url
     else

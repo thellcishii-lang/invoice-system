@@ -1,0 +1,57 @@
+<div class="mx-auto md:w-2/3 w-full">
+  <h1 class="font-bold text-4xl">新規お申し込み</h1>
+
+  <p class="text-gray-700 mt-4">
+    請求書システム（仮）のご利用申し込みです。内容をご入力のうえ、確認画面へお進みください。
+    お支払い完了後、ログイン用のご案内メールをお送りします。
+  </p>
+
+  <% unless @stripe_configured %>
+    <p class="py-2 px-3 bg-yellow-50 mt-5 text-yellow-700 font-medium rounded-lg">
+      現在、準備中のためお申し込みを受け付けておりません。
+    </p>
+  <% end %>
+
+  <% if @application.errors.any? %>
+    <div class="py-2 px-3 bg-red-50 mt-5 text-red-500 font-medium rounded-lg">
+      <ul>
+        <% @application.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <%= form_with model: @application, url: confirm_signups_path, class: "contents" do |form| %>
+    <div class="my-5">
+      <%= form.label :company_name, "会社名（屋号でも可）" %>
+      <%= form.text_field :company_name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :contact_name, "ご担当者名" %>
+      <%= form.text_field :contact_name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :email, "メールアドレス" %>
+      <%= form.email_field :email, required: true, autocomplete: "email", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-sm text-gray-500 mt-1">このメールアドレスがログイン用IDになります。</p>
+    </div>
+
+    <div class="my-5">
+      <label class="flex items-center gap-2">
+        <%= form.check_box :agreed_to_terms, class: "rounded border-gray-400" %>
+        <span>利用規約に同意します</span>
+      </label>
+    </div>
+
+    <div class="inline">
+      <%= form.submit "確認画面へ", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <p class="text-sm text-gray-500 mt-6">
+    すでにアカウントをお持ちの方は <%= link_to "ログイン", new_session_path, class: "text-gray-700 underline hover:no-underline" %>
+  </p>
+</div>

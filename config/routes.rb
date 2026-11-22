@@ -2,6 +2,17 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  # 公開申込フロー（ログイン不要）と Stripe Webhook、招待用パスワード設定
+  resources :signups, only: %i[ new create ] do
+    collection do
+      post :confirm
+      get :complete
+    end
+  end
+  post "stripe/webhooks", to: "stripe_webhooks#create"
+  get "password_setup/:token", to: "password_setups#edit", as: :password_setup
+  patch "password_setup/:token", to: "password_setups#update"
+
   root "dashboard#index"
   resource :setting, only: %i[ show update ]
   resources :clients

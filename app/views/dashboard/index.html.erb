@@ -17,5 +17,15 @@
       <p class="text-sm text-gray-500">期限超過の請求書</p>
       <p class="font-bold text-2xl mt-1"><%= @overdue_count %>件</p>
     </div>
+    <div class="rounded-lg border border-gray-200 p-4">
+      <p class="text-sm text-gray-500">今月の請求書</p>
+      <p class="font-bold text-2xl mt-1">
+        <% if @invoice_limit %>
+          <%= @invoice_usage %> / <%= @invoice_limit %>通
+        <% else %>
+          <%= @invoice_usage %>通（無制限）
+        <% end %>
+      </p>
+    </div>
   </div>
 </div>

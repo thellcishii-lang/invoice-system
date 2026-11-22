@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_21_235601) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_22_000219) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -149,6 +149,20 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_235601) do
     t.index ["user_id"], name: "index_sessions_on_user_id"
   end
 
+  create_table "signup_applications", force: :cascade do |t|
+    t.string "company_name", null: false
+    t.string "contact_name", null: false
+    t.string "email", null: false
+    t.boolean "agreed_to_terms", default: false, null: false
+    t.string "stripe_checkout_session_id"
+    t.string "status", default: "pending", null: false
+    t.bigint "tenant_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["stripe_checkout_session_id"], name: "index_signup_applications_on_stripe_checkout_session_id", unique: true
+    t.index ["tenant_id"], name: "index_signup_applications_on_tenant_id"
+  end
+
   create_table "tenants", force: :cascade do |t|
     t.string "name", null: false
     t.string "invoice_registration_number"
@@ -162,6 +176,13 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_235601) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "item_code_counter", default: 0, null: false
+    t.string "stripe_customer_id"
+    t.string "stripe_subscription_id"
+    t.string "billing_status", default: "none", null: false
+    t.datetime "contract_ended_at"
+    t.integer "monthly_invoice_limit", default: 100
+    t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
+    t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end
 
   create_table "users", force: :cascade do |t|
@@ -192,5 +213,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_21_235601) do
   add_foreign_key "recurring_documents", "documents", column: "template_document_id"
   add_foreign_key "recurring_documents", "tenants"
   add_foreign_key "sessions", "users"
+  add_foreign_key "signup_applications", "tenants"
   add_foreign_key "users", "tenants"
 end

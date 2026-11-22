@@ -6,6 +6,9 @@ tenant = Tenant.find_or_create_by!(name: "Everyone's合同会社") do |t|
   t.email = "admin@example.co.jp"
 end
 
+# 自社テナントは運営者自身のため、課金は契約中・請求書の上限なし
+tenant.update!(billing_status: :active, monthly_invoice_limit: nil)
+
 tenant.users.find_or_create_by!(email_address: "admin@example.co.jp") do |user|
   user.name = "管理者"
   user.password = "password"

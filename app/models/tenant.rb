@@ -5,6 +5,10 @@ class Tenant < ApplicationRecord
   enum :tax_rounding, { floor: "floor", round: "round", ceil: "ceil" }, validate: true
   # 税表示: exclusive=税抜 / inclusive=税込
   enum :tax_display, { exclusive: "exclusive", inclusive: "inclusive" }, validate: true
+  # SaaS利用料の課金状態: none=未契約 / active=契約中 / suspended=停止中 / cancelled=解約済み
+  # （billing_active? のように prefix 付きで使う）
+  enum :billing_status, { none: "none", active: "active", suspended: "suspended", cancelled: "cancelled" },
+       prefix: :billing, validate: true
 
   has_many :users, dependent: :restrict_with_error
   has_many :clients, dependent: :restrict_with_error
@@ -14,10 +18,54 @@ class Tenant < ApplicationRecord
   has_many :document_deliveries, dependent: :restrict_with_error
   has_many :recurring_documents, dependent: :restrict_with_error
   has_many :payments, dependent: :restrict_with_error
+  has_many :signup_applications, dependent: :restrict_with_error
 
   validates :name, presence: true
 
   def member_limit_reached?
     users.count >= MAX_MEMBERS
+  end
+
+  # 課金停止・解約済みのテナントはログインできない
+  def billing_blocked?
+    billing_suspended? || billing_cancelled?
+  end
+
+  def billing_blocked_message
+    if billing_cancelled?
+      "ご契約が終了しているため、ログインできません。"
+    else
+      "ご契約が停止中のため、ログインできません。お支払い状況をご確認ください。"
+    end
+  end
+
+  # 指定日が属する月に作成した請求書の数（発行日ベース）
+  def invoice_count_for(date)
+    documents.invoice.where(issue_date: date.beginning_of_month..date.end_of_month).count
+  end
+
+  # その月の請求書作成上限に達しているか（上限が NULL なら無制限）
+  def invoice_limit_reached?(date = Date.current)
+    return false if monthly_invoice_limit.nil?
+
+    invoice_count_for(date) >= monthly_invoice_limit
+  end
+
+  # 解約から30日経過したテナントのデータを全て削除する。
+  # 関連は restrict_with_error のため、依存の深いものから順に消す。
+  # 帳票を消すと明細・送信履歴・入金は帳票側の dependent: :destroy で消える。
+  def purge!
+    transaction do
+      signup_applications.destroy_all
+      payments.destroy_all
+      document_deliveries.destroy_all
+      recurring_documents.destroy_all
+      documents.destroy_all
+      document_sequences.destroy_all
+      clients.destroy_all
+      items.destroy_all
+      users.destroy_all
+      destroy!
+    end
   end
 end

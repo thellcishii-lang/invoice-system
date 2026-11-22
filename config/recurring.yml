@@ -17,3 +17,7 @@ production:
     class: RecurringDocumentsJob
     queue: default
     schedule: "0 6 * * *"
+  tenant_purge:
+    class: TenantPurgeJob
+    queue: default
+    schedule: "0 6 * * *"

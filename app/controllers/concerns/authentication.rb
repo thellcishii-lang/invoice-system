@@ -29,7 +29,8 @@ module Authentication
       return unless cookies.signed[:session_id]
 
       session = Session.find_by(id: cookies.signed[:session_id])
-      session if session && !session.user.disabled?
+      # 課金停止・解約済みテナントのユーザーは既存セッションでも利用できない
+      session if session && !session.user.disabled? && !session.user.tenant.billing_blocked?
     end
 
     def request_authentication
