@@ -85,11 +85,31 @@ test:
 # for a full overview on how database connection configuration can be specified.
 #
 production:
+  # Connection details (host, username, password) are taken from DATABASE_URL,
+  # which the hosting platform (Render) provides. DATABASE_URL itself is only
+  # picked up automatically by the primary config, and pointing every config
+  # at it via url: would collapse all four logical databases into one (the
+  # URL's database name wins). So the URL is parsed here once and its parts
+  # are shared through the anchor, while each config keeps its own database
+  # name. When DATABASE_URL is unset, the values render empty and the usual
+  # local defaults (socket, OS user) apply.
+  <%
+    require "uri"
+    _database_url =
+      begin
+        URI.parse(ENV["DATABASE_URL"].to_s)
+      rescue URI::InvalidURIError
+        nil
+      end
+    _database_url = nil if _database_url&.scheme.nil?
+  %>
   primary: &primary_production
     <<: *default
     database: invoice_system_production
-    username: invoice_system
-    password: <%= ENV["INVOICE_SYSTEM_DATABASE_PASSWORD"] %>
+    username: <%= (_database_url&.user && CGI.unescape(_database_url.user)).to_json %>
+    password: <%= (_database_url&.password && CGI.unescape(_database_url.password)).to_json %>
+    host: <%= (_database_url&.host).to_json %>
+    port: <%= _database_url&.port %>
   cache:
     <<: *primary_production
     database: invoice_system_production_cache
