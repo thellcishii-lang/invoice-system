@@ -82,8 +82,26 @@ class ItemCategoriesControllerTest < ActionDispatch::IntegrationTest
 
     item = items(:one)
     item.update!(item_category: great)
-    assert_equal "A001-001001001#{item.code.delete_prefix("I")}", item.part_number
-    assert_match(/\AA001-001001001\d{6}\z/, item.part_number)
+    assert_equal "001", item.segment
+    assert_equal "A001-001001001001", item.part_number
+  end
+
+  test "item segments are numbered within their category and never reused" do
+    category = @tenant.item_categories.create!(name: "部品")
+    first = @tenant.items.create!(name: "ネジA", unit_price: 10, tax_rate: "standard", item_category: category)
+    second = @tenant.items.create!(name: "ネジB", unit_price: 20, tax_rate: "standard", item_category: category)
+    assert_equal "001", first.segment
+    assert_equal "002", second.segment
+    assert_equal "#{category.full_code}002", second.part_number
+
+    first.destroy!
+    third = @tenant.items.create!(name: "ネジC", unit_price: 30, tax_rate: "standard", item_category: category)
+    assert_equal "003", third.segment, "削除した品目の番号は再利用しない"
+
+    other = @tenant.item_categories.create!(name: "材料")
+    second.update!(item_category: other)
+    assert_equal "001", second.reload.segment, "分類を変えたら新しい分類で採番し直す"
+    assert_equal "#{other.full_code}001", second.part_number
   end
 
   test "segments are never reused after deletion" do

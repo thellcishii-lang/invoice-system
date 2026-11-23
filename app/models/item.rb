@@ -10,14 +10,17 @@ class Item < ApplicationRecord
   belongs_to :tenant
   belongs_to :item_category, optional: true
 
-  # 品番: 分類コードの後ろに品目の連番（コードの数字部分6桁）を付けたもの。
-  # 例: 4階層目の分類の品目 → A001-001001001545676
-  # 未分類の品目は連番のみ。
-  def part_number
-    serial = code.to_s.delete_prefix(CODE_PREFIX)
-    return serial if item_category.blank?
+  # 品番: 分類コードの後ろに「分類の中での連番（3桁）」を付けたもの。
+  # 全セグメントが3桁で揃う。例: 4階層目の分類の品目 → A001-001001001042
+  # 未分類の品目は品目コードの数字部分のみ。
+  # セグメントは分類ごとに自動採番・再利用なし。分類を変えたら新しい分類で採番し直す。
+  before_save :assign_segment, if: -> { item_category.present? && (segment.blank? || item_category_id_changed?) }
+  before_save :clear_segment, if: -> { item_category.blank? && segment.present? }
 
-    "#{item_category.full_code}#{serial}"
+  def part_number
+    return code.to_s.delete_prefix(CODE_PREFIX) if item_category.blank?
+
+    "#{item_category.full_code}#{segment}"
   end
 
   scope :active, -> { where(active: true) }
@@ -29,6 +32,17 @@ class Item < ApplicationRecord
   validates :unit_price, numericality: { only_integer: true, greater_than_or_equal_to: 0 }
 
   private
+    def assign_segment
+      item_category.with_lock do
+        item_category.increment!(:item_segment_counter)
+        self.segment = format("%03d", item_category.item_segment_counter)
+      end
+    end
+
+    def clear_segment
+      self.segment = nil
+    end
+
     def assign_code
       return if code.present?
       return if tenant.blank?
