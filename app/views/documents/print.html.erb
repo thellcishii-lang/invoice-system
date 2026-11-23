@@ -123,9 +123,7 @@
   </div>
 <% end %>
 
-<% if @document.notes.present? %>
-  <div class="section">
-    <div>備考</div>
-    <div class="notes"><%= @document.notes %></div>
-  </div>
-<% end %>
+<div class="remarks">
+  <div class="remarks-band" style="background: <%= band_color %>; color: <%= band_text_color %>">備考</div>
+  <div class="remarks-body"><%= @document.notes %></div>
+</div>
