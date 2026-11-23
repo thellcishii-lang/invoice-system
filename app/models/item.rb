@@ -8,6 +8,7 @@ class Item < ApplicationRecord
   enum :tax_rate, { standard: "standard", reduced: "reduced" }, validate: true
 
   belongs_to :tenant
+  belongs_to :item_category, optional: true
 
   scope :active, -> { where(active: true) }
 

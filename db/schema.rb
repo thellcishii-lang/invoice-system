@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_040640) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_175842) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -96,6 +96,18 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_040640) do
     t.index ["tenant_id"], name: "index_documents_on_tenant_id"
   end
 
+  create_table "item_categories", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "parent_id"
+    t.string "name", null: false
+    t.text "note"
+    t.integer "position", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["parent_id"], name: "index_item_categories_on_parent_id"
+    t.index ["tenant_id"], name: "index_item_categories_on_tenant_id"
+  end
+
   create_table "items", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.string "code", null: false
@@ -107,6 +119,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_040640) do
     t.boolean "active", default: true, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "item_category_id"
+    t.index ["item_category_id"], name: "index_items_on_item_category_id"
     t.index ["tenant_id", "code"], name: "index_items_on_tenant_id_and_code", unique: true
     t.index ["tenant_id"], name: "index_items_on_tenant_id"
   end
@@ -218,6 +232,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_040640) do
   add_foreign_key "documents", "clients"
   add_foreign_key "documents", "documents", column: "converted_from_id"
   add_foreign_key "documents", "tenants"
+  add_foreign_key "item_categories", "item_categories", column: "parent_id"
+  add_foreign_key "item_categories", "tenants"
+  add_foreign_key "items", "item_categories"
   add_foreign_key "items", "tenants"
   add_foreign_key "payments", "documents"
   add_foreign_key "payments", "tenants"

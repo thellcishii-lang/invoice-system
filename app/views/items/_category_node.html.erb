@@ -1,0 +1,15 @@
+<% selected = (@selected == category.id) %>
+<div class="py-1.5 px-2 rounded-md <%= selected ? "bg-blue-50" : "hover:bg-gray-50" %>" style="margin-left: <%= depth * 1.5 %>rem">
+  <div class="flex items-center gap-2 flex-wrap">
+    <%= link_to category.name, items_path(category: category.id), class: "hover:underline #{selected ? "font-bold text-blue-700" : "text-gray-800"}" %>
+    <span class="text-xs text-gray-500"><%= @total_counts[category.id].to_i %>件</span>
+    <%= link_to "子を追加", new_item_category_path(parent_id: category.id), class: "text-xs text-blue-600 hover:underline" %>
+    <%= link_to "編集", edit_item_category_path(category), class: "text-xs text-gray-500 hover:underline" %>
+  </div>
+  <% if category.note.present? %>
+    <p class="text-xs text-gray-500 mt-0.5"><%= category.note %></p>
+  <% end %>
+</div>
+<% (@children_by_parent[category.id] || []).each do |child| %>
+  <%= render "category_node", category: child, depth: depth + 1 %>
+<% end %>

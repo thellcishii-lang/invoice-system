@@ -17,6 +17,7 @@ Rails.application.routes.draw do
   resource :setting, only: %i[ show update ]
   resources :clients
   resources :items
+  resources :item_categories, only: %i[ new create edit update destroy ]
   resources :documents do
     member do
       get :print
