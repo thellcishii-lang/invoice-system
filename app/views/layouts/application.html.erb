@@ -25,23 +25,23 @@
 
   <body>
     <% if authenticated? %>
-      <header class="border-b border-gray-200">
-        <div class="container mx-auto px-5 py-3 flex items-center gap-4">
-          <span class="font-bold">請求書システム（仮）</span>
-          <span class="text-gray-500 text-sm"><%= Current.tenant&.name %></span>
-          <nav class="ml-auto flex items-center gap-4 text-sm">
-            <%= link_to "ダッシュボード", root_path, class: "text-gray-700 hover:underline" %>
-            <%= link_to "見積書", documents_path(kind: "estimate"), class: "text-gray-700 hover:underline" %>
-            <%= link_to "納品書", documents_path(kind: "delivery"), class: "text-gray-700 hover:underline" %>
-            <%= link_to "請求書", documents_path(kind: "invoice"), class: "text-gray-700 hover:underline" %>
-            <%= link_to "領収書", documents_path(kind: "receipt"), class: "text-gray-700 hover:underline" %>
-            <%= link_to "定期請求", recurring_documents_path, class: "text-gray-700 hover:underline" %>
-            <%= link_to "未入金一覧", unpaid_invoices_path, class: "text-gray-700 hover:underline" %>
-            <%= link_to "レポート", report_path, class: "text-gray-700 hover:underline" %>
-            <%= link_to "取引先", clients_path, class: "text-gray-700 hover:underline" %>
-            <%= link_to "品目", items_path, class: "text-gray-700 hover:underline" %>
-            <%= link_to "設定", setting_path, class: "text-gray-700 hover:underline" %>
-            <%= button_to "ログアウト", session_path, method: :delete, class: "text-gray-700 hover:underline cursor-pointer" %>
+      <header class="bg-slate-800 text-white shadow">
+        <div class="container mx-auto px-5 py-3 flex items-center gap-4 flex-nowrap">
+          <span class="font-bold whitespace-nowrap shrink-0">請求書システム（仮）</span>
+          <span class="text-slate-300 text-sm whitespace-nowrap shrink-0"><%= Current.tenant&.name %></span>
+          <nav class="ml-auto flex items-center gap-4 text-sm flex-nowrap overflow-x-auto">
+            <%= link_to "ダッシュボード", root_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "見積書", documents_path(kind: "estimate"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "納品書", documents_path(kind: "delivery"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "請求書", documents_path(kind: "invoice"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "領収書", documents_path(kind: "receipt"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "定期請求", recurring_documents_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "未入金一覧", unpaid_invoices_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "レポート", report_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "取引先", clients_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "品目", items_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "設定", setting_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= button_to "ログアウト", session_path, method: :delete, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap cursor-pointer" %>
           </nav>
         </div>
       </header>
