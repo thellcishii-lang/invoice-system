@@ -9,11 +9,10 @@ class ItemCategoriesControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(users(:one))
 
     assert_difference("ItemCategory.count", 1) do
-      post item_categories_path, params: { item_category: { name: "サービス", note: "月額もの" } }
+      post item_categories_path, params: { item_category: { name: "サービス" } }
     end
     root = ItemCategory.order(:id).last
     assert_nil root.parent_id
-    assert_equal "月額もの", root.note
 
     assert_difference("ItemCategory.count", 1) do
       post item_categories_path, params: { item_category: { name: "保守", parent_id: root.id } }

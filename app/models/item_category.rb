@@ -1,6 +1,5 @@
 class ItemCategory < ApplicationRecord
-  # 品目の分類ツリー。横（兄弟）にも縦（子分類）にもいくつでも広げられる。
-  # 各分類には備考（note）を付けられる。
+  # 品目の分類ツリー。横（兄弟）にも縦（子分類＝階層）にもいくつでも広げられる。
   belongs_to :tenant
   belongs_to :parent, class_name: "ItemCategory", optional: true
   has_many :children, class_name: "ItemCategory", foreign_key: :parent_id,

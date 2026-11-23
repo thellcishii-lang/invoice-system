@@ -21,11 +21,6 @@
   </div>
 
   <div class="my-5">
-    <%= form.label :note, "備考" %>
-    <%= form.text_area :note, rows: 3, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
-  </div>
-
-  <div class="my-5">
     <%= form.label :position, "並び順" %>
     <%= form.number_field :position, step: 1, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
     <p class="text-gray-500 text-sm mt-1">同じ階層の中での並び順です。小さい数字が先に表示されます。</p>

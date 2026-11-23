@@ -47,6 +47,6 @@ class ItemCategoriesController < ApplicationController
     end
 
     def item_category_params
-      params.expect(item_category: %i[ name parent_id note position ])
+      params.expect(item_category: %i[ name parent_id position ])
     end
 end

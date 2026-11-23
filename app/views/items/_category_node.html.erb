@@ -6,9 +6,6 @@
     <%= link_to "子を追加", new_item_category_path(parent_id: category.id), class: "text-xs text-blue-600 hover:underline" %>
     <%= link_to "編集", edit_item_category_path(category), class: "text-xs text-gray-500 hover:underline" %>
   </div>
-  <% if category.note.present? %>
-    <p class="text-xs text-gray-500 mt-0.5"><%= category.note %></p>
-  <% end %>
 </div>
 <% (@children_by_parent[category.id] || []).each do |child| %>
   <%= render "category_node", category: child, depth: depth + 1 %>
