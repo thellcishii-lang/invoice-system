@@ -68,6 +68,50 @@ class ItemCategoriesControllerTest < ActionDispatch::IntegrationTest
     assert_no_match ERB::Util.html_escape(items(:two).name), response.body
   end
 
+  test "segments are auto-assigned per parent and build hierarchical codes" do
+    root_a = @tenant.item_categories.create!(name: "A")
+    root_b = @tenant.item_categories.create!(name: "B")
+    child = @tenant.item_categories.create!(name: "A-1", parent: root_a)
+    grandchild = @tenant.item_categories.create!(name: "A-1-1", parent: child)
+    great = @tenant.item_categories.create!(name: "A-1-1-1", parent: grandchild)
+
+    assert_equal "A001", root_a.full_code
+    assert_equal "A002", root_b.full_code
+    assert_equal "A001-001", child.full_code
+    assert_equal "A001-001001001", great.full_code
+
+    item = items(:one)
+    item.update!(item_category: great)
+    assert_equal "A001-001001001#{item.code.delete_prefix("I")}", item.part_number
+    assert_match(/\AA001-001001001\d{6}\z/, item.part_number)
+  end
+
+  test "segments are never reused after deletion" do
+    first = @tenant.item_categories.create!(name: "最初")
+    assert_equal "001", first.segment
+    first.destroy!
+
+    second = @tenant.item_categories.create!(name: "次")
+    assert_equal "002", second.segment
+  end
+
+  test "moving a category to another parent reassigns its segment there" do
+    root_a = @tenant.item_categories.create!(name: "A")
+    root_b = @tenant.item_categories.create!(name: "B")
+    @tenant.item_categories.create!(name: "B-1", parent: root_b)
+    mover = @tenant.item_categories.create!(name: "移動", parent: root_a)
+    assert_equal "001", mover.segment
+
+    mover.update!(parent: root_b)
+
+    assert_equal "002", mover.reload.segment
+    assert_equal "A002-002", mover.full_code
+  end
+
+  test "uncategorized item part number is just the serial" do
+    assert_equal items(:one).code.delete_prefix("I"), items(:one).part_number
+  end
+
   test "item can be assigned to a category from the item form params" do
     sign_in_as(users(:one))
     category = @tenant.item_categories.create!(name: "物販")

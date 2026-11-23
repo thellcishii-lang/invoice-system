@@ -36,6 +36,7 @@
       <thead>
         <tr class="border-b border-gray-200 text-sm text-gray-500">
           <th class="py-2 pr-4">品目コード</th>
+          <th class="py-2 pr-4">品番</th>
           <th class="py-2 pr-4">品名</th>
           <th class="py-2 pr-4">分類</th>
           <th class="py-2 pr-4">単価（税抜）</th>
@@ -49,6 +50,7 @@
         <% @items.each do |item| %>
           <tr class="border-b border-gray-100">
             <td class="py-2 pr-4 font-mono"><%= item.code %></td>
+            <td class="py-2 pr-4 font-mono text-sm whitespace-nowrap"><%= item.part_number %></td>
             <td class="py-2 pr-4"><%= link_to item.name, item, class: "text-blue-600 hover:underline" %></td>
             <td class="py-2 pr-4 text-sm text-gray-600"><%= item.item_category ? item.item_category.path_name : "未分類" %></td>
             <td class="py-2 pr-4"><%= number_with_delimiter(item.unit_price) %>円</td>

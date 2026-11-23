@@ -7,6 +7,14 @@
       <dd class="font-mono"><%= @item.code %></dd>
     </div>
     <div>
+      <dt class="text-sm text-gray-500">品番</dt>
+      <dd class="font-mono"><%= @item.part_number %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">分類</dt>
+      <dd><%= @item.item_category ? @item.item_category.path_name : "未分類" %></dd>
+    </div>
+    <div>
       <dt class="text-sm text-gray-500">単価（税抜）</dt>
       <dd><%= number_with_delimiter(@item.unit_price) %>円</dd>
     </div>

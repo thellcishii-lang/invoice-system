@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_180100) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_180500) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -103,6 +103,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_180100) do
     t.integer "position", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "segment"
+    t.integer "child_segment_counter", default: 0, null: false
     t.index ["parent_id"], name: "index_item_categories_on_parent_id"
     t.index ["tenant_id"], name: "index_item_categories_on_tenant_id"
   end
@@ -206,6 +208,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_180100) do
     t.string "logo_image_content_type"
     t.string "logo_placement"
     t.string "logo_alignment"
+    t.integer "item_category_counter", default: 0, null: false
     t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end

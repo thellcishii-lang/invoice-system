@@ -10,6 +10,16 @@ class Item < ApplicationRecord
   belongs_to :tenant
   belongs_to :item_category, optional: true
 
+  # 品番: 分類コードの後ろに品目の連番（コードの数字部分6桁）を付けたもの。
+  # 例: 4階層目の分類の品目 → A001-001001001545676
+  # 未分類の品目は連番のみ。
+  def part_number
+    serial = code.to_s.delete_prefix(CODE_PREFIX)
+    return serial if item_category.blank?
+
+    "#{item_category.full_code}#{serial}"
+  end
+
   scope :active, -> { where(active: true) }
 
   before_validation :assign_code, on: :create

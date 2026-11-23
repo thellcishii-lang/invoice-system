@@ -9,6 +9,13 @@
 <% end %>
 
 <%= form_with model: item_category, class: "contents" do |form| %>
+  <% if item_category.persisted? %>
+    <div class="my-5">
+      <p class="text-sm text-gray-500">分類コード（自動採番）</p>
+      <p class="mt-1 font-mono"><%= item_category.full_code %></p>
+    </div>
+  <% end %>
+
   <div class="my-5">
     <%= form.label :name, "分類名" %>
     <%= form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
