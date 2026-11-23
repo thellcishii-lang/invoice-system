@@ -14,6 +14,12 @@
       @page { size: A4 portrait; margin: 0; }
       * { box-sizing: border-box; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
       body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif; color: #000; font-size: 12px; line-height: 1.6; margin: 0; padding: 12mm 15mm; }
+      /* The sheet fills the A4 height (297mm minus the vertical padding) so a
+         bottom-placed logo stays at the bottom even when content is short. */
+      .sheet { display: flex; flex-direction: column; min-height: 273mm; }
+      .logo-img { height: 13mm; max-width: 70mm; object-fit: contain; }
+      .logo-top { margin-bottom: 8px; }
+      .logo-bottom { margin-top: auto; padding-top: 12px; }
       h1 { font-size: 22px; text-align: center; letter-spacing: 0.5em; margin: 0 0 16px; padding: 8px 0 8px 0.5em; }
       table { border-collapse: collapse; width: 100%; }
       th, td { border: 1px solid #666; padding: 4px 6px; text-align: left; vertical-align: top; }
@@ -43,7 +49,9 @@
     </style>
   </head>
   <body>
-    <%= yield %>
+    <div class="sheet">
+      <%= yield %>
+    </div>
 
     <div class="screen-actions">
       <button onclick="window.print()">印刷する（PDFとして保存できます）</button>

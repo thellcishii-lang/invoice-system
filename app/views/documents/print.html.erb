@@ -3,6 +3,12 @@
 <% band_color = { "estimate" => "#d2e7d0", "invoice" => "#d2e4f6", "delivery" => "#f8edbe", "receipt" => "#f9dfc4" }[@document.kind] %>
 <% band_text_color = { "estimate" => "#2f5d33", "invoice" => "#2f4d6e", "delivery" => "#6e5f24", "receipt" => "#7c4a1e" }[@document.kind] %>
 
+<% if tenant.logo_image? && tenant.logo_placement_value == "top" %>
+  <div class="logo-top" style="text-align: <%= tenant.logo_alignment_value %>">
+    <%= image_tag tenant.logo_image_data_uri, alt: "", class: "logo-img" %>
+  </div>
+<% end %>
+
 <h1 style="background: <%= band_color %>; color: <%= band_text_color %>"><%= @document.kind_label %></h1>
 
 <div class="meta">
@@ -127,3 +133,9 @@
   <div class="remarks-band" style="background: <%= band_color %>; color: <%= band_text_color %>">備考</div>
   <div class="remarks-body"><%= @document.notes %></div>
 </div>
+
+<% if tenant.logo_image? && tenant.logo_placement_value == "bottom" %>
+  <div class="logo-bottom" style="text-align: <%= tenant.logo_alignment_value %>">
+    <%= image_tag tenant.logo_image_data_uri, alt: "", class: "logo-img" %>
+  </div>
+<% end %>

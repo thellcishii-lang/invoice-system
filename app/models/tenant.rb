@@ -52,6 +52,49 @@ class Tenant < ApplicationRecord
     seal_image_data.present?
   end
 
+  # ロゴも印鑑と同じくDBにBase64で持つ（Renderのディスクは消えるため）
+  LOGO_CONTENT_TYPES = %w[image/png image/jpeg].freeze
+  LOGO_MAX_BYTES = 2.megabytes
+  LOGO_PLACEMENTS = %w[top bottom].freeze
+  LOGO_ALIGNMENTS = %w[left center right].freeze
+
+  def attach_logo(uploaded_file)
+    unless LOGO_CONTENT_TYPES.include?(uploaded_file.content_type)
+      errors.add(:logo_image, "はPNGまたはJPEGの画像にしてください")
+      return false
+    end
+    if uploaded_file.size > LOGO_MAX_BYTES
+      errors.add(:logo_image, "は2MB以下にしてください")
+      return false
+    end
+
+    self.logo_image_data = Base64.strict_encode64(uploaded_file.read)
+    self.logo_image_content_type = uploaded_file.content_type
+    save
+  end
+
+  def remove_logo
+    update(logo_image_data: nil, logo_image_content_type: nil)
+  end
+
+  def logo_image?
+    logo_image_data.present?
+  end
+
+  def logo_image_data_uri
+    return nil unless logo_image?
+
+    "data:#{logo_image_content_type};base64,#{logo_image_data}"
+  end
+
+  def logo_placement_value
+    LOGO_PLACEMENTS.include?(logo_placement) ? logo_placement : "top"
+  end
+
+  def logo_alignment_value
+    LOGO_ALIGNMENTS.include?(logo_alignment) ? logo_alignment : "left"
+  end
+
   # 請求書に印字する振込先。構造化した口座情報があれば組み立て、
   # なければ自由記述（旧フィールド）にフォールバックする。
   def bank_details_text

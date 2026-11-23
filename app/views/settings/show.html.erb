@@ -58,6 +58,30 @@
       <p class="text-gray-500 text-sm mt-1">帳票の会社名の横に表示されます。メールで送る帳票にも付きます。</p>
     </div>
 
+    <div class="my-5">
+      <%= form.label :logo_image, "ロゴ画像（PNG/JPEG、2MBまで）" %>
+      <% if @tenant.logo_image? %>
+        <div class="mt-2">
+          <%= image_tag @tenant.logo_image_data_uri, alt: "ロゴ", class: "h-12 object-contain border border-gray-200 rounded-md p-1" %>
+        </div>
+        <label class="block mt-2 text-sm">
+          <%= form.check_box :remove_logo, class: "mr-1" %> ロゴ画像を削除する
+        </label>
+      <% end %>
+      <%= form.file_field :logo_image, accept: "image/png,image/jpeg", class: "block mt-2 w-full text-sm" %>
+      <p class="text-gray-500 text-sm mt-1">帳票の帯の上、または一番下に表示されます。高さは帯より少し大きめです。</p>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :logo_placement, "ロゴの表示位置" %>
+      <%= form.select :logo_placement, [ [ "上部（帯の上）", "top" ], [ "下部（一番下）", "bottom" ] ], {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :logo_alignment, "ロゴの寄せ" %>
+      <%= form.select :logo_alignment, [ [ "左端", "left" ], [ "中央", "center" ], [ "右端", "right" ] ], {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
     <h3 class="font-bold text-lg mt-8 mb-3">振込先口座（請求書に記載）</h3>
 
     <div class="my-5">

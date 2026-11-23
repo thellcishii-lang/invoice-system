@@ -61,6 +61,23 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     assert tenant.seal_image?
   end
 
+  test "saves a logo image with its placement" do
+    sign_in_as(users(:one))
+
+    patch setting_path, params: { tenant: {
+      name: tenants(:one).name,
+      logo_image: fixture_file_upload("seal.png", "image/png"),
+      logo_placement: "bottom", logo_alignment: "center"
+    } }
+
+    assert_redirected_to setting_path
+
+    tenant = tenants(:one).reload
+    assert tenant.logo_image?
+    assert_equal "bottom", tenant.logo_placement
+    assert_equal "center", tenant.logo_alignment
+  end
+
   test "removes the seal image when asked" do
     sign_in_as(users(:one))
     tenants(:one).attach_seal(ActionDispatch::Http::UploadedFile.new(

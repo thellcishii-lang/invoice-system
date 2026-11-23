@@ -18,6 +18,14 @@ class SettingsController < ApplicationController
       end
     end
 
+    if params.dig(:tenant, :remove_logo) == "1"
+      @tenant.remove_logo
+    elsif params.dig(:tenant, :logo_image).present?
+      unless @tenant.attach_logo(params[:tenant][:logo_image])
+        return render :show, status: :unprocessable_entity
+      end
+    end
+
     redirect_to setting_path, notice: "設定を保存しました。"
   end
 
@@ -25,6 +33,7 @@ class SettingsController < ApplicationController
     def tenant_params
       params.expect(tenant: %i[ name invoice_registration_number postal_code address phone email
                                 bank_name bank_branch bank_account_type bank_account_number bank_account_holder
+                                logo_placement logo_alignment
                                 document_number_prefix tax_rounding tax_display ])
     end
 end

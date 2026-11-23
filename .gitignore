@@ -33,3 +33,6 @@
 !/app/assets/builds/.keep
 
 /node_modules
+
+# Bundled gems live here locally; never commit them
+/vendor/bundle
