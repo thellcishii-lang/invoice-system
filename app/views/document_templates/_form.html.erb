@@ -1,0 +1,55 @@
+<% if document_template.errors.any? %>
+  <div class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg">
+    <ul>
+      <% document_template.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: document_template, class: "contents" do |form| %>
+  <%= hidden_field_tag :kind, document_template.kind %>
+  <div class="my-5">
+    <p class="text-sm text-gray-500">種別</p>
+    <p class="mt-1"><%= document_template.kind_label %></p>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name, "テンプレート名" %>
+    <%= form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :title, "件名" %>
+    <%= form.text_field :title, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <h2 class="font-bold text-xl mt-8 mb-3">明細</h2>
+
+  <div data-controller="document-lines"
+       data-document-lines-items-value="<%= @items.map { |item| { id: item.id, name: item.name, unit_price: item.unit_price, unit: item.unit, tax_rate: item.tax_rate } }.to_json %>">
+    <div data-document-lines-target="container">
+      <%= form.fields_for :document_template_lines do |line_form| %>
+        <%= render "documents/line_fields", line_form: line_form %>
+      <% end %>
+    </div>
+
+    <template data-document-lines-target="template">
+      <%= form.fields_for :document_template_lines, DocumentTemplateLine.new(quantity: 1, unit_price: 0), child_index: "NEW_RECORD" do |line_form| %>
+        <%= render "documents/line_fields", line_form: line_form %>
+      <% end %>
+    </template>
+
+    <button type="button" data-action="document-lines#add" class="rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium cursor-pointer">＋ 明細を追加</button>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :notes, "備考" %>
+    <%= form.text_area :notes, rows: 3, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="inline">
+    <%= form.submit document_template.persisted? ? "更新する" : "登録する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+  </div>
+<% end %>

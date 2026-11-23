@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: %i[ show edit update destroy print construction_print envelope fax_cover convert duplicate ]
+  before_action :set_document, only: %i[ show edit update destroy print construction_print envelope fax_cover convert duplicate save_as_template ]
 
   def index
     @kind = params[:kind] if Document::KINDS.include?(params[:kind])
@@ -11,13 +11,30 @@ class DocumentsController < ApplicationController
   end
 
   def new
-    kind = Document::KINDS.include?(params[:kind]) ? params[:kind] : "estimate"
-    defaults = { kind: kind, issue_date: Date.current }
-    # 見積書だけ、有効期限の初期値として発行日+30日を入れる
-    defaults[:due_date] = Date.current + 30.days if kind == "estimate"
-    @document = Current.tenant.documents.build(defaults)
-    @document.document_lines.build(quantity: 1, unit_price: 0)
+    if params[:template_id].present?
+      # テンプレートから作成：件名・備考・明細を引き継ぎ、取引先はこの画面で選ぶ
+      template = Current.tenant.document_templates.find(params[:template_id])
+      @document = template.build_document
+    else
+      kind = Document::KINDS.include?(params[:kind]) ? params[:kind] : "estimate"
+      defaults = { kind: kind, issue_date: Date.current }
+      # 見積書だけ、有効期限の初期値として発行日+30日を入れる
+      defaults[:due_date] = Date.current + 30.days if kind == "estimate"
+      @document = Current.tenant.documents.build(defaults)
+      @document.document_lines.build(quantity: 1, unit_price: 0)
+    end
     load_form_data
+  end
+
+  # この帳票の内容（件名・備考・明細）をテンプレートとして保存する
+  def save_as_template
+    template = DocumentTemplate.from_document(@document)
+
+    if template.save
+      redirect_to edit_document_template_path(template), notice: "テンプレートとして保存しました。名前を確認してください。"
+    else
+      redirect_to @document, alert: "テンプレートの保存に失敗しました。"
+    end
   end
 
   def create

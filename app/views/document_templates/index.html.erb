@@ -1,0 +1,39 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-5">
+    <h1 class="font-bold text-3xl"><%= Document::KIND_LABELS[@kind] %>テンプレート</h1>
+    <%= link_to "新規テンプレート", new_document_template_path(kind: @kind), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+  </div>
+
+  <p class="text-gray-600 text-sm mb-5">よく使う<%= Document::KIND_LABELS[@kind] %>の雛形です。「このテンプレートで作成」から、明細を引き継いだ新規作成ができます。既存の帳票からは、詳細画面の「テンプレートとして保存」でも作れます。</p>
+
+  <% if @document_templates.empty? %>
+    <p class="text-gray-500">テンプレートはまだ登録されていません。</p>
+  <% else %>
+    <table class="w-full text-left">
+      <thead>
+        <tr class="border-b border-gray-200 text-sm text-gray-500">
+          <th class="py-2 pr-4">名前</th>
+          <th class="py-2 pr-4">件名</th>
+          <th class="py-2 pr-4">明細</th>
+          <th class="py-2 pr-4 text-right">合計</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @document_templates.each do |template| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4 font-medium"><%= template.name %></td>
+            <td class="py-2 pr-4 text-gray-600"><%= template.title %></td>
+            <td class="py-2 pr-4"><%= template.document_template_lines.size %>行</td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter(template.lines_total) %>円</td>
+            <td class="py-2 text-right whitespace-nowrap">
+              <%= link_to "このテンプレートで作成", new_document_path(template_id: template.id), class: "rounded-md px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium" %>
+              <%= link_to "編集", edit_document_template_path(template), class: "text-gray-700 hover:underline text-sm ml-2" %>
+              <%= button_to "削除", template, method: :delete, data: { turbo_confirm: "このテンプレートを削除しますか？" }, class: "text-red-600 hover:underline text-sm cursor-pointer inline ml-2" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

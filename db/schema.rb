@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_191000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -73,6 +73,33 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_191000) do
     t.datetime "updated_at", null: false
     t.index ["tenant_id", "kind", "year_month"], name: "index_document_sequences_on_tenant_id_and_kind_and_year_month", unique: true
     t.index ["tenant_id"], name: "index_document_sequences_on_tenant_id"
+  end
+
+  create_table "document_template_lines", force: :cascade do |t|
+    t.bigint "document_template_id", null: false
+    t.bigint "item_id"
+    t.string "name", null: false
+    t.decimal "quantity", precision: 12, scale: 2, null: false
+    t.string "unit"
+    t.integer "unit_price", default: 0, null: false
+    t.string "tax_rate", default: "standard", null: false
+    t.integer "position", default: 0, null: false
+    t.integer "amount", default: 0, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_template_id"], name: "index_document_template_lines_on_document_template_id"
+    t.index ["item_id"], name: "index_document_template_lines_on_item_id"
+  end
+
+  create_table "document_templates", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "kind", null: false
+    t.string "name", null: false
+    t.string "title"
+    t.text "notes"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_document_templates_on_tenant_id"
   end
 
   create_table "documents", force: :cascade do |t|
@@ -278,6 +305,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_191000) do
   add_foreign_key "document_lines", "documents"
   add_foreign_key "document_lines", "items"
   add_foreign_key "document_sequences", "tenants"
+  add_foreign_key "document_template_lines", "document_templates"
+  add_foreign_key "document_template_lines", "items"
+  add_foreign_key "document_templates", "tenants"
   add_foreign_key "documents", "clients"
   add_foreign_key "documents", "documents", column: "converted_from_id"
   add_foreign_key "documents", "tenants"

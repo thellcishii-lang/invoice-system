@@ -25,7 +25,10 @@
 
   <body>
     <% if authenticated? %>
-      <% current_kind = controller_name == "documents" ? (@kind || @document&.kind_value) : nil %>
+      <% current_kind = case controller_name
+                        when "documents" then (@kind || @document&.kind_value)
+                        when "document_templates" then @kind
+                        end %>
       <div class="min-h-screen flex flex-col">
         <header class="bg-white border-b border-gray-200 flex items-center gap-4 px-5 py-2.5">
           <span class="font-bold text-slate-800 whitespace-nowrap">請求書システム（仮）</span>
@@ -41,17 +44,28 @@
               <%= sidebar_link_to "ダッシュボード", root_path, active: controller_name == "dashboard" %>
 
               <%= sidebar_heading "帳票" %>
-              <%= sidebar_link_to "見積書", documents_path(kind: "estimate"), active: current_kind == "estimate" %>
-              <%= sidebar_link_to "発注書", documents_path(kind: "order"), active: current_kind == "order" %>
-              <%= sidebar_link_to "納品書", documents_path(kind: "delivery"), active: current_kind == "delivery" %>
-              <%= sidebar_link_to "請求書", documents_path(kind: "invoice"), active: current_kind == "invoice" %>
-              <%= sidebar_link_to "領収書", documents_path(kind: "receipt"), active: current_kind == "receipt" %>
+              <% Document::KINDS.each do |kind_value| %>
+                <% kind_active = current_kind == kind_value %>
+                <details class="group" <%= "open" if kind_active %>>
+                  <summary class="flex items-center px-4 py-2 text-sm cursor-pointer list-none [&::-webkit-details-marker]:hidden <%= kind_active ? "font-bold text-blue-700" : "text-gray-700 hover:bg-gray-100 hover:text-gray-900" %>">
+                    <span><%= Document::KIND_LABELS[kind_value] %></span>
+                    <span class="ml-auto text-gray-400 transition-transform duration-150 group-open:rotate-90">›</span>
+                  </summary>
+                  <div>
+                    <%= sidebar_sub_link_to "一覧", documents_path(kind: kind_value), active: controller_name == "documents" && kind_active %>
+                    <%= sidebar_sub_link_to "テンプレート", document_templates_path(kind: kind_value), active: controller_name == "document_templates" && kind_active %>
+                  </div>
+                </details>
+              <% end %>
 
               <%= sidebar_heading "送信" %>
               <%= sidebar_link_to "定期請求", recurring_documents_path, active: controller_name == "recurring_documents" %>
               <%= sidebar_link_to "予約配信", scheduled_deliveries_path, active: controller_name == "scheduled_deliveries" %>
               <%= sidebar_link_to "送信履歴", document_deliveries_path, active: controller_name == "document_deliveries" %>
-              <%= sidebar_link_to "送り状テンプレート", send_templates_path, active: controller_name == "send_templates" %>
+
+              <%= sidebar_heading "テンプレート" %>
+              <%= sidebar_link_to "メールテンプレート", send_templates_path(channel: "email"), active: controller_name == "send_templates" && @channel == "email" %>
+              <%= sidebar_link_to "FAXテンプレート", send_templates_path(channel: "fax"), active: controller_name == "send_templates" && @channel == "fax" %>
 
               <%= sidebar_heading "管理" %>
               <%= sidebar_link_to "未入金一覧", unpaid_invoices_path, active: controller_name == "unpaid_invoices" %>

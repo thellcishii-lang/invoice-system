@@ -14,4 +14,14 @@ module ApplicationHelper
   def sidebar_heading(label)
     tag.p label, class: "px-4 pt-4 pb-1 text-xs font-bold text-gray-400"
   end
+
+  # サイドバーの展開メニュー内の子項目（一覧・テンプレートなど）
+  def sidebar_sub_link_to(label, path, active: false)
+    classes = if active
+      "block pl-9 pr-4 py-1.5 text-sm font-bold text-blue-700 bg-blue-50 border-l-4 border-blue-600"
+    else
+      "block pl-9 pr-4 py-1.5 text-sm text-gray-600 border-l-4 border-transparent hover:bg-gray-100 hover:text-gray-900"
+    end
+    link_to label, path, class: classes
+  end
 end

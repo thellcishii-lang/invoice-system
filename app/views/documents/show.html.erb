@@ -20,6 +20,7 @@
       <%= link_to "封筒宛名", envelope_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'envelope_preview', 'width=1050,height=560,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium" %>
       <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
       <%= button_to "複写", duplicate_document_path(@document), method: :post, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium cursor-pointer" %>
+      <%= button_to "テンプレートとして保存", save_as_template_document_path(@document), method: :post, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium cursor-pointer" %>
       <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "rounded-md px-3.5 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium cursor-pointer" %>
     </div>
   </div>

@@ -1,0 +1,7 @@
+<div class="w-full">
+  <h1 class="font-bold text-3xl mb-5"><%= Document::KIND_LABELS[@kind] %>テンプレートの新規作成</h1>
+  <%= render "form", document_template: @document_template %>
+  <div class="mt-5">
+    <%= link_to "一覧に戻る", document_templates_path(kind: @kind), class: "text-gray-700 hover:underline text-sm" %>
+  </div>
+</div>
