@@ -6,17 +6,22 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <style>
-      /* Sheet margins live in the body padding, not in @page: the print
-         dialog's margin setting (e.g. "none") overrides @page margins in
-         some browsers, which pushed the content to the paper edge and
-         scaled it down. With @page margin 0 the layout is identical
-         whatever the dialog says. */
+      /* The sheet IS the A4 page: exactly 210x297mm with the margins as its
+         own padding, so the print dialog's margin setting cannot shift the
+         layout, and the on-screen popup preview shows the sheet exactly as
+         it will print. @page margin 0 keeps the dialog from adding more. */
       @page { size: A4 portrait; margin: 0; }
       * { box-sizing: border-box; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
-      body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif; color: #000; font-size: 12px; line-height: 1.6; margin: 0; padding: 12mm 15mm; }
-      /* The sheet fills the A4 height (297mm minus the vertical padding) so a
-         bottom-placed logo stays at the bottom even when content is short. */
-      .sheet { display: flex; flex-direction: column; min-height: 273mm; }
+      body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif; color: #000; font-size: 12px; line-height: 1.6; margin: 0; padding: 0; }
+      .sheet { display: flex; flex-direction: column; width: 210mm; min-height: 297mm; padding: 12mm 15mm; margin: 0 auto; background: #fff; }
+      @media screen {
+        body { background: #d4d4d8; }
+        .sheet { margin: 16px auto; box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35); }
+        .screen-actions { text-align: center; }
+      }
+      @media print {
+        .sheet { margin: 0 auto; box-shadow: none; }
+      }
       .logo-img { height: 13mm; max-width: 70mm; object-fit: contain; }
       .logo-top { margin-bottom: 8px; }
       .logo-bottom { margin-top: auto; padding-top: 12px; }

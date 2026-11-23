@@ -35,7 +35,7 @@
     </div>
 
     <div class="my-5 flex-1">
-      <%= form.label :due_date, "支払期限（主に請求書）" %>
+      <%= form.label :due_date, @document.estimate? ? "見積有効期限" : (@document.invoice? ? "お支払期限" : "期限") %>
       <%= form.date_field :due_date, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
     </div>
   </div>

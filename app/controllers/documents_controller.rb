@@ -12,7 +12,10 @@ class DocumentsController < ApplicationController
 
   def new
     kind = Document::KINDS.include?(params[:kind]) ? params[:kind] : "estimate"
-    @document = Current.tenant.documents.build(kind: kind, issue_date: Date.current)
+    defaults = { kind: kind, issue_date: Date.current }
+    # 見積書だけ、有効期限の初期値として発行日+30日を入れる
+    defaults[:due_date] = Date.current + 30.days if kind == "estimate"
+    @document = Current.tenant.documents.build(defaults)
     @document.document_lines.build(quantity: 1, unit_price: 0)
     load_form_data
   end

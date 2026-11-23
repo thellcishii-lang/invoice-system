@@ -11,7 +11,7 @@
     </div>
     <div class="flex gap-2">
       <%= link_to "メール送信", new_document_delivery_path(@document), class: "rounded-md px-3.5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium" %>
-      <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+      <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
       <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
       <%= button_to "複写", duplicate_document_path(@document), method: :post, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium cursor-pointer" %>
       <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "rounded-md px-3.5 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium cursor-pointer" %>

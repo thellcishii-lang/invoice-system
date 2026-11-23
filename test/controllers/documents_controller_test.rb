@@ -28,6 +28,28 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_no_match ERB::Util.html_escape(documents(:estimate_one).title), response.body
   end
 
+  test "new estimate defaults the validity date to 30 days after issue" do
+    sign_in_as(users(:one))
+
+    get new_document_path(kind: "estimate")
+
+    assert_response :success
+    assert_select "input[name='document[due_date]'][value=?]", (Date.current + 30.days).strftime("%Y-%m-%d")
+    assert_match "見積有効期限", response.body
+  end
+
+  test "new invoice does not default the due date" do
+    sign_in_as(users(:one))
+
+    get new_document_path(kind: "invoice")
+
+    assert_response :success
+    assert_select "input[name='document[due_date]']" do |elements|
+      assert_nil elements.first["value"]
+    end
+    assert_match "お支払期限", response.body
+  end
+
   test "new renders the form with a line row and item options" do
     sign_in_as(users(:one))
 
