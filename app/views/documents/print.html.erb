@@ -83,8 +83,9 @@
   <tr class="grand-total"><td>合計（税込）</td><td class="right"><%= number_with_delimiter(@document.total) %>円</td></tr>
 </table>
 
-<%# 税率ごとの内訳は適格請求書（請求書・領収書）では必須だが、見積書・納品書には不要なので出さない %>
-<% if (@document.invoice? || @document.receipt?) && @document.tax_breakdown.any? %>
+<%# 税率ごとの内訳は、税率が2種類以上混ざる請求書・領収書のときだけ出す
+    （適格請求書ではその場合に必要。単一税率なら右の合計欄で足りる） %>
+<% if (@document.invoice? || @document.receipt?) && @document.tax_breakdown.size >= 2 %>
   <div class="section">
     <table class="totals" style="margin-left: 0;">
       <thead>
