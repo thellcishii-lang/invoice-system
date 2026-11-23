@@ -4,15 +4,6 @@
     <%= link_to "新規作成", new_document_path(kind: @kind), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
   </div>
 
-  <nav class="flex gap-2 mb-5 text-sm">
-    <%= link_to "すべて", documents_path,
-          class: "rounded-md px-3 py-1.5 #{@kind.nil? ? 'bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-200'}" %>
-    <% Document::KINDS.each do |kind| %>
-      <%= link_to Document::KIND_LABELS[kind], documents_path(kind: kind),
-            class: "rounded-md px-3 py-1.5 #{@kind == kind ? 'bg-gray-800 text-white' : 'bg-gray-100 hover:bg-gray-200'}" %>
-    <% end %>
-  </nav>
-
   <% if @documents.empty? %>
     <p class="text-gray-500">帳票はまだありません。</p>
   <% else %>

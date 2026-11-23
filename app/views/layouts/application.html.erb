@@ -25,41 +25,68 @@
 
   <body>
     <% if authenticated? %>
-      <header class="bg-slate-800 text-white shadow">
-        <div class="container mx-auto px-5 py-3 flex items-center gap-4 flex-wrap">
-          <span class="font-bold whitespace-nowrap shrink-0">請求書システム（仮）</span>
-          <span class="text-slate-300 text-sm whitespace-nowrap shrink-0"><%= Current.tenant&.name %></span>
-          <nav class="ml-auto flex items-center gap-4 text-sm flex-wrap">
-            <%= link_to "ダッシュボード", root_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "見積書", documents_path(kind: "estimate"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "発注書", documents_path(kind: "order"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "納品書", documents_path(kind: "delivery"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "請求書", documents_path(kind: "invoice"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "領収書", documents_path(kind: "receipt"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "定期請求", recurring_documents_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "未入金一覧", unpaid_invoices_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "レポート", report_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "送信履歴", document_deliveries_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "予約配信", scheduled_deliveries_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "送り状", send_templates_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "取引先", clients_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "品目", items_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= link_to "事業者マスター", setting_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
-            <%= button_to "ログアウト", session_path, method: :delete, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap cursor-pointer" %>
-          </nav>
+      <% current_kind = controller_name == "documents" ? (@kind || @document&.kind_value) : nil %>
+      <div class="min-h-screen flex flex-col">
+        <header class="bg-white border-b border-gray-200 flex items-center gap-4 px-5 py-2.5">
+          <span class="font-bold text-slate-800 whitespace-nowrap">請求書システム（仮）</span>
+          <div class="ml-auto flex items-center gap-4 text-sm">
+            <span class="text-gray-600 whitespace-nowrap"><%= Current.tenant&.name %></span>
+            <%= button_to "ログアウト", session_path, method: :delete, class: "text-gray-500 hover:text-gray-800 hover:underline whitespace-nowrap cursor-pointer" %>
+          </div>
+        </header>
+
+        <div class="flex flex-1 items-stretch">
+          <aside class="w-52 shrink-0 bg-white border-r border-gray-200 py-2">
+            <nav>
+              <%= sidebar_link_to "ダッシュボード", root_path, active: controller_name == "dashboard" %>
+
+              <%= sidebar_heading "帳票" %>
+              <%= sidebar_link_to "見積書", documents_path(kind: "estimate"), active: current_kind == "estimate" %>
+              <%= sidebar_link_to "発注書", documents_path(kind: "order"), active: current_kind == "order" %>
+              <%= sidebar_link_to "納品書", documents_path(kind: "delivery"), active: current_kind == "delivery" %>
+              <%= sidebar_link_to "請求書", documents_path(kind: "invoice"), active: current_kind == "invoice" %>
+              <%= sidebar_link_to "領収書", documents_path(kind: "receipt"), active: current_kind == "receipt" %>
+
+              <%= sidebar_heading "送信" %>
+              <%= sidebar_link_to "定期請求", recurring_documents_path, active: controller_name == "recurring_documents" %>
+              <%= sidebar_link_to "予約配信", scheduled_deliveries_path, active: controller_name == "scheduled_deliveries" %>
+              <%= sidebar_link_to "送信履歴", document_deliveries_path, active: controller_name == "document_deliveries" %>
+              <%= sidebar_link_to "送り状テンプレート", send_templates_path, active: controller_name == "send_templates" %>
+
+              <%= sidebar_heading "管理" %>
+              <%= sidebar_link_to "未入金一覧", unpaid_invoices_path, active: controller_name == "unpaid_invoices" %>
+              <%= sidebar_link_to "レポート", report_path, active: controller_name == "reports" %>
+
+              <%= sidebar_heading "マスター・設定" %>
+              <%= sidebar_link_to "取引先", clients_path, active: controller_name == "clients" %>
+              <%= sidebar_link_to "品目", items_path, active: controller_name == "items" %>
+              <%= sidebar_link_to "事業者マスター", setting_path, active: controller_name == "settings" %>
+            </nav>
+          </aside>
+
+          <main class="flex-1 min-w-0 bg-gray-50 px-6 py-6">
+            <% if notice = flash[:notice] %>
+              <p class="py-2 px-3 bg-green-50 mb-5 text-green-600 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+            <% end %>
+            <% if alert = flash[:alert] %>
+              <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
+            <% end %>
+
+            <%= yield %>
+          </main>
         </div>
-      </header>
+      </div>
+    <% else %>
+      <main class="container mx-auto mt-10 px-5">
+        <% if notice = flash[:notice] %>
+          <p class="py-2 px-3 bg-green-50 mb-5 text-green-600 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+        <% end %>
+        <% if alert = flash[:alert] %>
+          <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
+        <% end %>
+
+        <%= yield %>
+      </main>
     <% end %>
-
-    <main class="container mx-auto mt-10 px-5">
-      <% if notice = flash[:notice] %>
-        <p class="py-2 px-3 bg-green-50 mb-5 text-green-600 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
-      <% end %>
-      <% if alert = flash[:alert] %>
-        <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
-      <% end %>
-
-      <%= yield %>
-    </main>
   </body>
 </html>
