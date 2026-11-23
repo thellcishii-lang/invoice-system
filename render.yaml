@@ -29,6 +29,11 @@ services:
       # Solid Queue jobs run inside Puma (single-web setup, same as agency-system)
       - key: SOLID_QUEUE_IN_PUMA
         value: "true"
+      # 初回起動時に seed を自動投入する。db:prepare はマイグレーションのみで
+      # seed を実行しないため、これが無いと初期管理者が作られない。
+      # テナントが既にあれば何もしないガード付きなので、データが入った後も無害。
+      - key: RUN_SEED_IF_EMPTY
+        value: "true"
       - key: DATABASE_URL
         fromDatabase:
           name: invoice-system-db

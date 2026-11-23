@@ -3,6 +3,14 @@
 # If running the rails server then create or migrate existing database
 if [ "${@: -2:1}" == "./bin/rails" ] && [ "${@: -1:1}" == "server" ]; then
   ./bin/rails db:prepare
+
+  # db:prepare migrates but never seeds, so the initial admin/demo data
+  # would never be created on Render. Load the seeds automatically on
+  # the first boot only. FirstBootSeeder does nothing when tenants
+  # already exist, so this stays harmless on every later boot.
+  if [ "$RUN_SEED_IF_EMPTY" == "true" ]; then
+    ./bin/rails runner "FirstBootSeeder.call"
+  fi
 fi
 
 exec "${@}"
