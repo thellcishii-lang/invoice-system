@@ -1,9 +1,16 @@
 <div class="w-full">
   <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
     <h1 class="font-bold text-3xl">送信履歴</h1>
-    <div class="flex gap-2 text-sm">
-      <%= link_to "すべて", document_deliveries_path, class: "hover:underline #{params[:status] == "failed" ? "text-gray-600" : "font-bold text-blue-700"}" %>
-      <%= link_to "送信不可のみ", document_deliveries_path(status: "failed"), class: "hover:underline #{params[:status] == "failed" ? "font-bold text-blue-700" : "text-gray-600"}" %>
+    <div class="flex gap-4 text-sm">
+      <span class="flex gap-2">
+        <%= link_to "すべて", document_deliveries_path(channel: params[:channel]), class: "hover:underline #{params[:status] == "failed" ? "text-gray-600" : "font-bold text-blue-700"}" %>
+        <%= link_to "送信不可のみ", document_deliveries_path(status: "failed", channel: params[:channel]), class: "hover:underline #{params[:status] == "failed" ? "font-bold text-blue-700" : "text-gray-600"}" %>
+      </span>
+      <span class="flex gap-2">
+        <%= link_to "メール+FAX", document_deliveries_path(status: params[:status]), class: "hover:underline #{params[:channel].blank? ? "font-bold text-blue-700" : "text-gray-600"}" %>
+        <%= link_to "メール", document_deliveries_path(status: params[:status], channel: "email"), class: "hover:underline #{params[:channel] == "email" ? "font-bold text-blue-700" : "text-gray-600"}" %>
+        <%= link_to "FAX", document_deliveries_path(status: params[:status], channel: "fax"), class: "hover:underline #{params[:channel] == "fax" ? "font-bold text-blue-700" : "text-gray-600"}" %>
+      </span>
     </div>
   </div>
 

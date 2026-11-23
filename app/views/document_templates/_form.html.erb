@@ -28,7 +28,7 @@
   <h2 class="font-bold text-xl mt-8 mb-3">明細</h2>
 
   <div data-controller="document-lines"
-       data-document-lines-items-value="<%= @items.map { |item| { id: item.id, name: item.name, unit_price: item.unit_price, unit: item.unit, tax_rate: item.tax_rate } }.to_json %>">
+       data-document-lines-items-value="<%= @items.map { |item| { id: item.id, name: item.name, unit_price: item.unit_price, cost_price: item.cost_price, unit: item.unit, tax_rate: item.tax_rate } }.to_json %>">
     <div data-document-lines-target="container">
       <%= form.fields_for :document_template_lines do |line_form| %>
         <%= render "documents/line_fields", line_form: line_form %>

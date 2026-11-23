@@ -8,6 +8,10 @@ class DocumentTemplatesController < ApplicationController
                                      .where(kind: @kind)
                                      .includes(:document_template_lines)
                                      .order(:id)
+    if params[:q].present?
+      like = "%#{ActiveRecord::Base.sanitize_sql_like(params[:q])}%"
+      @document_templates = @document_templates.where("document_templates.name ILIKE :q OR document_templates.title ILIKE :q", q: like)
+    end
   end
 
   def new
@@ -63,7 +67,7 @@ class DocumentTemplatesController < ApplicationController
     def document_template_params
       params.expect(document_template: [
         :name, :title, :notes,
-        { document_template_lines_attributes: [ %i[ id item_id name quantity unit unit_price tax_rate _destroy ] ] }
+        { document_template_lines_attributes: [ %i[ id item_id name quantity unit unit_price cost_unit_price tax_rate _destroy ] ] }
       ])
     end
 end

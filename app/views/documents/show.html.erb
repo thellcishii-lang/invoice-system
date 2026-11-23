@@ -68,7 +68,9 @@
         <th class="py-2 pr-4">単位</th>
         <th class="py-2 pr-4 text-right">単価<%= Current.tenant.inclusive? ? "（税込）" : "（税抜）" %></th>
         <th class="py-2 pr-4">税率</th>
-        <th class="py-2 text-right">金額</th>
+        <th class="py-2 pr-4 text-right">金額</th>
+        <th class="py-2 pr-4 text-right text-gray-400">原価</th>
+        <th class="py-2 text-right text-gray-400">粗利</th>
       </tr>
     </thead>
     <tbody>
@@ -79,7 +81,9 @@
           <td class="py-2 pr-4"><%= line.unit %></td>
           <td class="py-2 pr-4 text-right"><%= number_with_delimiter(line.unit_price) %>円</td>
           <td class="py-2 pr-4"><%= tax_rate_label(line.tax_rate) %></td>
-          <td class="py-2 text-right"><%= number_with_delimiter(line.amount) %>円</td>
+          <td class="py-2 pr-4 text-right"><%= number_with_delimiter(line.amount) %>円</td>
+          <td class="py-2 pr-4 text-right text-gray-500"><%= number_with_delimiter(line.cost_amount) %>円</td>
+          <td class="py-2 text-right <%= line.gross_profit.negative? ? "text-red-600" : "text-gray-500" %>"><%= number_with_delimiter(line.gross_profit) %>円</td>
         </tr>
       <% end %>
     </tbody>
@@ -100,6 +104,28 @@
       <tr class="border-b border-gray-100"><td class="py-1.5 pr-4" colspan="3">消費税</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
       <tr class="font-bold"><td class="py-1.5 pr-4" colspan="3">合計（税込）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.total) %>円</td></tr>
     </table>
+  </div>
+
+  <div class="border border-gray-200 rounded-lg p-4 mb-8 bg-white">
+    <h2 class="font-bold text-lg mb-2">粗利 <span class="text-sm font-normal text-gray-400">（社内用・帳票には印刷されません）</span></h2>
+    <div class="flex flex-wrap gap-8 text-sm">
+      <div>
+        <p class="text-gray-500">売上<%= Current.tenant.inclusive? ? "（税込）" : "（税抜）" %></p>
+        <p class="font-bold text-base"><%= number_with_delimiter(@document.sales_basis) %>円</p>
+      </div>
+      <div>
+        <p class="text-gray-500">原価合計</p>
+        <p class="font-bold text-base"><%= number_with_delimiter(@document.cost_total) %>円</p>
+      </div>
+      <div>
+        <p class="text-gray-500">粗利</p>
+        <p class="font-bold text-base <%= @document.gross_profit.negative? ? "text-red-600" : "" %>"><%= number_with_delimiter(@document.gross_profit) %>円</p>
+      </div>
+      <div>
+        <p class="text-gray-500">粗利率</p>
+        <p class="font-bold text-base"><%= @document.gross_margin_rate ? "#{@document.gross_margin_rate.round(1)}%" : "—" %></p>
+      </div>
+    </div>
   </div>
 
   <% if @document.notes.present? %>

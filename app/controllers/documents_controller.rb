@@ -3,8 +3,11 @@ class DocumentsController < ApplicationController
 
   def index
     @kind = params[:kind] if Document::KINDS.include?(params[:kind])
-    @documents = Current.tenant.documents.includes(:client).order(issue_date: :desc, id: :desc)
+    @documents = Current.tenant.documents.includes(:client, :created_by, :document_lines).order(issue_date: :desc, id: :desc)
     @documents = @documents.where(kind: @kind) if @kind
+    apply_filters
+    @clients = Current.tenant.clients.order(:name)
+    @members = Current.tenant.users.order(:id)
   end
 
   def show
@@ -120,7 +123,89 @@ class DocumentsController < ApplicationController
     end
 
     def document_params
-      params.expect(document: [ :kind, :client_id, :issue_date, :due_date, :title, :status, :notes,
-        { document_lines_attributes: [ %i[ id item_id name quantity unit unit_price tax_rate _destroy ] ] } ])
+      params.expect(document: [ :kind, :client_id, :issue_date, :due_date, :title, :status, :notes, :internal_memo,
+        { document_lines_attributes: [ %i[ id item_id name quantity unit unit_price cost_unit_price tax_rate _destroy ] ] } ])
+    end
+
+    # 一覧のフィルター（freee の絞り込み項目に相当するもの）
+    def apply_filters
+      @f = params[:f].is_a?(ActionController::Parameters) ? params[:f] : {}
+      @filter_active = @f.values.any?(&:present?)
+      return unless @filter_active
+
+      like = ->(value) { "%#{ActiveRecord::Base.sanitize_sql_like(value.to_s)}%" }
+
+      @documents = @documents.where(client_id: @f[:client_id]) if @f[:client_id].present?
+      @documents = @documents.where("documents.title ILIKE ?", like.call(@f[:title])) if @f[:title].present?
+      @documents = @documents.where("documents.number ILIKE ?", like.call(@f[:number])) if @f[:number].present?
+      @documents = @documents.where("documents.notes ILIKE ?", like.call(@f[:notes])) if @f[:notes].present?
+      @documents = @documents.where("documents.internal_memo ILIKE ?", like.call(@f[:internal_memo])) if @f[:internal_memo].present?
+
+      if @f[:contact_person].present?
+        @documents = @documents.joins(:client).where("clients.contact_person ILIKE ?", like.call(@f[:contact_person]))
+      end
+      if @f[:line_name].present?
+        @documents = @documents.joins(:document_lines).where("document_lines.name ILIKE ?", like.call(@f[:line_name])).distinct
+      end
+
+      @documents = @documents.where("documents.total >= ?", @f[:amount_min].to_i) if @f[:amount_min].present?
+      @documents = @documents.where("documents.total <= ?", @f[:amount_max].to_i) if @f[:amount_max].present?
+
+      if (from = filter_date(@f[:issue_from]))
+        @documents = @documents.where(issue_date: from..)
+      end
+      if (to = filter_date(@f[:issue_to]))
+        @documents = @documents.where(issue_date: ..to)
+      end
+      if (from = filter_date(@f[:due_from]))
+        @documents = @documents.where(due_date: from..)
+      end
+      if (to = filter_date(@f[:due_to]))
+        @documents = @documents.where(due_date: ..to)
+      end
+
+      @documents = @documents.where(status: @f[:status]) if Document.statuses.key?(@f[:status])
+      if @kind == "invoice" && Document.payment_statuses.key?(@f[:payment_status])
+        @documents = @documents.where(payment_status: @f[:payment_status])
+      end
+
+      case @f[:created_by]
+      when "auto"
+        @documents = @documents.where(created_by_id: nil)
+      when /\A\d+\z/
+        @documents = @documents.where(created_by_id: @f[:created_by].to_i)
+      end
+
+      sent_ids = DocumentDelivery.where(status: "sent").select(:document_id)
+      case @f[:delivery_status]
+      when "sent" then @documents = @documents.where(id: sent_ids)
+      when "unsent" then @documents = @documents.where.not(id: sent_ids)
+      when "failed" then @documents = @documents.where(id: DocumentDelivery.where(status: "failed").select(:document_id))
+      end
+
+      pending_ids = ScheduledDelivery.where(status: "pending").select(:document_id)
+      case @f[:scheduled]
+      when "yes" then @documents = @documents.where(id: pending_ids)
+      when "no" then @documents = @documents.where.not(id: pending_ids)
+      end
+
+      parent_ids = Document.where.not(converted_from_id: nil).select(:converted_from_id)
+      case @f[:related]
+      when "yes" then @documents = @documents.where("documents.converted_from_id IS NOT NULL OR documents.id IN (?)", parent_ids)
+      when "no" then @documents = @documents.where(converted_from_id: nil).where.not(id: parent_ids)
+      end
+
+      case @f[:viewed]
+      when "viewed" then @documents = @documents.where.not(public_viewed_at: nil)
+      when "unviewed" then @documents = @documents.where(public_viewed_at: nil)
+      end
+    end
+
+    def filter_date(value)
+      return nil if value.blank?
+
+      Date.parse(value.to_s)
+    rescue Date::Error
+      nil
     end
 end

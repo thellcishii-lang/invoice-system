@@ -27,7 +27,7 @@ class DocumentTemplate < ApplicationRecord
     document_template_lines.each do |line|
       document.document_lines.build(
         item: line.item, name: line.name, quantity: line.quantity, unit: line.unit,
-        unit_price: line.unit_price, tax_rate: line.tax_rate, position: line.position
+        unit_price: line.unit_price, cost_unit_price: line.cost_unit_price, tax_rate: line.tax_rate, position: line.position
       )
     end
     document
@@ -44,7 +44,7 @@ class DocumentTemplate < ApplicationRecord
     document.document_lines.each do |line|
       template.document_template_lines.build(
         item: line.item, name: line.name, quantity: line.quantity, unit: line.unit,
-        unit_price: line.unit_price, tax_rate: line.tax_rate, position: line.position
+        unit_price: line.unit_price, cost_unit_price: line.cost_unit_price, tax_rate: line.tax_rate, position: line.position
       )
     end
     template

@@ -27,11 +27,13 @@ class ReportsController < ApplicationController
     month_range = @month..@month.end_of_month
     @invoices = tenant.documents.invoice.issued
       .where(issue_date: month_range)
-      .includes(:client, :payments)
+      .includes(:client, :payments, :document_lines)
       .order(:issue_date, :id)
     @month_billed = @invoices.sum(&:total)
     @month_received = @invoices.sum(&:received_amount)
     @month_unpaid = @invoices.sum { |document| [ document.balance, 0 ].max }
+    @month_cost = @invoices.sum(&:cost_total)
+    @month_gross_profit = @invoices.sum(&:gross_profit)
   end
 
   private

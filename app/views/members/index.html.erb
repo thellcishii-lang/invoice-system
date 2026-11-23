@@ -1,0 +1,56 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-5">
+    <h1 class="font-bold text-3xl">メンバー（<%= Current.tenant.active_member_count %>/<%= Tenant::MAX_MEMBERS %>名）</h1>
+    <% unless Current.tenant.member_limit_reached? %>
+      <%= link_to "メンバーを招待", new_member_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+    <% end %>
+  </div>
+
+  <p class="text-gray-600 text-sm mb-5">メンバーは各自のメールアドレスとパスワードで個別にログインします。招待メールのリンクから、本人がパスワードを設定します。</p>
+
+  <table class="w-full text-left">
+    <thead>
+      <tr class="border-b border-gray-200 text-sm text-gray-500">
+        <th class="py-2 pr-4">名前</th>
+        <th class="py-2 pr-4">メールアドレス</th>
+        <th class="py-2 pr-4">状態</th>
+        <th class="py-2 pr-4">登録日</th>
+        <th class="py-2"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @members.each do |member| %>
+        <tr class="border-b border-gray-100">
+          <td class="py-2 pr-4 font-medium"><%= member.name %><% if member == Current.user %> <span class="text-gray-400 text-sm">（自分）</span><% end %></td>
+          <td class="py-2 pr-4"><%= member.email_address %></td>
+          <td class="py-2 pr-4">
+            <% if member.disabled? %>
+              <span class="rounded px-2 py-0.5 text-xs bg-gray-200 text-gray-600">無効</span>
+            <% elsif member.password_set_at.nil? %>
+              <span class="rounded px-2 py-0.5 text-xs bg-amber-100 text-amber-700">招待中</span>
+            <% else %>
+              <span class="rounded px-2 py-0.5 text-xs bg-green-100 text-green-700">利用中</span>
+            <% end %>
+          </td>
+          <td class="py-2 pr-4"><%= member.created_at.to_date %></td>
+          <td class="py-2 text-right whitespace-nowrap">
+            <% if member.disabled? %>
+              <%= button_to "有効化", enable_member_path(member), method: :post, class: "text-blue-600 hover:underline text-sm cursor-pointer inline" %>
+            <% else %>
+              <% if member.password_set_at.nil? %>
+                <%= button_to "招待を再送", resend_invite_member_path(member), method: :post, class: "text-gray-700 hover:underline text-sm cursor-pointer inline" %>
+              <% end %>
+              <% unless member == Current.user %>
+                <%= button_to "無効化", disable_member_path(member), method: :post, data: { turbo_confirm: "#{member.name} さんを無効化しますか？（ログインできなくなります）" }, class: "text-red-600 hover:underline text-sm cursor-pointer inline ml-2" %>
+              <% end %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <% if Current.tenant.member_limit_reached? %>
+    <p class="text-gray-500 text-sm mt-4">メンバーの上限（<%= Tenant::MAX_MEMBERS %>名）に達しています。新しいメンバーを招待するには、不要なメンバーを無効化してください（無効化したメンバーの枠は空きます）。</p>
+  <% end %>
+</div>

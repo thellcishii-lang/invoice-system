@@ -163,8 +163,13 @@ class Tenant < ApplicationRecord
     "data:#{seal_image_content_type};base64,#{seal_image_data}"
   end
 
+  # 上限は有効なメンバー数で数える（無効化したメンバーの枠は空く）
   def member_limit_reached?
-    users.count >= MAX_MEMBERS
+    users.where(disabled: false).count >= MAX_MEMBERS
+  end
+
+  def active_member_count
+    users.where(disabled: false).count
   end
 
   # 課金停止・解約済みのテナントはログインできない

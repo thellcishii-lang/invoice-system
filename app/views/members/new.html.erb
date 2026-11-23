@@ -1,0 +1,35 @@
+<div class="w-full">
+  <h1 class="font-bold text-3xl mb-5">メンバーを招待</h1>
+
+  <% if @member.errors.any? %>
+    <div class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg">
+      <ul>
+        <% @member.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <p class="text-gray-600 text-sm mb-5">入力したメールアドレスに招待メールを送ります。メンバー本人がリンクからパスワードを設定し、個別にログインします。</p>
+
+  <%= form_with scope: :member, model: @member, url: members_path, class: "contents" do |form| %>
+    <div class="my-5">
+      <%= form.label :name, "名前" %>
+      <%= form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :email_address, "メールアドレス" %>
+      <%= form.email_field :email_address, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="inline">
+      <%= form.submit "招待メールを送る", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <div class="mt-5">
+    <%= link_to "メンバー一覧に戻る", members_path, class: "text-gray-700 hover:underline text-sm" %>
+  </div>
+</div>

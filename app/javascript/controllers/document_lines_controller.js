@@ -33,6 +33,8 @@ export default class extends Controller {
     const row = event.target.closest("[data-line-row]")
     row.querySelector("input[name$='[name]']").value = item.name
     row.querySelector("input[name$='[unit_price]']").value = item.unit_price
+    const costField = row.querySelector("input[name$='[cost_unit_price]']")
+    if (costField) costField.value = item.cost_price ?? ""
     row.querySelector("input[name$='[unit]']").value = item.unit || ""
     row.querySelector("select[name$='[tax_rate]']").value = item.tax_rate
   }

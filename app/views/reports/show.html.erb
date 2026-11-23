@@ -43,6 +43,8 @@
     請求額合計 <%= number_with_delimiter(@month_billed) %>円
     ／ 入金済み合計 <%= number_with_delimiter(@month_received) %>円
     ／ 未入金残高 <%= number_with_delimiter(@month_unpaid) %>円
+    ／ 原価合計 <%= number_with_delimiter(@month_cost) %>円
+    ／ 粗利 <%= number_with_delimiter(@month_gross_profit) %>円
   </p>
 
   <% if @invoices.any? %>

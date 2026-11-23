@@ -32,6 +32,12 @@
   </div>
 
   <div class="my-5">
+    <%= form.label :cost_price, "仕入単価（原価）" %>
+    <%= form.number_field :cost_price, min: 0, step: 1, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    <p class="text-gray-500 text-sm mt-1">粗利計算用です。帳票には印刷されません。明細で品目を選ぶと原価単価に自動で入ります（明細ごとに変更できます）。</p>
+  </div>
+
+  <div class="my-5">
     <%= form.label :unit, "単位" %>
     <%= form.text_field :unit, placeholder: "個・式・時間・月 など", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
   </div>

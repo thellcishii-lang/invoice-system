@@ -12,8 +12,12 @@ class DocumentTemplateLine < ApplicationRecord
 
   private
     def calculate_amount
+      rounding = document_template.tenant.tax_rounding
       self.amount = DocumentTaxCalculator.line_amount(
-        quantity: quantity, unit_price: unit_price, rounding: document_template.tenant.tax_rounding
+        quantity: quantity, unit_price: unit_price, rounding: rounding
+      )
+      self.cost_amount = DocumentTaxCalculator.line_amount(
+        quantity: quantity, unit_price: cost_unit_price, rounding: rounding
       )
     end
 end

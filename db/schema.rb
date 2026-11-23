@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_24_110000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -60,6 +60,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
     t.integer "amount", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cost_unit_price", default: 0, null: false
+    t.integer "cost_amount", default: 0, null: false
     t.index ["document_id"], name: "index_document_lines_on_document_id"
     t.index ["item_id"], name: "index_document_lines_on_item_id"
   end
@@ -87,6 +89,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
     t.integer "amount", default: 0, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "cost_unit_price", default: 0, null: false
+    t.integer "cost_amount", default: 0, null: false
     t.index ["document_template_id"], name: "index_document_template_lines_on_document_template_id"
     t.index ["item_id"], name: "index_document_template_lines_on_item_id"
   end
@@ -120,8 +124,12 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "payment_status"
+    t.bigint "created_by_id"
+    t.text "internal_memo"
+    t.datetime "public_viewed_at"
     t.index ["client_id"], name: "index_documents_on_client_id"
     t.index ["converted_from_id"], name: "index_documents_on_converted_from_id"
+    t.index ["created_by_id"], name: "index_documents_on_created_by_id"
     t.index ["tenant_id", "kind", "number"], name: "index_documents_on_tenant_id_and_kind_and_number", unique: true
     t.index ["tenant_id", "kind"], name: "index_documents_on_tenant_id_and_kind"
     t.index ["tenant_id"], name: "index_documents_on_tenant_id"
@@ -154,6 +162,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
     t.datetime "updated_at", null: false
     t.bigint "item_category_id"
     t.string "segment"
+    t.integer "cost_price"
     t.index ["item_category_id"], name: "index_items_on_item_category_id"
     t.index ["tenant_id", "code"], name: "index_items_on_tenant_id_and_code", unique: true
     t.index ["tenant_id"], name: "index_items_on_tenant_id"
@@ -295,6 +304,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
     t.boolean "disabled", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.datetime "password_set_at"
     t.index ["email_address"], name: "index_users_on_email_address", unique: true
     t.index ["tenant_id"], name: "index_users_on_tenant_id"
   end
@@ -311,6 +321,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_090000) do
   add_foreign_key "documents", "clients"
   add_foreign_key "documents", "documents", column: "converted_from_id"
   add_foreign_key "documents", "tenants"
+  add_foreign_key "documents", "users", column: "created_by_id"
   add_foreign_key "item_categories", "item_categories", column: "parent_id"
   add_foreign_key "item_categories", "tenants"
   add_foreign_key "items", "item_categories"

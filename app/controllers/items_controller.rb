@@ -29,6 +29,11 @@ class ItemsController < ApplicationController
         @items = @items.where(item_category_id: @selected_category.subtree_ids)
       end
     end
+
+    if params[:q].present?
+      like = "%#{ActiveRecord::Base.sanitize_sql_like(params[:q])}%"
+      @items = @items.where("items.name ILIKE :q OR items.code ILIKE :q", q: like)
+    end
   end
 
   def show
@@ -71,6 +76,6 @@ class ItemsController < ApplicationController
 
     def item_params
       # 品目コードは自動採番のため変更不可（strong parameters に含めない）
-      params.expect(item: %i[ name unit_price unit tax_rate description active item_category_id ])
+      params.expect(item: %i[ name unit_price cost_price unit tax_rate description active item_category_id ])
     end
 end

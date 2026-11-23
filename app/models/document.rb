@@ -28,6 +28,8 @@ class Document < ApplicationRecord
 
   belongs_to :tenant
   belongs_to :client
+  # 作成者（手動作成のときだけ記録。定期請求などの自動作成は nil）
+  belongs_to :created_by, class_name: "User", optional: true
   belongs_to :converted_from, class_name: "Document", optional: true
   has_many :conversions, class_name: "Document", foreign_key: :converted_from_id,
            dependent: :nullify, inverse_of: :converted_from
@@ -59,6 +61,7 @@ class Document < ApplicationRecord
   # 帳票番号は作成時に採番する（発行時ではない）。一度振った番号は、
   # 発行日や種別を後から変えても振り直さない。
   before_validation :assign_number, on: :create
+  before_validation :set_created_by, on: :create
   before_save :assign_line_positions
 
   # enum のラベル（purchase_order）→ DB値（order）。表示マップや URL は DB値で統一する
@@ -123,6 +126,29 @@ class Document < ApplicationRecord
 
   # 明細から合計を再計算して保存する。明細の保存後に呼ぶこと
   # （コントローラの create / update / convert から呼ぶ）。
+  # --- 粗利管理（社内用。原価は帳票に印刷しない） ---
+  # 原価合計 = 各明細の（数量 × 原価単価）
+  def cost_total
+    document_lines.sum(&:cost_amount)
+  end
+
+  # 粗利を計算する売上側の基準額。単価の入力基準に合わせる
+  # （税抜表示なら小計（税抜）、税込表示なら合計（税込））
+  def sales_basis
+    tenant.inclusive? ? total : subtotal
+  end
+
+  def gross_profit
+    sales_basis - cost_total
+  end
+
+  # 粗利率（%）。売上が0のときは nil
+  def gross_margin_rate
+    return nil if sales_basis.zero?
+
+    gross_profit * 100.0 / sales_basis
+  end
+
   def recalculate_totals!
     result = DocumentTaxCalculator.new(tenant: tenant, lines: document_lines.to_a).call
     update!(subtotal: result.subtotal, tax_amount: result.tax_amount,
@@ -210,7 +236,7 @@ class Document < ApplicationRecord
     document_lines.each do |line|
       converted.document_lines.build(
         item: line.item, name: line.name, quantity: line.quantity, unit: line.unit,
-        unit_price: line.unit_price, tax_rate: line.tax_rate, position: line.position
+        unit_price: line.unit_price, cost_unit_price: line.cost_unit_price, tax_rate: line.tax_rate, position: line.position
       )
     end
     converted.save!
@@ -235,7 +261,7 @@ class Document < ApplicationRecord
     document_lines.each do |line|
       copy.document_lines.build(
         item: line.item, name: line.name, quantity: line.quantity, unit: line.unit,
-        unit_price: line.unit_price, tax_rate: line.tax_rate, position: line.position
+        unit_price: line.unit_price, cost_unit_price: line.cost_unit_price, tax_rate: line.tax_rate, position: line.position
       )
     end
     copy.save!
@@ -246,6 +272,10 @@ class Document < ApplicationRecord
   private
     def set_default_issue_date
       self.issue_date ||= Date.current
+    end
+
+    def set_created_by
+      self.created_by ||= Current.user
     end
 
     def set_default_payment_status

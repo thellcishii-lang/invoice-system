@@ -6,6 +6,13 @@
 
   <p class="text-gray-600 text-sm mb-5">よく使う<%= Document::KIND_LABELS[@kind] %>の雛形です。「このテンプレートで作成」から、明細を引き継いだ新規作成ができます。既存の帳票からは、詳細画面の「テンプレートとして保存」でも作れます。</p>
 
+  <%= form_with url: document_templates_path, method: :get, class: "mb-5 flex gap-2" do |form| %>
+    <%= hidden_field_tag :kind, @kind %>
+    <%= form.text_field :q, value: params[:q], placeholder: "テンプレート名・件名で検索", class: "shadow-sm rounded-md border border-gray-400 px-3 py-2 w-80" %>
+    <%= form.submit "検索", class: "rounded-md px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium cursor-pointer" %>
+    <% if params[:q].present? %><%= link_to "クリア", document_templates_path(kind: @kind), class: "text-sm text-gray-600 hover:underline self-center" %><% end %>
+  <% end %>
+
   <% if @document_templates.empty? %>
     <p class="text-gray-500">テンプレートはまだ登録されていません。</p>
   <% else %>

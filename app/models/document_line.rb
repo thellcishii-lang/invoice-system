@@ -11,11 +11,20 @@ class DocumentLine < ApplicationRecord
 
   before_save :calculate_amount
 
+  # 粗利 = 金額 − 原価（原価は社内用。帳票には印刷しない）
+  def gross_profit
+    amount - cost_amount
+  end
+
   private
     # 金額 = 数量 × 単価（端数処理はテナント設定に従う。税込表示なら税込金額）
     def calculate_amount
+      rounding = document.tenant.tax_rounding
       self.amount = DocumentTaxCalculator.line_amount(
-        quantity: quantity, unit_price: unit_price, rounding: document.tenant.tax_rounding
+        quantity: quantity, unit_price: unit_price, rounding: rounding
+      )
+      self.cost_amount = DocumentTaxCalculator.line_amount(
+        quantity: quantity, unit_price: cost_unit_price, rounding: rounding
       )
     end
 end

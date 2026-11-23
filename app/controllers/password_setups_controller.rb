@@ -9,6 +9,7 @@ class PasswordSetupsController < ApplicationController
 
   def update
     if @user.update(params.permit(:password, :password_confirmation))
+      @user.touch(:password_set_at)
       @user.sessions.destroy_all
       redirect_to new_session_path, notice: "パスワードを設定しました。ログインしてください。"
     else

@@ -7,6 +7,9 @@ class PublicDocumentsController < ApplicationController
     @document = Document.find_by_public_link_token(params.expect(:token))
     raise ActiveRecord::RecordNotFound if @document.blank?
 
+    # 送付先が開いたことを記録する（フィルターの「送付先の閲覧」で使う）
+    @document.update_column(:public_viewed_at, Time.current) if @document.public_viewed_at.nil?
+
     @public_view = true
     render "documents/print", layout: "print"
   end

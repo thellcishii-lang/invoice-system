@@ -6,6 +6,7 @@ class DocumentDeliveriesController < ApplicationController
     @deliveries = Current.tenant.document_deliveries.recent
                     .includes(document: :client).limit(200)
     @deliveries = @deliveries.where(status: "failed") if params[:status] == "failed"
+    @deliveries = @deliveries.where(channel: params[:channel]) if %w[ email fax ].include?(params[:channel])
   end
 
   # 送信確認画面（送信方法と送信先は取引先の登録を初期表示し、編集できる）

@@ -4,8 +4,105 @@
     <%= link_to "新規作成", new_document_path(kind: @kind), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
   </div>
 
+  <% issue_label = { "estimate" => "見積日", "order" => "発注日", "delivery" => "納品日", "invoice" => "請求日", "receipt" => "領収日" }[@kind] || "発行日" %>
+  <% due_label = { "estimate" => "有効期限", "invoice" => "お支払期限", "order" => "納期" }[@kind] || "期限" %>
+  <details class="mb-5 bg-white border border-gray-200 rounded-lg" <%= "open" if @filter_active %>>
+    <summary class="px-4 py-3 cursor-pointer font-medium text-sm">フィルター<% if @filter_active %> <span class="text-blue-600">（絞り込み中）</span><% end %></summary>
+    <%= form_with url: documents_path, method: :get, scope: :f, class: "px-4 pb-4" do |form| %>
+      <%= hidden_field_tag :kind, @kind %>
+      <div class="grid grid-cols-2 md:grid-cols-3 gap-3 text-sm">
+        <div>
+          <%= form.label :client_id, "取引先", class: "text-xs text-gray-500" %>
+          <%= form.collection_select :client_id, @clients, :id, :name, { include_blank: "すべて", selected: @f[:client_id] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :status, "状態", class: "text-xs text-gray-500" %>
+          <%= form.select :status, Document::STATUS_LABELS.invert.to_a, { include_blank: "すべて", selected: @f[:status] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <% if @kind == "invoice" %>
+          <div>
+            <%= form.label :payment_status, "入金状態", class: "text-xs text-gray-500" %>
+            <%= form.select :payment_status, Document::PAYMENT_STATUS_LABELS.invert.to_a, { include_blank: "すべて", selected: @f[:payment_status] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+          </div>
+        <% end %>
+        <div>
+          <%= form.label :created_by, "作成者", class: "text-xs text-gray-500" %>
+          <%= form.select :created_by, @members.map { |m| [ m.name, m.id ] } + [ [ "自動作成（定期請求など）", "auto" ] ], { include_blank: "すべて", selected: @f[:created_by] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :title, "件名", class: "text-xs text-gray-500" %>
+          <%= form.text_field :title, value: @f[:title], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :number, "番号", class: "text-xs text-gray-500" %>
+          <%= form.text_field :number, value: @f[:number], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :contact_person, "取引先担当者", class: "text-xs text-gray-500" %>
+          <%= form.text_field :contact_person, value: @f[:contact_person], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :line_name, "摘要欄（明細の品名）", class: "text-xs text-gray-500" %>
+          <%= form.text_field :line_name, value: @f[:line_name], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :notes, "備考", class: "text-xs text-gray-500" %>
+          <%= form.text_field :notes, value: @f[:notes], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :internal_memo, "社内メモ", class: "text-xs text-gray-500" %>
+          <%= form.text_field :internal_memo, value: @f[:internal_memo], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <span class="text-xs text-gray-500">金額</span>
+          <div class="flex items-center gap-1 mt-1">
+            <%= form.number_field :amount_min, value: @f[:amount_min], placeholder: "下限", class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2" %>
+            <span class="text-gray-400">〜</span>
+            <%= form.number_field :amount_max, value: @f[:amount_max], placeholder: "上限", class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2" %>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs text-gray-500"><%= issue_label %></span>
+          <div class="flex items-center gap-1 mt-1">
+            <%= form.date_field :issue_from, value: @f[:issue_from], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2" %>
+            <span class="text-gray-400">〜</span>
+            <%= form.date_field :issue_to, value: @f[:issue_to], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2" %>
+          </div>
+        </div>
+        <div>
+          <span class="text-xs text-gray-500"><%= due_label %></span>
+          <div class="flex items-center gap-1 mt-1">
+            <%= form.date_field :due_from, value: @f[:due_from], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2" %>
+            <span class="text-gray-400">〜</span>
+            <%= form.date_field :due_to, value: @f[:due_to], class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2" %>
+          </div>
+        </div>
+        <div>
+          <%= form.label :delivery_status, "送付ステータス", class: "text-xs text-gray-500" %>
+          <%= form.select :delivery_status, [ [ "送付済み", "sent" ], [ "未送付", "unsent" ], [ "送信失敗あり", "failed" ] ], { include_blank: "すべて", selected: @f[:delivery_status] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :scheduled, "送付予約", class: "text-xs text-gray-500" %>
+          <%= form.select :scheduled, [ [ "予約あり", "yes" ], [ "予約なし", "no" ] ], { include_blank: "すべて", selected: @f[:scheduled] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :related, "関連帳票", class: "text-xs text-gray-500" %>
+          <%= form.select :related, [ [ "関連あり", "yes" ], [ "関連なし", "no" ] ], { include_blank: "すべて", selected: @f[:related] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+        <div>
+          <%= form.label :viewed, "送付先の閲覧", class: "text-xs text-gray-500" %>
+          <%= form.select :viewed, [ [ "閲覧済み", "viewed" ], [ "未閲覧", "unviewed" ] ], { include_blank: "すべて", selected: @f[:viewed] }, class: "block w-full shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1" %>
+        </div>
+      </div>
+      <div class="mt-4 flex items-center gap-3">
+        <%= form.submit "絞り込む", class: "rounded-md px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium cursor-pointer" %>
+        <%= link_to "クリア", documents_path(kind: @kind), class: "text-sm text-gray-600 hover:underline" %>
+      </div>
+    <% end %>
+  </details>
+
   <% if @documents.empty? %>
-    <p class="text-gray-500">帳票はまだありません。</p>
+    <p class="text-gray-500"><%= @filter_active ? "条件に合う帳票はありません。" : "帳票はまだありません。" %></p>
   <% else %>
     <table class="w-full text-left">
       <thead>
@@ -16,7 +113,9 @@
           <th class="py-2 pr-4">取引先</th>
           <th class="py-2 pr-4">件名</th>
           <th class="py-2 pr-4 text-right">合計（税込）</th>
+          <th class="py-2 pr-4 text-right">粗利</th>
           <th class="py-2 pr-4">状態</th>
+          <th class="py-2 pr-4">作成者</th>
           <th class="py-2"></th>
         </tr>
       </thead>
@@ -29,7 +128,9 @@
             <td class="py-2 pr-4"><%= document.client.name %></td>
             <td class="py-2 pr-4"><%= document.title %></td>
             <td class="py-2 pr-4 text-right"><%= number_with_delimiter(document.total) %>円</td>
+            <td class="py-2 pr-4 text-right <%= document.gross_profit.negative? ? "text-red-600" : "text-gray-600" %>"><%= number_with_delimiter(document.gross_profit) %>円<% if document.gross_margin_rate %> <span class="text-xs">(<%= document.gross_margin_rate.round(0) %>%)</span><% end %></td>
             <td class="py-2 pr-4"><%= document.status_label %></td>
+            <td class="py-2 pr-4 text-gray-600"><%= document.created_by&.name || "（自動）" %></td>
             <td class="py-2 text-right"><%= link_to "編集", edit_document_path(document), class: "text-gray-700 hover:underline text-sm" %></td>
           </tr>
         <% end %>

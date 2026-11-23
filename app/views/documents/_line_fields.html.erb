@@ -29,6 +29,11 @@
   </div>
 
   <div class="w-28">
+    <%= line_form.label :cost_unit_price, "原価単価", class: "text-xs text-gray-500" %>
+    <%= line_form.number_field :cost_unit_price, min: 0, step: 1, class: "block shadow-sm rounded-md border border-gray-400 px-2 py-2 mt-1 w-full" %>
+  </div>
+
+  <div class="w-28">
     <%= line_form.label :tax_rate, "税率", class: "text-xs text-gray-500" %>
     <%= line_form.select :tax_rate,
           [ [ "標準（10%）", "standard" ], [ "軽減（8%）", "reduced" ] ],

@@ -3,6 +3,13 @@ class ClientsController < ApplicationController
 
   def index
     @clients = Current.tenant.clients.order(:id)
+    if params[:q].present?
+      like = "%#{ActiveRecord::Base.sanitize_sql_like(params[:q])}%"
+      @clients = @clients.where(
+        "clients.name ILIKE :q OR clients.name_kana ILIKE :q OR clients.contact_person ILIKE :q OR clients.email ILIKE :q",
+        q: like
+      )
+    end
   end
 
   def show
