@@ -6,9 +6,14 @@
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <%= csrf_meta_tags %>
     <style>
-      @page { size: A4; margin: 15mm; }
+      /* Sheet margins live in the body padding, not in @page: the print
+         dialog's margin setting (e.g. "none") overrides @page margins in
+         some browsers, which pushed the content to the paper edge and
+         scaled it down. With @page margin 0 the layout is identical
+         whatever the dialog says. */
+      @page { size: A4 portrait; margin: 0; }
       * { box-sizing: border-box; }
-      body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif; color: #000; font-size: 12px; line-height: 1.6; margin: 0; }
+      body { font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", YuGothic, "Noto Sans JP", sans-serif; color: #000; font-size: 12px; line-height: 1.6; margin: 0; padding: 12mm 15mm; }
       h1 { font-size: 22px; text-align: center; letter-spacing: 0.5em; margin: 0 0 16px; }
       table { border-collapse: collapse; width: 100%; }
       th, td { border: 1px solid #666; padding: 4px 6px; text-align: left; vertical-align: top; }
@@ -17,6 +22,8 @@
       .plain th, .plain td { border: none; padding: 1px 4px; background: none; }
       .meta { text-align: right; margin-bottom: 8px; }
       .parties { display: flex; justify-content: space-between; gap: 40px; margin-bottom: 20px; }
+      .parties > div { min-width: 0; }
+      td { overflow-wrap: anywhere; }
       .client-name { font-size: 16px; border-bottom: 1px solid #000; padding-bottom: 2px; }
       .issuer { font-size: 11px; min-width: 240px; }
       .totals { width: 320px; margin-left: auto; margin-top: 12px; }
