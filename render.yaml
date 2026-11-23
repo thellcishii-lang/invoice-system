@@ -46,9 +46,9 @@ services:
         sync: false
       - key: INFOMAIL_PASS
         sync: false
-      # Mail-link host — update to the real onrender.com URL after first deploy.
+      # Mail-link host — the real URL assigned by Render (invoice-system was taken).
       - key: APP_HOST
-        value: invoice-system.onrender.com
+        value: invoice-system-fsta.onrender.com
 
 databases:
   - name: invoice-system-db
