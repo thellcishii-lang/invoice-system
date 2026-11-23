@@ -29,6 +29,23 @@ class TenantSealTest < ActiveSupport::TestCase
     assert tenant.errors[:seal_image].any?
   end
 
+  test "attach_seal shrinks an oversized image automatically" do
+    require "vips"
+    big = Tempfile.new([ "big-seal", ".png" ])
+    Vips::Image.black(2000, 2000).write_to_file(big.path)
+    tenant = tenants(:one)
+    upload = ActionDispatch::Http::UploadedFile.new(tempfile: big, filename: "big.png", type: "image/png")
+
+    assert tenant.attach_seal(upload)
+
+    png = Base64.decode64(tenant.seal_image_data)
+    width, height = png[16, 8].unpack("N2") # PNG IHDR
+    assert_operator width, :<=, 400
+    assert_operator height, :<=, 400
+  rescue LoadError
+    skip "libvips is not available in this environment"
+  end
+
   test "remove_seal clears the stored image" do
     tenant = tenants(:one)
     tenant.attach_seal(uploaded_png)

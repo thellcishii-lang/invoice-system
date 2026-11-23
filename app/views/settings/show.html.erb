@@ -45,7 +45,7 @@
     </div>
 
     <div class="my-5">
-      <%= form.label :seal_image, "印鑑画像（PNG/JPEG、1MBまで）" %>
+      <%= form.label :seal_image, "印鑑画像（PNG/JPEG）" %>
       <% if @tenant.seal_image? %>
         <div class="mt-2">
           <%= image_tag @tenant.seal_image_data_uri, alt: "印鑑", class: "w-20 h-20 object-contain border border-gray-200 rounded-md" %>
@@ -55,11 +55,11 @@
         </label>
       <% end %>
       <%= form.file_field :seal_image, accept: "image/png,image/jpeg", class: "block mt-2 w-full text-sm" %>
-      <p class="text-gray-500 text-sm mt-1">帳票の会社名の横に表示されます。メールで送る帳票にも付きます。</p>
+      <p class="text-gray-500 text-sm mt-1">帳票の会社名の横に表示されます。メールで送る帳票にも付きます。大きな画像は自動で縮小されます。</p>
     </div>
 
     <div class="my-5">
-      <%= form.label :logo_image, "ロゴ画像（PNG/JPEG、2MBまで）" %>
+      <%= form.label :logo_image, "ロゴ画像（PNG/JPEG）" %>
       <% if @tenant.logo_image? %>
         <div class="mt-2">
           <%= image_tag @tenant.logo_image_data_uri, alt: "ロゴ", class: "h-12 object-contain border border-gray-200 rounded-md p-1" %>
@@ -69,7 +69,7 @@
         </label>
       <% end %>
       <%= form.file_field :logo_image, accept: "image/png,image/jpeg", class: "block mt-2 w-full text-sm" %>
-      <p class="text-gray-500 text-sm mt-1">帳票の帯の上、または一番下に表示されます。高さは帯より少し大きめです。</p>
+      <p class="text-gray-500 text-sm mt-1">帳票の帯の上、または一番下に表示されます。高さは帯より少し大きめです。大きな画像は自動で縮小されます。</p>
     </div>
 
     <div class="my-5">

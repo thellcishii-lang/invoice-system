@@ -22,26 +22,22 @@ class Tenant < ApplicationRecord
 
   validates :name, presence: true
 
-  # 印鑑画像はDBにBase64で持つ。Renderのディスクは再デプロイで消えるため、
-  # ファイル保存（Active Storage + ローカル）では本番で印鑑が消えてしまう。
-  SEAL_CONTENT_TYPES = %w[image/png image/jpeg].freeze
-  SEAL_MAX_BYTES = 1.megabyte
+  # 印鑑・ロゴ画像はDBにBase64で持つ。Renderのディスクは再デプロイで消えるため、
+  # ファイル保存（Active Storage + ローカル）では本番で画像が消えてしまう。
+  # サイズ制限で弾く代わりに、大きな画像は自動で縮小して保存する
+  # （利用者に「○MB以下」と言っても伝わらないため）。上限は不正防止の天井だけ。
+  IMAGE_CONTENT_TYPES = %w[image/png image/jpeg].freeze
+  IMAGE_MAX_BYTES = 10.megabytes
+  SEAL_RESIZE_LIMIT = [ 400, 400 ].freeze
+  LOGO_RESIZE_LIMIT = [ 1200, 400 ].freeze
 
-  # アップロードされた印鑑画像を保存する。成功したら true、形式・サイズが
-  # 不正ならエラーを追加して false。
+  # アップロードされた印鑑画像を縮小して保存する。成功したら true、
+  # 形式が不正ならエラーを追加して false。
   def attach_seal(uploaded_file)
-    unless SEAL_CONTENT_TYPES.include?(uploaded_file.content_type)
-      errors.add(:seal_image, "はPNGまたはJPEGの画像にしてください")
-      return false
+    store_image(uploaded_file, :seal_image, SEAL_RESIZE_LIMIT) do |data, content_type|
+      self.seal_image_data = data
+      self.seal_image_content_type = content_type
     end
-    if uploaded_file.size > SEAL_MAX_BYTES
-      errors.add(:seal_image, "は1MB以下にしてください")
-      return false
-    end
-
-    self.seal_image_data = Base64.strict_encode64(uploaded_file.read)
-    self.seal_image_content_type = uploaded_file.content_type
-    save
   end
 
   def remove_seal
@@ -52,25 +48,14 @@ class Tenant < ApplicationRecord
     seal_image_data.present?
   end
 
-  # ロゴも印鑑と同じくDBにBase64で持つ（Renderのディスクは消えるため）
-  LOGO_CONTENT_TYPES = %w[image/png image/jpeg].freeze
-  LOGO_MAX_BYTES = 2.megabytes
   LOGO_PLACEMENTS = %w[top bottom].freeze
   LOGO_ALIGNMENTS = %w[left center right].freeze
 
   def attach_logo(uploaded_file)
-    unless LOGO_CONTENT_TYPES.include?(uploaded_file.content_type)
-      errors.add(:logo_image, "はPNGまたはJPEGの画像にしてください")
-      return false
+    store_image(uploaded_file, :logo_image, LOGO_RESIZE_LIMIT) do |data, content_type|
+      self.logo_image_data = data
+      self.logo_image_content_type = content_type
     end
-    if uploaded_file.size > LOGO_MAX_BYTES
-      errors.add(:logo_image, "は2MB以下にしてください")
-      return false
-    end
-
-    self.logo_image_data = Base64.strict_encode64(uploaded_file.read)
-    self.logo_image_content_type = uploaded_file.content_type
-    save
   end
 
   def remove_logo
@@ -142,6 +127,44 @@ class Tenant < ApplicationRecord
 
     invoice_count_for(date) >= monthly_invoice_limit
   end
+
+  private
+
+  # 画像を検証し、大きければ resize_to_limit で縮小してから Base64 で渡す。
+  # libvips が無い環境（CI等）では縮小せずそのまま保存する。本番（Docker）には
+  # libvips が入っているので、必ず縮小される。
+  def store_image(uploaded_file, attribute, resize_limit)
+    unless IMAGE_CONTENT_TYPES.include?(uploaded_file.content_type)
+      errors.add(attribute, "はPNGまたはJPEGの画像にしてください")
+      return false
+    end
+    if uploaded_file.size > IMAGE_MAX_BYTES
+      errors.add(attribute, "が大きすぎます")
+      return false
+    end
+
+    bytes = shrink_image(uploaded_file, resize_limit)
+    return false if bytes.nil?
+
+    yield Base64.strict_encode64(bytes), uploaded_file.content_type
+    save
+  rescue => e
+    Rails.logger.error("image store failed: #{e.class}: #{e.message}")
+    errors.add(attribute, "を読み込めませんでした")
+    false
+  end
+
+  def shrink_image(uploaded_file, resize_limit)
+    require "image_processing/vips"
+    path = uploaded_file.tempfile ? uploaded_file.tempfile.path : uploaded_file.path
+    processed = ImageProcessing::Vips.source(path).resize_to_limit(resize_limit[0], resize_limit[1]).call
+    File.binread(processed.path)
+  rescue LoadError
+    uploaded_file.rewind
+    uploaded_file.read
+  end
+
+  public
 
   # 解約から30日経過したテナントのデータを全て削除する。
   # 関連は restrict_with_error のため、依存の深いものから順に消す。
