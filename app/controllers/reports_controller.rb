@@ -21,5 +21,25 @@ class ReportsController < ApplicationController
     unpaid = tenant.documents.unpaid_invoices.includes(:payments)
     @unpaid_balance = unpaid.sum(&:balance)
     @overdue_count = unpaid.count { |document| document.overdue? }
+
+    # 月別の請求書一覧（入金済み・未入金が分かるように）
+    @month = parse_month(params[:month])
+    month_range = @month..@month.end_of_month
+    @invoices = tenant.documents.invoice.issued
+      .where(issue_date: month_range)
+      .includes(:client, :payments)
+      .order(:issue_date, :id)
+    @month_billed = @invoices.sum(&:total)
+    @month_received = @invoices.sum(&:received_amount)
+    @month_unpaid = @invoices.sum { |document| [ document.balance, 0 ].max }
   end
+
+  private
+    def parse_month(value)
+      return Date.current.beginning_of_month if value.blank?
+
+      Date.strptime(value, "%Y-%m").beginning_of_month
+    rescue ArgumentError
+      Date.current.beginning_of_month
+    end
 end

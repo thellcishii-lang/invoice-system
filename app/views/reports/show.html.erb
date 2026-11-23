@@ -32,4 +32,61 @@
     </tbody>
   </table>
   <p class="text-sm text-gray-500 mt-3">請求額は発行済み請求書の発行月、入金額は入金日（入金月）で集計しています。</p>
+
+  <h2 class="font-bold text-lg mt-10 mb-2">月別の請求書一覧</h2>
+  <div class="flex items-center gap-4 mb-3">
+    <%= link_to "← 前月", report_path(month: (@month << 1).strftime("%Y-%m")), class: "text-blue-600 hover:underline text-sm" %>
+    <span class="font-bold"><%= @month.strftime("%Y年%-m月") %></span>
+    <%= link_to "翌月 →", report_path(month: (@month >> 1).strftime("%Y-%m")), class: "text-blue-600 hover:underline text-sm" %>
+  </div>
+  <p class="text-sm mb-3">
+    請求額合計 <%= number_with_delimiter(@month_billed) %>円
+    ／ 入金済み合計 <%= number_with_delimiter(@month_received) %>円
+    ／ 未入金残高 <%= number_with_delimiter(@month_unpaid) %>円
+  </p>
+
+  <% if @invoices.any? %>
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b border-gray-200 text-gray-500">
+          <th class="py-2 pr-4">発行日</th>
+          <th class="py-2 pr-4">番号</th>
+          <th class="py-2 pr-4">取引先</th>
+          <th class="py-2 pr-4">件名</th>
+          <th class="py-2 pr-4 text-right">請求額</th>
+          <th class="py-2 pr-4 text-right">入金額</th>
+          <th class="py-2 pr-4 text-right">残額</th>
+          <th class="py-2">状態</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @invoices.each do |document| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4 whitespace-nowrap"><%= document.issue_date.strftime("%-m/%-d") %></td>
+            <td class="py-2 pr-4 whitespace-nowrap"><%= link_to document.number, document, class: "text-blue-600 hover:underline" %></td>
+            <td class="py-2 pr-4"><%= document.client&.name %></td>
+            <td class="py-2 pr-4"><%= document.title %></td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter(document.total) %>円</td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter(document.received_amount) %>円</td>
+            <td class="py-2 pr-4 text-right"><%= number_with_delimiter([ document.balance, 0 ].max) %>円</td>
+            <td class="py-2 whitespace-nowrap">
+              <% case document.payment_status %>
+              <% when "paid" %>
+                <span class="inline-block rounded-full bg-green-100 text-green-700 px-2 py-0.5 text-xs font-medium">入金済み</span>
+              <% when "partial" %>
+                <span class="inline-block rounded-full bg-amber-100 text-amber-700 px-2 py-0.5 text-xs font-medium">一部入金</span>
+              <% else %>
+                <span class="inline-block rounded-full bg-gray-100 text-gray-600 px-2 py-0.5 text-xs font-medium">未入金</span>
+              <% end %>
+              <% if document.overdue? && !document.payment_paid? %>
+                <span class="text-red-600 text-xs font-medium">期限超過</span>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% else %>
+    <p class="text-sm text-gray-500">この月に発行した請求書はありません。</p>
+  <% end %>
 </div>

@@ -23,6 +23,20 @@ class ReportsControllerTest < ActionDispatch::IntegrationTest
     assert_select "tbody tr", 12
   end
 
+  test "monthly invoice list shows paid and unpaid invoices for the chosen month" do
+    create_invoice(issue_date: Date.current, unit_price: 10000, number: "TEST-LIST-001")
+    paid = create_invoice(issue_date: Date.current, unit_price: 20000, number: "TEST-LIST-002")
+    paid.payments.create!(tenant: tenants(:one), amount: paid.total, paid_on: Date.current, method: "bank_transfer")
+
+    get report_path(month: Date.current.strftime("%Y-%m"))
+
+    assert_response :success
+    assert_match "TEST-LIST-001", response.body
+    assert_match "TEST-LIST-002", response.body
+    assert_match "未入金", response.body
+    assert_match "入金済み", response.body
+  end
+
   test "aggregates billed by issue month and received by payment month" do
     this_month_invoice = create_invoice(issue_date: Date.current, unit_price: 10000) # 合計 11,000 円
     create_invoice(issue_date: Date.current << 1, unit_price: 20000, number: "TEST-202610-101") # 先月分、合計 22,000 円

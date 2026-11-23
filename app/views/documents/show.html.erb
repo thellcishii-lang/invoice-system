@@ -162,7 +162,7 @@
     <% end %>
 
     <div class="mb-8">
-      <%= render "payments/form", document: @document, payment: @payment || @document.payments.build(paid_on: Date.current, method: "bank_transfer") %>
+      <%= render "payments/form", document: @document, payment: @payment || @document.payments.build(amount: (@document.balance if @document.balance.positive?), paid_on: Date.current, method: "bank_transfer") %>
     </div>
   <% end %>
 
