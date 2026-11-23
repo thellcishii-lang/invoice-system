@@ -12,6 +12,8 @@ class DocumentMailer < ApplicationMailer
       subject = rendered_subject if rendered_subject.present?
     end
 
-    mail to: recipient_email, subject: subject
+    # 差出人は運営の Zoho アドレス（全テナント共通）。返信はテナントに届くよう
+    # Reply-To にテナントのメールアドレスを入れる。
+    mail to: recipient_email, reply_to: document.tenant.email.presence, subject: subject
   end
 end

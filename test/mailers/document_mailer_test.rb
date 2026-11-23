@@ -31,3 +31,12 @@ class DocumentMailerTest < ActionMailer::TestCase
     assert_no_match "お支払期限", mail.text_part.body.decoded
   end
 end
+
+class DocumentMailerReplyToTest < ActionMailer::TestCase
+  test "document_email replies go to the tenant, not the operator" do
+    document = documents(:invoice_one)
+    token = Rails.application.message_verifier("document/public_view").generate(document.id)
+    mail = DocumentMailer.document_email(document: document, recipient_email: "billing@example.co.jp", token: token)
+    assert_equal [ document.tenant.email ], mail.reply_to
+  end
+end
