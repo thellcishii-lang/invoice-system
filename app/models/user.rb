@@ -7,7 +7,6 @@ class User < ApplicationRecord
 
   validates :name, presence: true
   validates :email_address, presence: true, uniqueness: true
-  validate :tenant_member_limit_not_exceeded, on: :create
 
   # 申込時の招待メール用パスワード設定リンク。署名付きIDで72時間有効。
   # パスワード自体はメールに載せない。
@@ -23,11 +22,4 @@ class User < ApplicationRecord
     find_signed(token, purpose: PASSWORD_SETUP_PURPOSE)
   end
 
-  private
-    def tenant_member_limit_not_exceeded
-      return if tenant.blank?
-      return unless tenant.member_limit_reached?
-
-      errors.add(:base, "メンバーは最大#{Tenant::MAX_MEMBERS}名までです")
-    end
 end

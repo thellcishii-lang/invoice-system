@@ -15,16 +15,4 @@ class TenantTest < ActiveSupport::TestCase
     assert_not tenant.valid?
     assert tenant.errors[:name].present?
   end
-
-  test "member_limit_reached? is true at 5 members" do
-    tenant = tenants(:one)
-    assert_not tenant.member_limit_reached?
-
-    4.times do |i|
-      tenant.users.create!(name: "追加メンバー#{i}", email_address: "extra#{i}@example.co.jp", password: "password")
-    end
-
-    assert_equal Tenant::MAX_MEMBERS, tenant.users.count
-    assert tenant.member_limit_reached?
-  end
 end

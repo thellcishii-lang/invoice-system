@@ -6,7 +6,7 @@
 
   <% issue_label = { "estimate" => "見積日", "order" => "発注日", "delivery" => "納品日", "invoice" => "請求日", "receipt" => "領収日" }[@kind] || "発行日" %>
   <% due_label = { "estimate" => "有効期限", "invoice" => "お支払期限", "order" => "納期" }[@kind] || "期限" %>
-  <details class="mb-5 bg-white border border-gray-200 rounded-lg" <%= "open" if @filter_active %>>
+  <details class="mb-5 bg-white border border-gray-200 rounded-lg">
     <summary class="px-4 py-3 cursor-pointer font-medium text-sm">フィルター<% if @filter_active %> <span class="text-blue-600">（絞り込み中）</span><% end %></summary>
     <%= form_with url: documents_path, method: :get, scope: :f, class: "px-4 pb-4" do |form| %>
       <%= hidden_field_tag :kind, @kind %>

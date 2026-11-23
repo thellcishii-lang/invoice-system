@@ -28,20 +28,16 @@ class MembersControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to root_path
   end
 
-  test "cannot invite beyond the member limit" do
-    (Tenant::MAX_MEMBERS - @tenant.active_member_count).times do |i|
-      @tenant.users.create!(name: "member#{i}", email_address: "m#{i}@example.co.jp", password: "password-#{i}")
+  test "members are unlimited" do
+    assert_difference "User.count", 7 do
+      7.times do |i|
+        post members_path, params: { member: { name: "member#{i}", email_address: "m#{i}@example.co.jp" } }
+        assert_redirected_to members_path
+      end
     end
-    assert @tenant.reload.member_limit_reached?
-
-    assert_no_difference "User.count" do
-      post members_path, params: { member: { name: "over", email_address: "over@example.co.jp" } }
-    end
-    assert_response :unprocessable_entity
-    assert_includes response.body, "最大#{Tenant::MAX_MEMBERS}名"
   end
 
-  test "disabling a member blocks login and frees the slot" do
+  test "disabling a member blocks login" do
     member = @tenant.users.create!(name: "退職者", email_address: "old@example.co.jp", password: "password-old")
 
     post disable_member_path(member)

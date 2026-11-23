@@ -1,5 +1,4 @@
 class Tenant < ApplicationRecord
-  MAX_MEMBERS = 5
 
   # 端数処理: floor=切り捨て / round=四捨五入 / ceil=切り上げ
   enum :tax_rounding, { floor: "floor", round: "round", ceil: "ceil" }, validate: true
@@ -163,14 +162,6 @@ class Tenant < ApplicationRecord
     "data:#{seal_image_content_type};base64,#{seal_image_data}"
   end
 
-  # 上限は有効なメンバー数で数える（無効化したメンバーの枠は空く）
-  def member_limit_reached?
-    users.where(disabled: false).count >= MAX_MEMBERS
-  end
-
-  def active_member_count
-    users.where(disabled: false).count
-  end
 
   # 課金停止・解約済みのテナントはログインできない
   def billing_blocked?
