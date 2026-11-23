@@ -37,6 +37,18 @@
   </div>
 </div>
 
+<%
+  amount_label = { "estimate" => "お見積金額", "delivery" => "納品金額", "invoice" => "ご請求金額", "receipt" => "領収金額" }[@document.kind]
+  deadline_label = { "estimate" => "見積有効期限", "invoice" => "お支払期限" }[@document.kind]
+%>
+<div class="summary">
+  <span><span class="amount-label"><%= amount_label %>：</span><span class="amount"><%= number_with_delimiter(@document.total) %>円</span>（税込）</span>
+  <span>消費税：<%= number_with_delimiter(@document.tax_amount) %>円</span>
+  <% if deadline_label && @document.due_date %>
+    <span><%= deadline_label %>：<%= @document.due_date.strftime("%Y年%m月%d日") %></span>
+  <% end %>
+</div>
+
 <table>
   <thead>
     <tr>
@@ -68,7 +80,8 @@
   <tr class="grand-total"><td>合計（税込）</td><td class="right"><%= number_with_delimiter(@document.total) %>円</td></tr>
 </table>
 
-<% if @document.tax_breakdown.any? %>
+<%# 税率ごとの内訳は適格請求書（請求書・領収書）では必須だが、見積書・納品書には不要なので出さない %>
+<% if (@document.invoice? || @document.receipt?) && @document.tax_breakdown.any? %>
   <div class="section">
     <table class="totals" style="margin-left: 0;">
       <thead>
