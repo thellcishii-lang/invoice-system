@@ -15,6 +15,7 @@ class Tenant < ApplicationRecord
   has_many :items, dependent: :restrict_with_error
   has_many :item_categories, dependent: :restrict_with_error
   has_many :send_templates, dependent: :restrict_with_error
+  has_many :scheduled_deliveries, dependent: :destroy
 
   # 製品エディション: 申込時に決まる（一般 / 建築）。建築は見積書が建築様式になる。
   EDITIONS = %w[ general construction ].freeze

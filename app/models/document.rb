@@ -35,6 +35,8 @@ class Document < ApplicationRecord
            dependent: :destroy, inverse_of: :document
   has_many :document_deliveries, -> { order(sent_at: :desc, id: :desc) },
            dependent: :destroy, inverse_of: :document
+  has_many :scheduled_deliveries, -> { order(scheduled_at: :asc, id: :asc) },
+           class_name: "ScheduledDelivery", dependent: :destroy, inverse_of: :document
   has_many :payments, -> { order(paid_on: :asc, id: :asc) },
            dependent: :destroy, inverse_of: :document
   # この帳票をテンプレートにする定期請求。使われている間は削除できない

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_185000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_190000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -163,6 +163,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_185000) do
     t.index ["tenant_id"], name: "index_recurring_documents_on_tenant_id"
   end
 
+  create_table "scheduled_deliveries", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.bigint "document_id", null: false
+    t.bigint "send_template_id"
+    t.string "channel", null: false
+    t.string "recipient", null: false
+    t.datetime "scheduled_at", null: false
+    t.string "status", default: "pending", null: false
+    t.string "error_message"
+    t.datetime "sent_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["document_id"], name: "index_scheduled_deliveries_on_document_id"
+    t.index ["send_template_id"], name: "index_scheduled_deliveries_on_send_template_id"
+    t.index ["status", "scheduled_at"], name: "index_scheduled_deliveries_on_status_and_scheduled_at"
+    t.index ["tenant_id"], name: "index_scheduled_deliveries_on_tenant_id"
+  end
+
   create_table "send_templates", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.string "channel", null: false
@@ -268,6 +286,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_185000) do
   add_foreign_key "recurring_documents", "documents", column: "template_document_id"
   add_foreign_key "recurring_documents", "send_templates"
   add_foreign_key "recurring_documents", "tenants"
+  add_foreign_key "scheduled_deliveries", "documents"
+  add_foreign_key "scheduled_deliveries", "send_templates"
+  add_foreign_key "scheduled_deliveries", "tenants"
   add_foreign_key "send_templates", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "signup_applications", "tenants"

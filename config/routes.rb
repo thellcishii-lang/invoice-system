@@ -28,6 +28,7 @@ Rails.application.routes.draw do
       post :duplicate
     end
     resource :delivery, only: %i[ new create ], controller: "document_deliveries"
+    resources :scheduled_deliveries, only: %i[ create ]
     resources :payments, only: %i[ create edit update destroy ]
   end
   resources :recurring_documents, except: %i[ show ]
@@ -35,6 +36,11 @@ Rails.application.routes.draw do
   resources :document_deliveries, only: %i[ index ] do
     member do
       post :resend
+    end
+  end
+  resources :scheduled_deliveries, only: %i[ index ] do
+    member do
+      post :cancel
     end
   end
   resources :send_templates, except: %i[ show ]

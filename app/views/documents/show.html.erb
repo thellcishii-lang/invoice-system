@@ -154,6 +154,55 @@
     </table>
   <% end %>
 
+  <h2 class="font-bold text-lg mb-2">予約配信</h2>
+  <% pending_reservations = @document.scheduled_deliveries.select(&:pending?) %>
+  <% if pending_reservations.any? %>
+    <table class="w-full text-left mb-4 text-sm">
+      <tbody>
+        <% pending_reservations.each do |reservation| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4 whitespace-nowrap"><%= reservation.scheduled_at.strftime("%Y/%m/%d %H:%M") %></td>
+            <td class="py-2 pr-4"><%= reservation.channel_label %></td>
+            <td class="py-2 pr-4"><%= reservation.recipient %></td>
+            <td class="py-2 text-right"><%= button_to "取り消す", cancel_scheduled_delivery_path(reservation), class: "text-red-600 hover:underline cursor-pointer" %></td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+  <%= form_with model: [ @document, ScheduledDelivery.new ], class: "mb-8" do |form| %>
+    <div class="flex flex-wrap items-end gap-3">
+      <div>
+        <%= form.label :scheduled_at, "送信日時", class: "block text-sm text-gray-500" %>
+        <%= form.datetime_local_field :scheduled_at, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1" %>
+      </div>
+      <div>
+        <span class="block text-sm text-gray-500">方法</span>
+        <label class="inline-flex items-center gap-1 mt-2 mr-3">
+          <%= form.radio_button :channel, "email", checked: true %> メール
+        </label>
+        <label class="inline-flex items-center gap-1 mt-2">
+          <%= form.radio_button :channel, "fax" %> FAX
+        </label>
+      </div>
+      <div>
+        <%= form.label :email_recipient, "メールアドレス", class: "block text-sm text-gray-500" %>
+        <%= form.email_field :email_recipient, value: @document.client.email, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-64" %>
+      </div>
+      <div>
+        <%= form.label :fax_recipient, "FAX番号", class: "block text-sm text-gray-500" %>
+        <%= form.text_field :fax_recipient, value: @document.client.fax_number, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-44" %>
+      </div>
+      <div>
+        <%= form.label :send_template_id, "送り状（メール用）", class: "block text-sm text-gray-500" %>
+        <%= form.collection_select :send_template_id, Current.tenant.send_templates.where(channel: "email"), :id, :name,
+              { include_blank: "標準の文面" }, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1" %>
+      </div>
+      <%= form.submit "予約する", class: "rounded-md px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    </div>
+    <p class="text-gray-500 text-sm mt-2">指定した日時に自動で送信されます。FAX用の送り状は帳票の画面の「FAX送り状」から印刷できます。</p>
+  <% end %>
+
   <% if @document.invoice? %>
     <h2 class="font-bold text-lg mb-2">入金</h2>
     <p class="text-sm mb-4">
