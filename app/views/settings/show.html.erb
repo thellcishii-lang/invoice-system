@@ -46,29 +46,47 @@
 
     <div class="my-5">
       <%= form.label :seal_image, "印鑑画像（PNG/JPEG）" %>
-      <% if @tenant.seal_image? %>
-        <div class="mt-2">
-          <%= image_tag @tenant.seal_image_data_uri, alt: "印鑑", class: "w-20 h-20 object-contain border border-gray-200 rounded-md" %>
+      <div data-controller="image-drop">
+        <div data-image-drop-target="zone" data-action="click->image-drop#open dragover->image-drop#dragOver dragleave->image-drop#dragLeave drop->image-drop#drop"
+             class="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400">
+          <% if @tenant.seal_image? %>
+            <%= image_tag @tenant.seal_image_data_uri, alt: "印鑑", data: { image_drop_target: "preview" }, class: "mx-auto w-20 h-20 object-contain" %>
+          <% else %>
+            <img data-image-drop-target="preview" alt="" class="mx-auto w-20 h-20 object-contain hidden">
+          <% end %>
+          <span class="inline-block mt-2 rounded-md px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium">画像を選ぶ</span>
+          <p class="text-gray-500 text-sm mt-2">またはここに画像をドラッグ＆ドロップ</p>
         </div>
-        <label class="block mt-2 text-sm">
-          <%= form.check_box :remove_seal, class: "mr-1" %> 印鑑画像を削除する
-        </label>
-      <% end %>
-      <%= form.file_field :seal_image, accept: "image/png,image/jpeg", class: "block mt-2 w-full text-sm" %>
+        <%= form.file_field :seal_image, accept: "image/png,image/jpeg", class: "hidden", data: { image_drop_target: "input", action: "change->image-drop#picked" } %>
+        <% if @tenant.seal_image? %>
+          <label class="block mt-2 text-sm">
+            <%= form.check_box :remove_seal, class: "mr-1" %> 印鑑画像を削除する
+          </label>
+        <% end %>
+      </div>
       <p class="text-gray-500 text-sm mt-1">帳票の会社名の横に表示されます。メールで送る帳票にも付きます。大きな画像は自動で縮小されます。</p>
     </div>
 
     <div class="my-5">
       <%= form.label :logo_image, "ロゴ画像（PNG/JPEG）" %>
-      <% if @tenant.logo_image? %>
-        <div class="mt-2">
-          <%= image_tag @tenant.logo_image_data_uri, alt: "ロゴ", class: "h-12 object-contain border border-gray-200 rounded-md p-1" %>
+      <div data-controller="image-drop">
+        <div data-image-drop-target="zone" data-action="click->image-drop#open dragover->image-drop#dragOver dragleave->image-drop#dragLeave drop->image-drop#drop"
+             class="mt-2 border-2 border-dashed border-gray-300 rounded-lg p-4 text-center cursor-pointer hover:border-blue-400">
+          <% if @tenant.logo_image? %>
+            <%= image_tag @tenant.logo_image_data_uri, alt: "ロゴ", data: { image_drop_target: "preview" }, class: "mx-auto h-12 object-contain" %>
+          <% else %>
+            <img data-image-drop-target="preview" alt="" class="mx-auto h-12 object-contain hidden">
+          <% end %>
+          <span class="inline-block mt-2 rounded-md px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium">画像を選ぶ</span>
+          <p class="text-gray-500 text-sm mt-2">またはここに画像をドラッグ＆ドロップ</p>
         </div>
-        <label class="block mt-2 text-sm">
-          <%= form.check_box :remove_logo, class: "mr-1" %> ロゴ画像を削除する
-        </label>
-      <% end %>
-      <%= form.file_field :logo_image, accept: "image/png,image/jpeg", class: "block mt-2 w-full text-sm" %>
+        <%= form.file_field :logo_image, accept: "image/png,image/jpeg", class: "hidden", data: { image_drop_target: "input", action: "change->image-drop#picked" } %>
+        <% if @tenant.logo_image? %>
+          <label class="block mt-2 text-sm">
+            <%= form.check_box :remove_logo, class: "mr-1" %> ロゴ画像を削除する
+          </label>
+        <% end %>
+      </div>
       <p class="text-gray-500 text-sm mt-1">帳票の帯の上、または一番下に表示されます。高さは帯より少し大きめです。大きな画像は自動で縮小されます。</p>
     </div>
 
