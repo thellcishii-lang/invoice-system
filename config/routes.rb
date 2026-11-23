@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     member do
       get :print
       post :convert
+      post :duplicate
     end
     resource :delivery, only: %i[ new create ], controller: "document_deliveries"
     resources :payments, only: %i[ create edit update destroy ]

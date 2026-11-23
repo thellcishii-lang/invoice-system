@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: %i[ show edit update destroy print convert ]
+  before_action :set_document, only: %i[ show edit update destroy print convert duplicate ]
 
   def index
     @kind = params[:kind] if Document::KINDS.include?(params[:kind])
@@ -60,6 +60,13 @@ class DocumentsController < ApplicationController
     redirect_to converted, notice: "#{converted.kind_label}に変換しました。"
   rescue ArgumentError
     redirect_to @document, alert: "その変換はできません。"
+  end
+
+  def duplicate
+    copy = @document.duplicate!
+    redirect_to edit_document_path(copy), notice: "複写しました。内容を確認して保存してください。"
+  rescue ActiveRecord::RecordInvalid => e
+    redirect_to @document, alert: e.record.errors.full_messages.to_sentence
   end
 
   private

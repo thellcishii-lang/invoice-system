@@ -196,6 +196,26 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to documents_path(kind: "estimate")
   end
 
+  test "duplicates a document via POST" do
+    sign_in_as(users(:one))
+    original = documents(:invoice_one)
+
+    assert_difference("Document.count", 1) do
+      post duplicate_document_path(original)
+    end
+
+    copy = Document.order(:id).last
+    assert_redirected_to edit_document_path(copy)
+    assert_equal original.kind, copy.kind
+    assert_not_equal original.number, copy.number
+    assert_equal "draft", copy.status
+    assert_equal original.total, copy.total
+    assert_equal original.document_lines.count, copy.document_lines.count
+    assert_empty copy.payments
+    # 支払期限は発行日からの日数を引き継ぐ
+    assert_equal (original.due_date - original.issue_date).to_i, (copy.due_date - copy.issue_date).to_i
+  end
+
   test "converts a document via POST" do
     sign_in_as(users(:one))
 

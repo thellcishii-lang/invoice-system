@@ -175,6 +175,31 @@ class Document < ApplicationRecord
     converted
   end
 
+  # 同じ種別のまま複写した新しい帳票（下書き）を作る。元は変更しない。
+  # 取引先・件名・備考・明細を引き継ぎ、発行日は今日、番号は新規採番。
+  # 支払期限は「発行日からの日数」を引き継ぐ。入金・送信履歴は引き継がない。
+  def duplicate!
+    new_due_date = (Date.current + (due_date - issue_date)) if due_date && issue_date
+    copy = tenant.documents.build(
+      kind: kind,
+      client: client,
+      title: title,
+      notes: notes,
+      issue_date: Date.current,
+      due_date: new_due_date,
+      status: :draft
+    )
+    document_lines.each do |line|
+      copy.document_lines.build(
+        item: line.item, name: line.name, quantity: line.quantity, unit: line.unit,
+        unit_price: line.unit_price, tax_rate: line.tax_rate, position: line.position
+      )
+    end
+    copy.save!
+    copy.recalculate_totals!
+    copy
+  end
+
   private
     def set_default_issue_date
       self.issue_date ||= Date.current
