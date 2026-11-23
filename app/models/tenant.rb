@@ -22,6 +22,43 @@ class Tenant < ApplicationRecord
 
   validates :name, presence: true
 
+  # 印鑑画像はDBにBase64で持つ。Renderのディスクは再デプロイで消えるため、
+  # ファイル保存（Active Storage + ローカル）では本番で印鑑が消えてしまう。
+  SEAL_CONTENT_TYPES = %w[image/png image/jpeg].freeze
+  SEAL_MAX_BYTES = 1.megabyte
+
+  # アップロードされた印鑑画像を保存する。成功したら true、形式・サイズが
+  # 不正ならエラーを追加して false。
+  def attach_seal(uploaded_file)
+    unless SEAL_CONTENT_TYPES.include?(uploaded_file.content_type)
+      errors.add(:seal_image, "はPNGまたはJPEGの画像にしてください")
+      return false
+    end
+    if uploaded_file.size > SEAL_MAX_BYTES
+      errors.add(:seal_image, "は1MB以下にしてください")
+      return false
+    end
+
+    self.seal_image_data = Base64.strict_encode64(uploaded_file.read)
+    self.seal_image_content_type = uploaded_file.content_type
+    save
+  end
+
+  def remove_seal
+    update(seal_image_data: nil, seal_image_content_type: nil)
+  end
+
+  def seal_image?
+    seal_image_data.present?
+  end
+
+  # 印刷ビューでそのまま <img src> に使える data URI
+  def seal_image_data_uri
+    return nil unless seal_image?
+
+    "data:#{seal_image_content_type};base64,#{seal_image_data}"
+  end
+
   def member_limit_reached?
     users.count >= MAX_MEMBERS
   end

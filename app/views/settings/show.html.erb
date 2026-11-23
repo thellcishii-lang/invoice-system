@@ -12,6 +12,8 @@
   <% end %>
 
   <%= form_with model: @tenant, url: setting_path, method: :patch, class: "contents" do |form| %>
+    <h2 class="font-bold text-xl mt-4 mb-3">自社情報（会社マスター）</h2>
+
     <div class="my-5">
       <%= form.label :name, "会社名" %>
       <%= form.text_field :name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
@@ -40,6 +42,26 @@
     <div class="my-5">
       <%= form.label :email, "メールアドレス" %>
       <%= form.email_field :email, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :seal_image, "印鑑画像（PNG/JPEG、1MBまで）" %>
+      <% if @tenant.seal_image? %>
+        <div class="mt-2">
+          <%= image_tag @tenant.seal_image_data_uri, alt: "印鑑", class: "w-20 h-20 object-contain border border-gray-200 rounded-md" %>
+        </div>
+        <label class="block mt-2 text-sm">
+          <%= form.check_box :remove_seal, class: "mr-1" %> 印鑑画像を削除する
+        </label>
+      <% end %>
+      <%= form.file_field :seal_image, accept: "image/png,image/jpeg", class: "block mt-2 w-full text-sm" %>
+      <p class="text-gray-500 text-sm mt-1">帳票の会社名の横に表示されます。メールで送る帳票にも付きます。</p>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :bank_details, "振込先" %>
+      <%= form.text_area :bank_details, rows: 3, placeholder: "例: 〇〇銀行 〇〇支店 普通 1234567", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">請求書の下部に表示されます。</p>
     </div>
 
     <h2 class="font-bold text-xl mt-8 mb-3">帳票の設定</h2>

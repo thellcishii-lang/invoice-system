@@ -25,7 +25,9 @@
       .parties > div { min-width: 0; }
       td { overflow-wrap: anywhere; }
       .client-name { font-size: 16px; border-bottom: 1px solid #000; padding-bottom: 2px; }
-      .issuer { font-size: 11px; min-width: 240px; }
+      .issuer { font-size: 11px; min-width: 240px; position: relative; }
+      .issuer.with-seal { padding-right: 23mm; }
+      .issuer .seal { position: absolute; top: 0; right: 0; width: 21mm; height: 21mm; object-fit: contain; }
       .summary { border: 2px solid #000; padding: 8px 14px; margin: 4px 0 18px; display: flex; gap: 36px; align-items: baseline; flex-wrap: wrap; }
       .summary .amount-label { font-size: 13px; }
       .summary .amount { font-size: 20px; font-weight: bold; }

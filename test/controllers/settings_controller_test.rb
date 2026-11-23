@@ -41,4 +41,33 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "テスト商事株式会社", other.name
     assert_equal "TS-", other.document_number_prefix
   end
+
+  test "saves bank details and a seal image" do
+    sign_in_as(users(:one))
+
+    patch setting_path, params: { tenant: {
+      name: tenants(:one).name,
+      bank_details: "〇〇銀行 〇〇支店 普通 1234567",
+      seal_image: fixture_file_upload("seal.png", "image/png")
+    } }
+
+    assert_redirected_to setting_path
+
+    tenant = tenants(:one).reload
+    assert_equal "〇〇銀行 〇〇支店 普通 1234567", tenant.bank_details
+    assert tenant.seal_image?
+  end
+
+  test "removes the seal image when asked" do
+    sign_in_as(users(:one))
+    tenants(:one).attach_seal(ActionDispatch::Http::UploadedFile.new(
+      tempfile: File.new(Rails.root.join("test/fixtures/files/seal.png")),
+      filename: "seal.png", type: "image/png"
+    ))
+
+    patch setting_path, params: { tenant: { name: tenants(:one).name, remove_seal: "1" } }
+
+    assert_redirected_to setting_path
+    assert_not tenants(:one).reload.seal_image?
+  end
 end

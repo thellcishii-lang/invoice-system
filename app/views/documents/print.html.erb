@@ -26,7 +26,10 @@
     <div class="section">下記の通り<%= @document.kind_label.sub(/書$/, "") %>申し上げます。</div>
   </div>
 
-  <div class="issuer">
+  <div class="issuer<%= " with-seal" if tenant.seal_image? %>">
+    <% if tenant.seal_image? %>
+      <%= image_tag tenant.seal_image_data_uri, alt: "", class: "seal" %>
+    <% end %>
     <div><strong><%= tenant.name %></strong></div>
     <% if tenant.postal_code.present? %><div>〒<%= tenant.postal_code %></div><% end %>
     <% if tenant.address.present? %><div><%= tenant.address %></div><% end %>
@@ -98,6 +101,13 @@
         <% end %>
       </tbody>
     </table>
+  </div>
+<% end %>
+
+<% if @document.invoice? && tenant.bank_details.present? %>
+  <div class="section">
+    <div>お振込先</div>
+    <div class="notes"><%= tenant.bank_details %></div>
   </div>
 <% end %>
 
