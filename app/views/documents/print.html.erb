@@ -5,7 +5,7 @@
 <% if tenant.document_striped? || document_pattern_style(tenant) %>
   <style>
     <% if tenant.document_striped? %>
-      .items-table tbody tr:nth-child(even) td { background: #f9fafb; }
+      .items-table tbody tr:nth-child(even) td { background: #eef2f7; }
     <% end %>
     <% if document_pattern_style(tenant) %>
       .sheet { <%= document_pattern_style(tenant) %> }
