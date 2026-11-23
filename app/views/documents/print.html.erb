@@ -1,7 +1,9 @@
 <% content_for(:title, "#{@document.kind_label} #{@document.number}") %>
 <% tenant = @document.tenant %>
+<% band_color = { "estimate" => "#d2e7d0", "invoice" => "#d2e4f6", "delivery" => "#f8edbe", "receipt" => "#f9dfc4" }[@document.kind] %>
+<% band_text_color = { "estimate" => "#2f5d33", "invoice" => "#2f4d6e", "delivery" => "#6e5f24", "receipt" => "#7c4a1e" }[@document.kind] %>
 
-<h1><%= @document.kind_label %></h1>
+<h1 style="background: <%= band_color %>; color: <%= band_text_color %>"><%= @document.kind_label %></h1>
 
 <div class="meta">
   発行日：<%= @document.issue_date.strftime("%Y年%m月%d日") %><br>
@@ -46,10 +48,10 @@
 %>
 <table class="summary-table">
   <tr>
-    <th><%= amount_label %></th>
-    <th>消費税</th>
+    <th style="background: <%= band_color %>"><%= amount_label %></th>
+    <th style="background: <%= band_color %>">消費税</th>
     <% if deadline_label && @document.due_date %>
-      <th><%= deadline_label %></th>
+      <th style="background: <%= band_color %>"><%= deadline_label %></th>
     <% end %>
   </tr>
   <tr>
