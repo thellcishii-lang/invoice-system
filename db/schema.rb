@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_190000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_191000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -251,6 +251,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_190000) do
     t.boolean "document_striped", default: false, null: false
     t.string "document_pattern", default: "none", null: false
     t.string "edition", default: "general", null: false
+    t.string "smtp_host"
+    t.integer "smtp_port", default: 587, null: false
+    t.string "smtp_username"
+    t.text "smtp_password_ciphertext"
+    t.string "smtp_from_address"
     t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end

@@ -12,8 +12,14 @@ class DocumentMailer < ApplicationMailer
       subject = rendered_subject if rendered_subject.present?
     end
 
-    # 差出人は運営の Zoho アドレス（全テナント共通）。返信はテナントに届くよう
+    # 差出人は原則 運営の Zoho アドレス（全テナント共通）で、返信はテナントに届くよう
     # Reply-To にテナントのメールアドレスを入れる。
-    mail to: recipient_email, reply_to: document.tenant.email.presence, subject: subject
+    # テナントが自分の SMTP を設定していれば、そのテナントのアドレスから送る。
+    tenant = document.tenant
+    mail_args = { to: recipient_email, reply_to: tenant.email.presence, subject: subject }
+    mail_args[:from] = tenant.smtp_from_address if tenant.smtp_configured?
+    message = mail(**mail_args)
+    apply_tenant_smtp(message, tenant)
+    message
   end
 end

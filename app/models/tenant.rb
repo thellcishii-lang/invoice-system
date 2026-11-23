@@ -27,6 +27,50 @@ class Tenant < ApplicationRecord
     edition == "construction"
   end
 
+  # --- テナント自身の SMTP 設定（帳票メールをテナントのアドレスから送る） ---
+  # パスワードは平文で保存せず、secret_key_base から導いた鍵で暗号化する。
+  def smtp_configured?
+    smtp_host.present? && smtp_username.present? &&
+      smtp_password_ciphertext.present? && smtp_from_address.present?
+  end
+
+  def smtp_password
+    return nil if smtp_password_ciphertext.blank?
+
+    self.class.smtp_encryptor.decrypt_and_verify(smtp_password_ciphertext)
+  rescue ActiveSupport::MessageEncryptor::InvalidMessage
+    nil
+  end
+
+  def smtp_password=(value)
+    self.smtp_password_ciphertext = value.present? ? self.class.smtp_encryptor.encrypt_and_sign(value) : nil
+  end
+
+  def smtp_settings
+    settings = {
+      address: smtp_host,
+      port: smtp_port,
+      user_name: smtp_username,
+      password: smtp_password,
+      authentication: :plain
+    }
+    if smtp_port == 465
+      settings[:ssl] = true
+    else
+      settings[:enable_starttls_auto] = true
+    end
+    settings
+  end
+
+  def clear_smtp!
+    update!(smtp_host: nil, smtp_username: nil, smtp_password_ciphertext: nil, smtp_from_address: nil)
+  end
+
+  def self.smtp_encryptor
+    key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key("tenant-smtp-password", 32)
+    ActiveSupport::MessageEncryptor.new(key)
+  end
+
   DOCUMENT_PATTERNS = %w[ none dots diagonal grid ].freeze
   DOCUMENT_PATTERN_LABELS = { "none" => "なし", "dots" => "ドット", "diagonal" => "斜めストライプ", "grid" => "格子" }.freeze
 

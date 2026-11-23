@@ -14,7 +14,9 @@ Rails.application.routes.draw do
   patch "password_setup/:token", to: "password_setups#update"
 
   root "dashboard#index"
-  resource :setting, only: %i[ show update ]
+  resource :setting, only: %i[ show update ] do
+    post :test_smtp
+  end
   resources :clients
   resources :items
   resources :item_categories, only: %i[ new create edit update destroy ]

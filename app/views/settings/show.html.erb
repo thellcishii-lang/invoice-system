@@ -188,8 +188,57 @@
             {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
     </div>
 
+    <h2 class="font-bold text-xl mt-8 mb-3">メール送信（SMTP）設定</h2>
+    <p class="text-gray-500 text-sm mb-3">
+      自分のメールアドレスから帳票を送りたい場合は、普段お使いのメールの SMTP 設定を入力してください。
+      未設定の場合は、システムのアドレスから送信されます（返信は御社のアドレスに届きます）。
+      例：Zoho Mail は smtp.zoho.jp / ポート 465、Gmail は smtp.gmail.com / ポート 587（アプリパスワードが必要）です。
+    </p>
+
+    <div class="my-5">
+      <%= form.label :smtp_from_address, "差出人メールアドレス" %>
+      <%= form.email_field :smtp_from_address, placeholder: "例: info@your-company.co.jp", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :smtp_host, "SMTPサーバー" %>
+      <%= form.text_field :smtp_host, placeholder: "例: smtp.zoho.jp", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :smtp_port, "ポート" %>
+      <%= form.number_field :smtp_port, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">465 は SSL、587 は STARTTLS で接続します。</p>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :smtp_username, "ユーザー名" %>
+      <%= form.text_field :smtp_username, autocomplete: "off", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :smtp_password, "パスワード" %>
+      <%= form.password_field :smtp_password, value: "", autocomplete: "new-password", placeholder: @tenant.smtp_password_ciphertext.present? ? "設定済み（変更する場合のみ入力）" : "", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">パスワードは暗号化して保存されます。空欄のまま保存すると、現在のパスワードを保持します。</p>
+    </div>
+
+    <% if @tenant.smtp_configured? %>
+      <div class="my-5">
+        <label class="flex items-center gap-2 text-sm">
+          <%= check_box_tag "tenant[clear_smtp]", "1", false, class: "rounded border-gray-400" %>
+          SMTP設定を削除する（システムのアドレスからの送信に戻す）
+        </label>
+      </div>
+    <% end %>
+
     <div class="inline">
       <%= form.submit "保存する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    </div>
+  <% end %>
+
+  <% if @tenant.smtp_configured? %>
+    <div class="mt-6">
+      <%= button_to "テスト送信（保存済みの設定で、御社のアドレス宛に送ります）", test_smtp_setting_path, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 font-medium cursor-pointer" %>
     </div>
   <% end %>
 </div>

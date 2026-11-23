@@ -102,3 +102,42 @@ class SettingsEditionTest < ActionDispatch::IntegrationTest
     assert tenants(:one).reload.construction?
   end
 end
+
+class SettingsSmtpTest < ActionDispatch::IntegrationTest
+  test "saves SMTP settings with an encrypted password and keeps it when left blank" do
+    sign_in_as(users(:one))
+
+    patch setting_path, params: { tenant: {
+      smtp_host: "smtp.zoho.jp", smtp_port: 465, smtp_username: "me@mycompany.co.jp",
+      smtp_from_address: "me@mycompany.co.jp", smtp_password: "my-secret"
+    } }
+    tenant = tenants(:one).reload
+    assert tenant.smtp_configured?
+    assert_equal "my-secret", tenant.smtp_password
+    assert_not_includes tenant.smtp_password_ciphertext, "my-secret"
+
+    patch setting_path, params: { tenant: { smtp_host: "smtp.zoho.jp", smtp_password: "" } }
+    assert_equal "my-secret", tenants(:one).reload.smtp_password, "空欄なら保持される"
+  end
+
+  test "clears SMTP settings" do
+    sign_in_as(users(:one))
+    tenants(:one).update!(smtp_host: "smtp.zoho.jp", smtp_username: "u",
+                           smtp_from_address: "u@example.co.jp", smtp_password: "pw")
+
+    patch setting_path, params: { tenant: { clear_smtp: "1" } }
+
+    assert_not tenants(:one).reload.smtp_configured?
+  end
+
+  test "test_smtp sends with saved settings" do
+    sign_in_as(users(:one))
+    tenants(:one).update!(smtp_host: "smtp.zoho.jp", smtp_username: "u",
+                           smtp_from_address: "u@example.co.jp", smtp_password: "pw")
+
+    assert_emails 1 do
+      post test_smtp_setting_path
+    end
+    assert_redirected_to setting_path
+  end
+end

@@ -40,3 +40,20 @@ class DocumentMailerReplyToTest < ActionMailer::TestCase
     assert_equal [ document.tenant.email ], mail.reply_to
   end
 end
+
+class DocumentMailerTenantSmtpTest < ActionMailer::TestCase
+  test "uses the tenant's own SMTP and address when configured" do
+    tenant = tenants(:one)
+    tenant.update!(smtp_host: "smtp.tenant.example.co.jp", smtp_port: 587,
+                   smtp_username: "billing@tenant.example.co.jp",
+                   smtp_from_address: "billing@tenant.example.co.jp", smtp_password: "pw1234")
+    document = documents(:invoice_one)
+    token = Rails.application.message_verifier("document/public_view").generate(document.id)
+
+    mail = DocumentMailer.document_email(document: document, recipient_email: "c@example.co.jp", token: token)
+
+    assert_equal [ "billing@tenant.example.co.jp" ], mail.from
+    assert_equal "smtp.tenant.example.co.jp", mail.delivery_method.settings[:address]
+    assert_equal "billing@tenant.example.co.jp", mail.delivery_method.settings[:user_name]
+  end
+end
