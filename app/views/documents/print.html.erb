@@ -44,13 +44,29 @@
   amount_label = { "estimate" => "お見積金額", "delivery" => "納品金額", "invoice" => "ご請求金額", "receipt" => "領収金額" }[@document.kind]
   deadline_label = { "estimate" => "見積有効期限", "invoice" => "お支払期限" }[@document.kind]
 %>
-<div class="summary">
-  <span><span class="amount-label"><%= amount_label %>：</span><span class="amount"><%= number_with_delimiter(@document.total) %>円</span>（税込）</span>
-  <span>消費税：<%= number_with_delimiter(@document.tax_amount) %>円</span>
-  <% if deadline_label && @document.due_date %>
-    <span><%= deadline_label %>：<%= @document.due_date.strftime("%Y年%m月%d日") %></span>
-  <% end %>
-</div>
+<table class="summary-table">
+  <tr>
+    <th><%= amount_label %></th>
+    <th>消費税</th>
+    <% if deadline_label && @document.due_date %>
+      <th><%= deadline_label %></th>
+    <% end %>
+  </tr>
+  <tr>
+    <td class="amount"><%= number_with_delimiter(@document.total) %>円（税込）</td>
+    <td><%= number_with_delimiter(@document.tax_amount) %>円</td>
+    <% if deadline_label && @document.due_date %>
+      <td><%= @document.due_date.strftime("%Y年%m月%d日") %></td>
+    <% end %>
+  </tr>
+</table>
+
+<% if (@document.estimate? || @document.invoice?) && tenant.bank_details_text.present? %>
+  <div class="section">
+    <div>お振込先</div>
+    <div class="notes"><%= tenant.bank_details_text %></div>
+  </div>
+<% end %>
 
 <table>
   <thead>
@@ -102,13 +118,6 @@
         <% end %>
       </tbody>
     </table>
-  </div>
-<% end %>
-
-<% if @document.invoice? && tenant.bank_details_text.present? %>
-  <div class="section">
-    <div>お振込先</div>
-    <div class="notes"><%= tenant.bank_details_text %></div>
   </div>
 <% end %>
 
