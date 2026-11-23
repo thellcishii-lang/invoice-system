@@ -1,0 +1,48 @@
+<% content_for(:title, "FAX送り状 #{@document.number}") %>
+<% client = @document.client %>
+<% tenant = @document.tenant %>
+<style>
+  .fax-title { font-size: 26px; font-weight: bold; text-align: center; letter-spacing: 0.4em; border-bottom: 3px double #000; padding-bottom: 4mm; margin-bottom: 8mm; }
+  .fax-table { width: 100%; border-collapse: collapse; margin-bottom: 8mm; }
+  .fax-table th { text-align: left; width: 26mm; padding: 2mm 3mm; border: 1px solid #999; background: #f3f4f6; font-weight: normal; }
+  .fax-table td { padding: 2mm 3mm; border: 1px solid #999; }
+  .fax-body { border: 1px solid #999; padding: 5mm; min-height: 70mm; line-height: 1.9; }
+</style>
+
+<div class="fax-title">FAX送り状</div>
+
+<table class="fax-table">
+  <tr>
+    <th>宛先</th>
+    <td style="font-size: 15px;"><%= client.name %> 御中</td>
+    <th>FAX番号</th>
+    <td><%= client.fax_number %></td>
+  </tr>
+  <tr>
+    <th>送信者</th>
+    <td><%= tenant.name %></td>
+    <th>電話番号</th>
+    <td><%= tenant.phone %></td>
+  </tr>
+  <tr>
+    <th>件名</th>
+    <td colspan="3"><%= @document.kind_label %>（<%= @document.number %>）<%= "　#{@document.title}" if @document.title.present? %></td>
+  </tr>
+  <tr>
+    <th>送信枚数</th>
+    <td>本状含め 2 枚</td>
+    <th>送信日</th>
+    <td><%= Date.current.strftime("%Y年%m月%d日") %></td>
+  </tr>
+</table>
+
+<div class="fax-body">
+  <% if @send_template %>
+    <%= simple_format(@send_template.render_body(@document)) %>
+  <% else %>
+    <p><%= client.name %> 御中</p>
+    <p>いつもお世話になっております。<%= tenant.name %> です。<br>
+    <%= @document.kind_label %>（<%= @document.number %>）をお送りいたしますので、ご確認のほどよろしくお願い申し上げます。</p>
+    <p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+  <% end %>
+</div>

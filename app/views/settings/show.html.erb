@@ -149,6 +149,35 @@
             {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
     </div>
 
+    <h3 class="font-bold text-lg mt-8 mb-3">帳票のデザイン</h3>
+
+    <div class="my-5">
+      <%= form.label :document_color, "帯の色" %>
+      <div class="flex items-center gap-3 mt-2">
+        <%= form.color_field :document_color, value: @tenant.document_color.presence || "#2f4d6e", class: "h-10 w-20 rounded-md border border-gray-400 bg-white p-1 cursor-pointer" %>
+        <span class="text-sm text-gray-600"><%= @tenant.document_color.present? ? "カスタム色（#{@tenant.document_color}）を使用中" : "現在はデフォルト（種別ごとの色）" %></span>
+      </div>
+      <label class="flex items-center gap-2 mt-2 text-sm">
+        <%= check_box_tag "tenant[document_color_reset]", "1", false, class: "rounded border-gray-400" %>
+        デフォルトの色に戻す
+      </label>
+      <p class="text-gray-500 text-sm mt-1">色を選ぶと、すべての帳票の帯がその色の淡色になります。</p>
+    </div>
+
+    <div class="my-5">
+      <label class="flex items-center gap-2">
+        <%= form.check_box :document_striped, class: "rounded border-gray-400" %>
+        明細の行をシマシマ（縞模様）にする
+      </label>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :document_pattern, "背景の柄" %>
+      <%= form.select :document_pattern,
+            Tenant::DOCUMENT_PATTERN_LABELS.map { |value, label| [ label, value ] },
+            {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
     <div class="inline">
       <%= form.submit "保存する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
     </div>

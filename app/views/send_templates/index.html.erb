@@ -1,0 +1,39 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
+    <h1 class="font-bold text-3xl">送り状テンプレート</h1>
+    <div class="flex gap-2">
+      <%= link_to "メール用を追加", new_send_template_path(channel: "email"), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+      <%= link_to "FAX用を追加", new_send_template_path(channel: "fax"), class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+    </div>
+  </div>
+
+  <p class="text-gray-600 text-sm mb-5">メール送信とFAX送り状の雛形です。それぞれ何個でも保存でき、送信のときに選べます。本文には《取引先名》《帳票番号》《合計金額》などの差し込み項目が使えます。</p>
+
+  <% if @send_templates.empty? %>
+    <p class="text-gray-500">テンプレートはまだ登録されていません。</p>
+  <% else %>
+    <table class="w-full text-left">
+      <thead>
+        <tr class="border-b border-gray-200 text-sm text-gray-500">
+          <th class="py-2 pr-4">種類</th>
+          <th class="py-2 pr-4">名前</th>
+          <th class="py-2 pr-4">件名</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @send_templates.each do |template| %>
+          <tr class="border-b border-gray-100">
+            <td class="py-2 pr-4"><%= template.channel_label %></td>
+            <td class="py-2 pr-4"><%= template.name %></td>
+            <td class="py-2 pr-4 text-sm text-gray-600"><%= template.subject %></td>
+            <td class="py-2 text-right whitespace-nowrap">
+              <%= link_to "編集", edit_send_template_path(template), class: "text-gray-700 hover:underline text-sm" %>
+              <%= button_to "削除", template, method: :delete, data: { turbo_confirm: "このテンプレートを削除しますか？" }, class: "text-red-600 hover:underline text-sm cursor-pointer inline" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

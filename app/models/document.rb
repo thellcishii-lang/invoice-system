@@ -1,7 +1,8 @@
 class Document < ApplicationRecord
-  KINDS = %w[ estimate delivery invoice receipt ].freeze
+  KINDS = %w[ estimate order delivery invoice receipt ].freeze
   KIND_LABELS = {
     "estimate" => "見積書",
+    "order" => "発注書",
     "delivery" => "納品書",
     "invoice" => "請求書",
     "receipt" => "領収書"
@@ -10,13 +11,16 @@ class Document < ApplicationRecord
   PAYMENT_STATUS_LABELS = { "unpaid" => "未入金", "partial" => "一部入金", "paid" => "入金済み" }.freeze
   # 変換できる組み合わせ（変換元の種別 => 変換先の種別）
   CONVERSIONS = {
-    "estimate" => %w[ delivery invoice ],
+    "estimate" => %w[ order delivery invoice ],
+    "order" => %w[ delivery invoice ],
     "delivery" => %w[ invoice ],
     "invoice" => %w[ receipt ],
     "receipt" => %w[]
   }.freeze
 
-  enum :kind, { estimate: "estimate", delivery: "delivery", invoice: "invoice", receipt: "receipt" }, validate: true
+  # 注: 発注書のキーは order だと Active Record の order メソッドと衝突するため
+  # purchase_order にし、DBの値だけ "order" にしている。
+  enum :kind, { estimate: "estimate", purchase_order: "order", delivery: "delivery", invoice: "invoice", receipt: "receipt" }, validate: true
   enum :status, { draft: "draft", issued: "issued" }, validate: true
   # 入金ステータスは請求書だけが持つ（他の種別は NULL のため、
   # enum の validate は使わず allow_nil 付きで自前検証する）
@@ -55,8 +59,13 @@ class Document < ApplicationRecord
   before_validation :assign_number, on: :create
   before_save :assign_line_positions
 
+  # enum のラベル（purchase_order）→ DB値（order）。表示マップや URL は DB値で統一する
+  def kind_value
+    Document.kinds[kind]
+  end
+
   def kind_label
-    KIND_LABELS[kind]
+    KIND_LABELS[kind_value]
   end
 
   def status_label
@@ -107,7 +116,7 @@ class Document < ApplicationRecord
   end
 
   def convertible_kinds
-    CONVERSIONS.fetch(kind)
+    CONVERSIONS.fetch(kind_value)
   end
 
   # 明細から合計を再計算して保存する。明細の保存後に呼ぶこと
@@ -135,16 +144,48 @@ class Document < ApplicationRecord
   end
 
   # メールで送信する。下書きなら発行済みにし、送信履歴を残す。
-  def deliver_by_email!(recipient_email)
+  def deliver_by_email!(recipient_email, send_template: nil)
     raise ArgumentError, "送信先メールアドレスがありません" if recipient_email.blank?
 
-    token = public_link_token
-    DocumentMailer.document_email(document: self, recipient_email: recipient_email, token: token).deliver_now
-    update!(status: :issued) if draft?
-    document_deliveries.create!(
-      tenant: tenant, channel: "email", recipient_email: recipient_email,
-      sent_at: Time.current, token_digest: Digest::SHA256.hexdigest(token)
-    )
+    delivery = attempt_delivery!(channel: "email", recipient: recipient_email, send_template: send_template)
+    raise ArgumentError, delivery.error_message if delivery.failed?
+
+    delivery
+  end
+
+  # 送信を試み、成否を送信履歴（DocumentDelivery）に記録して返す。
+  # 送信できなかった場合も例外ではなく「送信不可」の履歴として残るので、
+  # 後から確認して手動で再送できる。
+  def attempt_delivery!(channel:, recipient:, send_template: nil)
+    delivery = document_deliveries.build(tenant: tenant, channel: channel, recipient: recipient)
+    begin
+      raise ArgumentError, "送信先がありません" if recipient.blank?
+
+      case channel
+      when "email"
+        token = public_link_token
+        DocumentMailer.document_email(document: self, recipient_email: recipient, token: token, send_template: send_template).deliver_now
+        delivery.assign_attributes(status: "sent", sent_at: Time.current,
+                                   recipient_email: recipient,
+                                   token_digest: Digest::SHA256.hexdigest(token))
+      when "fax"
+        FaxSender.deliver!(document: self, fax_number: recipient)
+        delivery.assign_attributes(status: "sent", sent_at: Time.current)
+      else
+        raise ArgumentError, "送信方法が不正です"
+      end
+    rescue => e
+      delivery.assign_attributes(status: "failed", error_message: e.message)
+    end
+    delivery.save!
+    update!(status: :issued) if delivery.sent? && draft?
+    delivery
+  end
+
+  # 送信不可の履歴を残す（宛先未登録など、試みる前から送れない場合）
+  def record_failed_delivery!(channel:, error_message:)
+    document_deliveries.create!(tenant: tenant, channel: channel, recipient: "（未登録）",
+                                status: "failed", error_message: error_message)
   end
 
   # 別の種別へ変換した新しい帳票を作る。変換元は変更しない。

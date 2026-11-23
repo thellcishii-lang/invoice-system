@@ -4,6 +4,7 @@ class RecurringDocument < ApplicationRecord
   belongs_to :tenant
   belongs_to :client
   belongs_to :template_document, class_name: "Document"
+  belongs_to :send_template, optional: true
 
   scope :active, -> { where(active: true) }
   scope :due, ->(date) { active.where(next_run_date: ..date) }
@@ -50,16 +51,45 @@ class RecurringDocument < ApplicationRecord
     document
   end
 
-  # 実行してスケジュールを進める。auto_send が有効で取引先にメールアドレスが
-  # あれば、作成した請求書をそのまま送信する（発行済みになり送信履歴が残る）。
+  SEND_METHODS = %w[ none email fax ].freeze
+  SEND_METHOD_LABELS = { "none" => "指定しない（手動で印刷して送る）", "email" => "メールで送信", "fax" => "FAXで送信" }.freeze
+
+  validates :send_method, inclusion: { in: SEND_METHODS }
+
+  def send_method_label
+    SEND_METHOD_LABELS[send_method]
+  end
+
+  # 実行してスケジュールを進める。送信方法が決まっていれば、作成した請求書を
+  # その方法で送信する。送れなかった場合は送信履歴に「送信不可」で残り、
+  # 後から手動で再送できる。
   def run!(today)
     document = generate_document!(today)
-    document.deliver_by_email!(client.email) if auto_send && client.email.present?
+    case send_method
+    when "email"
+      if client.email.present?
+        document.attempt_delivery!(channel: "email", recipient: client.email,
+                                   send_template: matching_send_template)
+      else
+        document.record_failed_delivery!(channel: "email", error_message: "取引先にメールアドレスが登録されていません")
+      end
+    when "fax"
+      if client.fax_number.present?
+        document.attempt_delivery!(channel: "fax", recipient: client.fax_number)
+      else
+        document.record_failed_delivery!(channel: "fax", error_message: "取引先にFAX番号が登録されていません")
+      end
+    end
     update!(last_run_date: today, next_run_date: next_occurrence(today + 1.day))
     document
   end
 
   private
+    # 送り状テンプレートは、送信方法とチャネルが一致する場合だけ使う
+    def matching_send_template
+      send_template if send_template && send_template.channel == send_method
+    end
+
     def derive_due_date(issue_date)
       template = template_document
       return issue_date.end_of_month if template.due_date.blank?

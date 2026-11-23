@@ -10,8 +10,9 @@
       </p>
     </div>
     <div class="flex gap-2">
-      <%= link_to "メール送信", new_document_delivery_path(@document), class: "rounded-md px-3.5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium" %>
+      <%= link_to "送信", new_document_delivery_path(@document), class: "rounded-md px-3.5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium" %>
       <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+      <%= link_to "封筒宛名", envelope_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'envelope_preview', 'width=1050,height=560,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium" %>
       <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
       <%= button_to "複写", duplicate_document_path(@document), method: :post, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium cursor-pointer" %>
       <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "rounded-md px-3.5 py-2.5 bg-red-50 hover:bg-red-100 text-red-600 font-medium cursor-pointer" %>
@@ -23,6 +24,16 @@
       <%= link_to "定期請求にする", new_recurring_document_path(template_document_id: @document.id), class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium" %>
     </div>
   <% end %>
+
+  <div class="flex items-center gap-2 mb-5 flex-wrap">
+    <span class="text-sm text-gray-500">FAX送り状：</span>
+    <%= form_with url: fax_cover_document_path(@document), method: :get, target: "_blank", data: { turbo: false }, class: "flex items-center gap-2" do |form| %>
+      <%= form.select :send_template_id,
+            [ [ "標準の文面", nil ] ] + Current.tenant.send_templates.where(channel: "fax").order(:id).map { |t| [ t.name, t.id ] },
+            {}, class: "shadow-sm rounded-md border border-gray-400 px-2 py-1.5 text-sm" %>
+      <%= form.submit "送り状を印刷", class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium cursor-pointer" %>
+    <% end %>
+  </div>
 
   <% if @document.convertible_kinds.any? %>
     <div class="flex items-center gap-2 mb-5">
@@ -104,17 +115,34 @@
     <table class="w-full text-left mb-8 text-sm">
       <thead>
         <tr class="border-b border-gray-200 text-gray-500">
-          <th class="py-2 pr-4">送信日時</th>
+          <th class="py-2 pr-4">日時</th>
           <th class="py-2 pr-4">方法</th>
-          <th class="py-2">送信先</th>
+          <th class="py-2 pr-4">送信先</th>
+          <th class="py-2 pr-4">状態</th>
+          <th class="py-2"></th>
         </tr>
       </thead>
       <tbody>
-        <% @document.document_deliveries.each do |delivery| %>
-          <tr class="border-b border-gray-100">
-            <td class="py-2 pr-4"><%= delivery.sent_at.strftime("%Y/%m/%d %H:%M") %></td>
+        <% @document.document_deliveries.recent.each do |delivery| %>
+          <tr class="border-b border-gray-100 align-top">
+            <td class="py-2 pr-4 whitespace-nowrap"><%= (delivery.sent_at || delivery.created_at).strftime("%Y/%m/%d %H:%M") %></td>
             <td class="py-2 pr-4"><%= delivery.channel_label %></td>
-            <td class="py-2"><%= delivery.recipient_email %></td>
+            <td class="py-2 pr-4"><%= delivery.recipient_display %></td>
+            <td class="py-2 pr-4">
+              <% if delivery.sent? %>
+                <span class="inline-block rounded-full bg-green-100 text-green-800 px-2 py-0.5 text-xs font-medium">送信済み</span>
+              <% else %>
+                <span class="inline-block rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs font-medium">送信不可</span>
+                <% if delivery.error_message.present? %>
+                  <span class="block text-xs text-red-600 mt-1"><%= delivery.error_message %></span>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="py-2 text-right whitespace-nowrap">
+              <% if delivery.failed? %>
+                <%= button_to "再送する", resend_document_delivery_path(delivery), method: :post, class: "text-blue-600 hover:underline cursor-pointer" %>
+              <% end %>
+            </td>
           </tr>
         <% end %>
       </tbody>
@@ -167,5 +195,5 @@
     </div>
   <% end %>
 
-  <%= link_to "一覧に戻る", documents_path(kind: @document.kind), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <%= link_to "一覧に戻る", documents_path(kind: @document.kind_value), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
 </div>

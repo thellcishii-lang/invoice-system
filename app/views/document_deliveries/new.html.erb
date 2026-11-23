@@ -1,5 +1,5 @@
 <div class="mx-auto md:w-5/6 w-full">
-  <h1 class="font-bold text-3xl mb-5">メール送信</h1>
+  <h1 class="font-bold text-3xl mb-5">送信</h1>
 
   <dl class="grid grid-cols-2 gap-x-6 gap-y-3 mb-8 text-sm">
     <div><dt class="text-gray-500">帳票</dt><dd class="mt-0.5"><%= @document.kind_label %>（<%= @document.number %>）</dd></div>
@@ -13,13 +13,38 @@
 
   <%= form_with url: document_delivery_path(@document), method: :post, class: "contents" do |form| %>
     <div class="my-5">
+      <p class="mb-2">送信方法</p>
+      <label class="flex items-center gap-2 mb-2">
+        <%= form.radio_button :channel, "email", checked: @channel != "fax", class: "rounded border-gray-400" %>
+        メール
+      </label>
+      <label class="flex items-center gap-2">
+        <%= form.radio_button :channel, "fax", checked: @channel == "fax", class: "rounded border-gray-400" %>
+        FAX
+      </label>
+    </div>
+
+    <div class="my-5">
       <%= form.label :recipient_email, "送信先メールアドレス" %>
-      <%= form.email_field :recipient_email, value: @recipient_email, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <%= form.email_field :recipient_email, value: @recipient_email, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <% if @email_templates.any? %>
+      <div class="my-5">
+        <%= form.label :email_template_id, "メール送り状テンプレート" %>
+        <%= form.select :email_template_id, [ [ "標準の文面", nil ] ] + @email_templates.map { |t| [ t.name, t.id ] }, {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      </div>
+    <% end %>
+
+    <div class="my-5">
+      <%= form.label :recipient_fax, "送信先FAX番号" %>
+      <%= form.text_field :recipient_fax, value: @recipient_fax, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-sm text-gray-500 mt-1">FAXの送り状は、帳票の画面の「FAX送り状」から印刷できます（テンプレートを選べます）。</p>
     </div>
 
     <p class="text-sm text-gray-500 mb-5">
       メールには、ログインなしで帳票を確認できるリンク（有効期限30日）が含まれます。<br>
-      送信すると、この帳票は「発行済み」になり、送信履歴に残ります。
+      送信すると、この帳票は「発行済み」になり、送信履歴に残ります。送信できなかった場合も履歴に残り、後から再送できます。
     </p>
 
     <div class="flex gap-2">

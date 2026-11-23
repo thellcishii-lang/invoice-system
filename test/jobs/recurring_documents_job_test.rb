@@ -13,10 +13,10 @@ class RecurringDocumentsJobTest < ActiveJob::TestCase
     document
   end
 
-  def build_schedule(template:, day_of_month: 5, next_run_date:, auto_send: false, active: true)
+  def build_schedule(template:, day_of_month: 5, next_run_date:, send_method: "none", active: true)
     RecurringDocument.create!(
       tenant: template.tenant, client: template.client, template_document: template,
-      day_of_month: day_of_month, next_run_date: next_run_date, auto_send: auto_send, active: active
+      day_of_month: day_of_month, next_run_date: next_run_date, send_method: send_method, active: active
     )
   end
 
@@ -65,9 +65,9 @@ class RecurringDocumentsJobTest < ActiveJob::TestCase
     end
   end
 
-  test "auto_send delivers the mail and marks the invoice issued" do
+  test "send by email delivers the mail, marks the invoice issued and records the delivery" do
     template = build_template(client: clients(:one)) # clients(:one) にはメールアドレスがある
-    build_schedule(template: template, next_run_date: Date.new(2026, 12, 5), auto_send: true)
+    build_schedule(template: template, next_run_date: Date.new(2026, 12, 5), send_method: "email")
     today = Date.new(2026, 12, 5)
 
     assert_difference("DocumentDelivery.count", 1) do
@@ -80,12 +80,14 @@ class RecurringDocumentsJobTest < ActiveJob::TestCase
     assert document.issued?
     delivery = document.document_deliveries.first
     assert_equal clients(:one).email, delivery.recipient_email
+    assert_equal clients(:one).email, delivery.recipient
     assert_equal "email", delivery.channel
+    assert delivery.sent?
   end
 
-  test "auto_send without a client email creates a draft and sends nothing" do
+  test "send by email without a client email records a failed delivery and keeps the draft" do
     template = build_template(client: clients(:document_client)) # メールアドレスなし
-    build_schedule(template: template, next_run_date: Date.new(2026, 12, 5), auto_send: true)
+    build_schedule(template: template, next_run_date: Date.new(2026, 12, 5), send_method: "email")
     today = Date.new(2026, 12, 5)
 
     assert_no_difference -> { ActionMailer::Base.deliveries.size } do
@@ -93,6 +95,36 @@ class RecurringDocumentsJobTest < ActiveJob::TestCase
     end
 
     document = Document.where(client: clients(:document_client), issue_date: today).order(:id).last
+    assert document.draft?
+    delivery = document.document_deliveries.first
+    assert delivery.failed?
+    assert_match "メールアドレスが登録されていません", delivery.error_message
+  end
+
+  test "send by fax without a configured fax service records a failed delivery" do
+    client = clients(:one)
+    client.update!(fax_number: "03-0000-0000")
+    template = build_template(client: client)
+    build_schedule(template: template, next_run_date: Date.new(2026, 12, 5), send_method: "fax")
+    today = Date.new(2026, 12, 5)
+
+    RecurringDocumentsJob.perform_now(today)
+
+    document = Document.where(client: client, issue_date: today).order(:id).last
+    delivery = document.document_deliveries.first
+    assert delivery.failed?
+    assert_equal "fax", delivery.channel
+    assert_equal "03-0000-0000", delivery.recipient
+  end
+
+  test "no send method just creates the document with no delivery records" do
+    template = build_template(client: clients(:one))
+    build_schedule(template: template, next_run_date: Date.new(2026, 12, 5), send_method: "none")
+    today = Date.new(2026, 12, 5)
+
+    RecurringDocumentsJob.perform_now(today)
+
+    document = Document.where(client: clients(:one), issue_date: today).order(:id).last
     assert document.draft?
     assert_empty document.document_deliveries
   end

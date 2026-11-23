@@ -1,0 +1,53 @@
+<div class="w-full">
+  <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
+    <h1 class="font-bold text-3xl">送信履歴</h1>
+    <div class="flex gap-2 text-sm">
+      <%= link_to "すべて", document_deliveries_path, class: "hover:underline #{params[:status] == "failed" ? "text-gray-600" : "font-bold text-blue-700"}" %>
+      <%= link_to "送信不可のみ", document_deliveries_path(status: "failed"), class: "hover:underline #{params[:status] == "failed" ? "font-bold text-blue-700" : "text-gray-600"}" %>
+    </div>
+  </div>
+
+  <% if @deliveries.empty? %>
+    <p class="text-gray-500">送信履歴はまだありません。</p>
+  <% else %>
+    <table class="w-full text-left text-sm">
+      <thead>
+        <tr class="border-b border-gray-200 text-gray-500">
+          <th class="py-2 pr-4">日時</th>
+          <th class="py-2 pr-4">帳票</th>
+          <th class="py-2 pr-4">取引先</th>
+          <th class="py-2 pr-4">方法</th>
+          <th class="py-2 pr-4">送信先</th>
+          <th class="py-2 pr-4">状態</th>
+          <th class="py-2"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @deliveries.each do |delivery| %>
+          <tr class="border-b border-gray-100 align-top">
+            <td class="py-2 pr-4 whitespace-nowrap"><%= (delivery.sent_at || delivery.created_at).strftime("%Y/%m/%d %H:%M") %></td>
+            <td class="py-2 pr-4"><%= link_to "#{delivery.document.kind_label} #{delivery.document.number}", delivery.document, class: "text-blue-600 hover:underline" %></td>
+            <td class="py-2 pr-4"><%= delivery.document.client.name %></td>
+            <td class="py-2 pr-4"><%= delivery.channel_label %></td>
+            <td class="py-2 pr-4"><%= delivery.recipient_display %></td>
+            <td class="py-2 pr-4">
+              <% if delivery.sent? %>
+                <span class="inline-block rounded-full bg-green-100 text-green-800 px-2 py-0.5 text-xs font-medium">送信済み</span>
+              <% else %>
+                <span class="inline-block rounded-full bg-red-100 text-red-800 px-2 py-0.5 text-xs font-medium">送信不可</span>
+                <% if delivery.error_message.present? %>
+                  <span class="block text-xs text-red-600 mt-1"><%= delivery.error_message %></span>
+                <% end %>
+              <% end %>
+            </td>
+            <td class="py-2 text-right whitespace-nowrap">
+              <% if delivery.failed? %>
+                <%= button_to "再送する", resend_document_delivery_path(delivery), method: :post, class: "text-blue-600 hover:underline cursor-pointer" %>
+              <% end %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  <% end %>
+</div>

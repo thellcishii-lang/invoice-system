@@ -238,6 +238,55 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal (original.due_date - original.issue_date).to_i, (copy.due_date - copy.issue_date).to_i
   end
 
+  test "creates an order document and converts estimate to order to delivery" do
+    sign_in_as(users(:one))
+
+    assert_difference("Document.count", 1) do
+      post documents_path, params: { document: {
+        kind: "order", client_id: clients(:one).id, issue_date: "2026-11-23", due_date: "2026-12-10",
+        document_lines_attributes: { "0" => { name: "部品一式", quantity: 1, unit_price: 50000, tax_rate: "standard" } }
+      } }
+    end
+    order = Document.order(:id).last
+    assert order.purchase_order?
+    assert_equal "発注書", order.kind_label
+
+    converted = documents(:estimate_one).convert_to("order")
+    assert converted.purchase_order?
+    delivered = converted.convert_to("delivery")
+    assert delivered.delivery?
+  end
+
+  test "order print shows the order band labels and delivery deadline" do
+    sign_in_as(users(:one))
+    order = tenants(:one).documents.build(
+      kind: "order", client: clients(:one), issue_date: Date.new(2026, 11, 23),
+      due_date: Date.new(2026, 12, 10), title: "部品発注"
+    )
+    order.document_lines.build(name: "部品一式", quantity: 1, unit_price: 50000, tax_rate: "standard", position: 1)
+    order.save!
+    order.recalculate_totals!
+
+    get print_document_path(order)
+
+    assert_response :success
+    assert_match "発注書", response.body
+    assert_match "発注金額", response.body
+    assert_match "納期", response.body
+  end
+
+  test "print reflects the tenant design settings (custom color, stripes, pattern)" do
+    sign_in_as(users(:one))
+    tenants(:one).update!(document_color: "#ff0000", document_striped: true, document_pattern: "dots")
+
+    get print_document_path(documents(:invoice_one))
+
+    assert_response :success
+    assert_match "#ffd1d1", response.body, "帯はカスタム色の淡色になる"
+    assert_match "nth-child(even)", response.body, "シマシマのCSSが入る"
+    assert_match "radial-gradient", response.body, "背景の柄（ドット）が入る"
+  end
+
   test "converts a document via POST" do
     sign_in_as(users(:one))
 

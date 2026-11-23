@@ -1,3 +1,11 @@
+<% if @custom_body.present? -%>
+<%= @custom_body %>
+
+帳票の内容は、以下のリンクからご確認いただけます。
+（リンクの有効期限は発行から30日間です）
+
+<%= @public_url %>
+<% else -%>
 <%= @document.client.name %> 様
 
 いつもお世話になっております。<%= @document.tenant.name %> です。
@@ -30,4 +38,5 @@
 <% end -%>
 <% if @document.tenant.phone.present? -%>
 TEL: <%= @document.tenant.phone %>
+<% end -%>
 <% end -%>

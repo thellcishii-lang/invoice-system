@@ -1,0 +1,41 @@
+<% if send_template.errors.any? %>
+  <div class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg">
+    <ul>
+      <% send_template.errors.full_messages.each do |message| %>
+        <li><%= message %></li>
+      <% end %>
+    </ul>
+  </div>
+<% end %>
+
+<%= form_with model: send_template, class: "contents" do |form| %>
+  <div class="my-5">
+    <%= form.label :channel, "種類" %>
+    <%= form.select :channel, SendTemplate::CHANNEL_LABELS.map { |value, label| [ label, value ] }, {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :name, "テンプレート名" %>
+    <%= form.text_field :name, required: true, placeholder: "例: 月末の請求書送付", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :subject, "件名（メールのみ）" %>
+    <%= form.text_field :subject, placeholder: "例: 《帳票種別》（《帳票番号》）をお送りします", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    <p class="text-gray-500 text-sm mt-1">空欄の場合は標準の件名になります。FAXでは使いません。</p>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :body, "本文" %>
+    <%= form.text_area :body, rows: 10, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    <p class="text-gray-500 text-sm mt-1">
+      差し込み項目: 《取引先名》《帳票種別》《帳票番号》《件名》《合計金額》《発行日》《支払期限》《自社名》<br>
+      メールの場合、帳票を確認できるリンクは本文の後ろに自動で付きます。
+    </p>
+  </div>
+
+  <div class="inline">
+    <%= form.submit send_template.persisted? ? "更新する" : "登録する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+  </div>
+  <%= link_to "戻る", send_templates_path, class: "ml-2 text-gray-700 hover:underline" %>
+<% end %>

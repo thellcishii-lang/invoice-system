@@ -44,7 +44,7 @@ class ClientsController < ApplicationController
     end
 
     def client_params
-      params.expect(client: %i[ name name_kana postal_code address phone email
+      params.expect(client: %i[ name name_kana postal_code address phone email fax_number
                                 contact_person payment_terms registration_number archived ])
     end
 end

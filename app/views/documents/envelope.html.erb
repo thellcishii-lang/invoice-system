@@ -1,0 +1,27 @@
+<% content_for(:title, "封筒宛名 #{@document.number}") %>
+<% client = @document.client %>
+<% tenant = @document.tenant %>
+<style>
+  @page { size: 235mm 120mm; margin: 0; }
+  .sheet { width: 235mm; min-height: 120mm; padding: 12mm 16mm; position: relative; display: block; }
+  .env-recipient { margin-left: 52mm; margin-top: 4mm; }
+  .env-postal { font-size: 20px; letter-spacing: 0.25em; }
+  .env-address { font-size: 15px; margin-top: 5mm; line-height: 1.7; }
+  .env-name { font-size: 21px; font-weight: bold; margin-top: 7mm; }
+  .env-sender { position: absolute; left: 16mm; bottom: 9mm; font-size: 10px; color: #333; line-height: 1.6; }
+  .env-doc { position: absolute; right: 16mm; bottom: 9mm; font-size: 9px; color: #666; }
+</style>
+
+<div class="env-recipient">
+  <% if client.postal_code.present? %>
+    <div class="env-postal">〒<%= client.postal_code %></div>
+  <% end %>
+  <div class="env-address"><%= client.address %></div>
+  <div class="env-name"><%= client.name %>　<%= client.contact_person.present? ? "#{client.contact_person} 様" : "御中" %></div>
+</div>
+
+<div class="env-sender">
+  <% if tenant.postal_code.present? %>〒<%= tenant.postal_code %> <% end %><%= tenant.address %><br>
+  <%= tenant.name %>
+</div>
+<div class="env-doc"><%= @document.kind_label %> <%= @document.number %> 在中</div>

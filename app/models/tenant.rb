@@ -14,6 +14,13 @@ class Tenant < ApplicationRecord
   has_many :clients, dependent: :restrict_with_error
   has_many :items, dependent: :restrict_with_error
   has_many :item_categories, dependent: :restrict_with_error
+  has_many :send_templates, dependent: :restrict_with_error
+
+  DOCUMENT_PATTERNS = %w[ none dots diagonal grid ].freeze
+  DOCUMENT_PATTERN_LABELS = { "none" => "なし", "dots" => "ドット", "diagonal" => "斜めストライプ", "grid" => "格子" }.freeze
+
+  validates :document_pattern, inclusion: { in: DOCUMENT_PATTERNS }
+  validates :document_color, format: { with: /\A#[0-9a-fA-F]{6}\z/ }, allow_blank: true
   has_many :documents, dependent: :restrict_with_error
   has_many :document_sequences, dependent: :restrict_with_error
   has_many :document_deliveries, dependent: :restrict_with_error

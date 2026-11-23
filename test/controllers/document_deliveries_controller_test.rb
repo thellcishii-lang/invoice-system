@@ -78,6 +78,47 @@ class DocumentDeliveriesControllerTest < ActionDispatch::IntegrationTest
     assert_response :not_found
   end
 
+  test "index lists deliveries with their status and resend resends a failed one" do
+    sign_in_as(users(:one))
+    document = documents(:invoice_one)
+    document.client.update!(email: "billing@document-client.example.co.jp")
+    failed = document.document_deliveries.create!(
+      tenant: tenants(:one), channel: "email", recipient: "old@example.co.jp",
+      status: "failed", error_message: "送信できませんでした"
+    )
+
+    get document_deliveries_path
+    assert_response :success
+    assert_match "送信不可", response.body
+
+    before_ids = DocumentDelivery.pluck(:id)
+    assert_difference("DocumentDelivery.count", 1) do
+      assert_difference -> { ActionMailer::Base.deliveries.size }, 1 do
+        post resend_document_delivery_path(failed)
+      end
+    end
+
+    resent = DocumentDelivery.where.not(id: before_ids).first
+    assert resent.sent?
+    assert_equal "billing@document-client.example.co.jp", resent.recipient
+  end
+
+  test "create with fax channel records a failed delivery while fax is unconfigured" do
+    sign_in_as(users(:one))
+    document = documents(:invoice_one)
+
+    before_ids = DocumentDelivery.pluck(:id)
+    assert_difference("DocumentDelivery.count", 1) do
+      post document_delivery_path(document), params: { channel: "fax", recipient_fax: "03-1111-2222" }
+    end
+
+    assert_redirected_to document_path(document)
+    delivery = DocumentDelivery.where.not(id: before_ids).first
+    assert delivery.failed?
+    assert_equal "fax", delivery.channel
+    assert_equal "03-1111-2222", delivery.recipient
+  end
+
   test "show page lists the delivery history" do
     sign_in_as(users(:one))
 

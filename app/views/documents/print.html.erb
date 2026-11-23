@@ -1,7 +1,17 @@
 <% content_for(:title, "#{@document.kind_label} #{@document.number}") %>
 <% tenant = @document.tenant %>
-<% band_color = { "estimate" => "#d2e7d0", "invoice" => "#d2e4f6", "delivery" => "#f8edbe", "receipt" => "#f9dfc4" }[@document.kind] %>
-<% band_text_color = { "estimate" => "#2f5d33", "invoice" => "#2f4d6e", "delivery" => "#6e5f24", "receipt" => "#7c4a1e" }[@document.kind] %>
+<% band_color = band_color_for(@document) %>
+<% band_text_color = band_text_color_for(@document) %>
+<% if tenant.document_striped? || document_pattern_style(tenant) %>
+  <style>
+    <% if tenant.document_striped? %>
+      .items-table tbody tr:nth-child(even) td { background: #f9fafb; }
+    <% end %>
+    <% if document_pattern_style(tenant) %>
+      .sheet { <%= document_pattern_style(tenant) %> }
+    <% end %>
+  </style>
+<% end %>
 
 <% if tenant.logo_image? && tenant.logo_placement_value == "top" %>
   <div class="logo-top" style="text-align: <%= tenant.logo_alignment_value %>">
@@ -16,6 +26,9 @@
   番号：<%= @document.number %>
   <% if @document.invoice? && @document.due_date %>
     <br>お支払期限：<%= @document.due_date.strftime("%Y年%m月%d日") %>
+  <% end %>
+  <% if @document.purchase_order? && @document.due_date %>
+    <br>納期：<%= @document.due_date.strftime("%Y年%m月%d日") %>
   <% end %>
 </div>
 
@@ -49,8 +62,8 @@
 </div>
 
 <%
-  amount_label = { "estimate" => "お見積金額", "delivery" => "納品金額", "invoice" => "ご請求金額", "receipt" => "領収金額" }[@document.kind]
-  deadline_label = { "estimate" => "見積有効期限", "invoice" => "お支払期限" }[@document.kind]
+  amount_label = { "estimate" => "お見積金額", "order" => "発注金額", "delivery" => "納品金額", "invoice" => "ご請求金額", "receipt" => "領収金額" }[@document.kind_value]
+  deadline_label = { "estimate" => "見積有効期限", "order" => "納期", "invoice" => "お支払期限" }[@document.kind_value]
 %>
 <table class="summary-table">
   <tr>
@@ -76,7 +89,7 @@
   </div>
 <% end %>
 
-<table>
+<table class="items-table">
   <thead>
     <tr>
       <th>品名</th>

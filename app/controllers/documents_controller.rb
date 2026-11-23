@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: %i[ show edit update destroy print convert duplicate ]
+  before_action :set_document, only: %i[ show edit update destroy print envelope fax_cover convert duplicate ]
 
   def index
     @kind = params[:kind] if Document::KINDS.include?(params[:kind])
@@ -55,6 +55,17 @@ class DocumentsController < ApplicationController
 
   # 印刷用表示（ブラウザ印刷でPDF化する）
   def print
+    render layout: "print"
+  end
+
+  # 封筒の宛名印刷（長形3号・横向き）
+  def envelope
+    render layout: "print"
+  end
+
+  # FAX送り状の印刷（テンプレート指定があれば差し込む）
+  def fax_cover
+    @send_template = Current.tenant.send_templates.where(channel: "fax").find_by(id: params[:send_template_id])
     render layout: "print"
   end
 

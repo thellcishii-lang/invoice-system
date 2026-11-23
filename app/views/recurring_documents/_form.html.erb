@@ -35,11 +35,19 @@
   </div>
 
   <div class="my-5">
-    <label class="flex items-center gap-2">
-      <%= form.check_box :auto_send, class: "rounded border-gray-400" %>
-      作成した請求書を取引先へ自動でメール送信する
-    </label>
-    <p class="text-sm text-gray-500 mt-1">取引先にメールアドレスが登録されている場合のみ送信されます。</p>
+    <%= form.label :send_method, "送信方法" %>
+    <%= form.select :send_method,
+          RecurringDocument::SEND_METHOD_LABELS.map { |value, label| [ label, value ] },
+          {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    <p class="text-sm text-gray-500 mt-1">作成した請求書を、その方法で自動送信します。送信先は取引先に登録したメールアドレス／FAX番号です。送れなかった場合は送信履歴に残り、後から手動で再送できます。</p>
+  </div>
+
+  <div class="my-5">
+    <%= form.label :send_template_id, "送り状テンプレート" %>
+    <%= form.select :send_template_id,
+          [ [ "標準の文面", nil ] ] + Current.tenant.send_templates.order(:channel, :id).map { |t| [ "#{t.name}（#{t.channel_label}）", t.id ] },
+          {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    <p class="text-sm text-gray-500 mt-1">送信方法と種類（メール／FAX）が一致するテンプレートだけが使われます。</p>
   </div>
 
   <% unless recurring_document.new_record? %>

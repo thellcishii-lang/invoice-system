@@ -21,6 +21,8 @@ Rails.application.routes.draw do
   resources :documents do
     member do
       get :print
+      get :envelope
+      get :fax_cover
       post :convert
       post :duplicate
     end
@@ -29,6 +31,12 @@ Rails.application.routes.draw do
   end
   resources :recurring_documents, except: %i[ show ]
   resources :unpaid_invoices, only: %i[ index ]
+  resources :document_deliveries, only: %i[ index ] do
+    member do
+      post :resend
+    end
+  end
+  resources :send_templates, except: %i[ show ]
   resource :report, only: %i[ show ], controller: "reports"
   # リンク共有：署名付きトークンでログインなしに帳票の印刷画面を見せる
   get "public/documents/:token", to: "public_documents#show", as: :public_document

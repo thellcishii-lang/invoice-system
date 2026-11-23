@@ -32,12 +32,15 @@
           <nav class="ml-auto flex items-center gap-4 text-sm flex-wrap">
             <%= link_to "ダッシュボード", root_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "見積書", documents_path(kind: "estimate"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "発注書", documents_path(kind: "order"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "納品書", documents_path(kind: "delivery"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "請求書", documents_path(kind: "invoice"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "領収書", documents_path(kind: "receipt"), class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "定期請求", recurring_documents_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "未入金一覧", unpaid_invoices_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "レポート", report_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "送信履歴", document_deliveries_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
+            <%= link_to "送り状", send_templates_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "取引先", clients_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "品目", items_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>
             <%= link_to "事業者マスター", setting_path, class: "text-slate-100 hover:text-white hover:underline whitespace-nowrap" %>

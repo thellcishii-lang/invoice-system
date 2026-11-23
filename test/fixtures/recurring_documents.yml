@@ -4,7 +4,7 @@ monthly_invoice:
   template_document: invoice_one
   day_of_month: 10
   active: true
-  auto_send: false
+  send_method: none
   next_run_date: 2027-01-10
 
 other_tenant_schedule:
@@ -13,5 +13,5 @@ other_tenant_schedule:
   template_document: invoice_two
   day_of_month: 15
   active: true
-  auto_send: true
+  send_method: email
   next_run_date: 2027-01-15

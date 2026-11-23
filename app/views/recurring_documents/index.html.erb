@@ -15,7 +15,7 @@
           <th class="py-2 pr-4">実行日</th>
           <th class="py-2 pr-4">次回実行日</th>
           <th class="py-2 pr-4">前回実行日</th>
-          <th class="py-2 pr-4">自動送信</th>
+          <th class="py-2 pr-4">送信方法</th>
           <th class="py-2 pr-4">状態</th>
           <th class="py-2"></th>
         </tr>
@@ -30,7 +30,7 @@
             <td class="py-2 pr-4">毎月<%= schedule.day_of_month %>日</td>
             <td class="py-2 pr-4"><%= schedule.next_run_date %></td>
             <td class="py-2 pr-4"><%= schedule.last_run_date || "―" %></td>
-            <td class="py-2 pr-4"><%= schedule.auto_send? ? "する" : "しない" %></td>
+            <td class="py-2 pr-4"><%= schedule.send_method_label %></td>
             <td class="py-2 pr-4"><%= schedule.active? ? "有効" : "停止中" %></td>
             <td class="py-2 text-right whitespace-nowrap">
               <%= link_to "編集", edit_recurring_document_path(schedule), class: "text-gray-700 hover:underline text-sm" %>

@@ -65,6 +65,6 @@ class RecurringDocumentsController < ApplicationController
     end
 
     def recurring_document_params
-      params.expect(recurring_document: [ :template_document_id, :day_of_month, :auto_send, :active ])
+      params.expect(recurring_document: [ :template_document_id, :day_of_month, :send_method, :send_template_id, :active ])
     end
 end

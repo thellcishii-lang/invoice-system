@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_181000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_184000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -28,6 +28,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_181000) do
     t.boolean "archived", default: false, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "fax_number"
     t.index ["tenant_id"], name: "index_clients_on_tenant_id"
   end
 
@@ -35,11 +36,14 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_181000) do
     t.bigint "tenant_id", null: false
     t.bigint "document_id", null: false
     t.string "channel", null: false
-    t.string "recipient_email", null: false
-    t.datetime "sent_at", null: false
+    t.string "recipient_email"
+    t.datetime "sent_at"
     t.string "token_digest"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "status", default: "sent", null: false
+    t.string "recipient"
+    t.text "error_message"
     t.index ["document_id"], name: "index_document_deliveries_on_document_id"
     t.index ["tenant_id"], name: "index_document_deliveries_on_tenant_id"
   end
@@ -147,14 +151,27 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_181000) do
     t.bigint "template_document_id", null: false
     t.integer "day_of_month", null: false
     t.boolean "active", default: true, null: false
-    t.boolean "auto_send", default: false, null: false
     t.date "last_run_date"
     t.date "next_run_date", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "send_method", default: "none", null: false
+    t.bigint "send_template_id"
     t.index ["client_id"], name: "index_recurring_documents_on_client_id"
+    t.index ["send_template_id"], name: "index_recurring_documents_on_send_template_id"
     t.index ["template_document_id"], name: "index_recurring_documents_on_template_document_id"
     t.index ["tenant_id"], name: "index_recurring_documents_on_tenant_id"
+  end
+
+  create_table "send_templates", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "channel", null: false
+    t.string "name", null: false
+    t.string "subject"
+    t.text "body", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id"], name: "index_send_templates_on_tenant_id"
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -211,6 +228,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_181000) do
     t.string "logo_placement"
     t.string "logo_alignment"
     t.integer "item_category_counter", default: 0, null: false
+    t.string "document_color"
+    t.boolean "document_striped", default: false, null: false
+    t.string "document_pattern", default: "none", null: false
     t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end
@@ -244,7 +264,9 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_181000) do
   add_foreign_key "payments", "tenants"
   add_foreign_key "recurring_documents", "clients"
   add_foreign_key "recurring_documents", "documents", column: "template_document_id"
+  add_foreign_key "recurring_documents", "send_templates"
   add_foreign_key "recurring_documents", "tenants"
+  add_foreign_key "send_templates", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "signup_applications", "tenants"
   add_foreign_key "users", "tenants"
