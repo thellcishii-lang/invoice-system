@@ -21,6 +21,7 @@ class SignupProvisioning
       tenant = Tenant.create!(
         name: @application.company_name,
         email: @application.email,
+        edition: @application.edition,
         billing_status: :active,
         stripe_customer_id: @checkout_session.customer,
         stripe_subscription_id: @checkout_session.subscription

@@ -23,6 +23,7 @@
   <% end %>
 
   <%= form_with model: @application, url: confirm_signups_path, class: "contents" do |form| %>
+    <%= form.hidden_field :edition %>
     <div class="my-5">
       <%= form.label :company_name, "会社名（屋号でも可）" %>
       <%= form.text_field :company_name, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>

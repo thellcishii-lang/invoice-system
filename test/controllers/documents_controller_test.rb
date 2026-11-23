@@ -325,3 +325,37 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_match "8%", response.body
   end
 end
+
+class ConstructionPrintTest < ActionDispatch::IntegrationTest
+  test "construction print shows cover, summary by category, and per-category details" do
+    sign_in_as(users(:one))
+    tenant = tenants(:one)
+    category = tenant.item_categories.create!(name: "内装工事")
+    item = tenant.items.create!(name: "壁クロス貼り", item_category: category)
+    estimate = tenant.documents.build(kind: "estimate", client: clients(:one),
+      issue_date: Date.new(2026, 11, 23), due_date: Date.new(2026, 12, 23), title: "店舗改装工事")
+    estimate.document_lines.build(item: item, name: "壁クロス貼り", quantity: 10, unit: "m2", unit_price: 1500, tax_rate: "standard", position: 1)
+    estimate.document_lines.build(name: "諸経費", quantity: 1, unit_price: 5000, tax_rate: "standard", position: 2)
+    estimate.save!
+    estimate.recalculate_totals!
+
+    get construction_print_document_path(estimate)
+
+    assert_response :success
+    assert_match "御見積金額", response.body
+    assert_match "内訳書", response.body
+    assert_match "内装工事", response.body
+    assert_match "その他", response.body
+    assert_match "A4 landscape", response.body
+  end
+
+  test "estimate page offers the construction print for construction tenants" do
+    sign_in_as(users(:one))
+    tenants(:one).update!(edition: "construction")
+
+    get document_path(documents(:estimate_one))
+
+    assert_response :success
+    assert_match "建築様式", response.body
+  end
+end

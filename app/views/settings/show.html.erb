@@ -128,6 +128,16 @@
       <p class="text-gray-500 text-sm mt-1">振込先は請求書の下部に「銀行名 支店名 種別 番号／口座名義」の形で表示されます。</p>
     </div>
 
+    <h2 class="font-bold text-xl mt-8 mb-3">製品エディション</h2>
+
+    <div class="my-5">
+      <%= form.label :edition, "エディション" %>
+      <%= form.select :edition,
+            Tenant::EDITION_LABELS.map { |value, label| [ label, value ] },
+            {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">建築を選ぶと、見積書の印刷が建築様式（表紙＋内訳集計＋分類別明細・横書き）になります。本番では申込時に決まります（ここでは確認のため切り替えできます）。</p>
+    </div>
+
     <h2 class="font-bold text-xl mt-8 mb-3">帳票の設定</h2>
 
     <div class="my-5">

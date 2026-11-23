@@ -35,7 +35,7 @@ class SettingsController < ApplicationController
 
   private
     def tenant_params
-      params.expect(tenant: %i[ name invoice_registration_number postal_code address phone email
+      params.expect(tenant: %i[ name edition invoice_registration_number postal_code address phone email
                                 bank_name bank_branch bank_account_type bank_account_number bank_account_holder
                                 logo_placement logo_alignment
                                 document_number_prefix tax_rounding tax_display

@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :documents do
     member do
       get :print
+      get :construction_print
       get :envelope
       get :fax_cover
       post :convert

@@ -7,6 +7,7 @@ class SignupApplication < ApplicationRecord
 
   normalizes :email, with: ->(e) { e.strip.downcase }
 
+  validates :edition, inclusion: { in: Tenant::EDITIONS }
   validates :company_name, presence: true
   validates :contact_name, presence: true
   validates :email, presence: true, format: { with: URI::MailTo::EMAIL_REGEXP }

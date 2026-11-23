@@ -11,7 +11,12 @@
     </div>
     <div class="flex gap-2">
       <%= link_to "送信", new_document_delivery_path(@document), class: "rounded-md px-3.5 py-2.5 bg-green-600 hover:bg-green-500 text-white font-medium" %>
-      <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+      <% if @document.estimate? && Current.tenant.construction? %>
+        <%= link_to "印刷/PDF（建築様式）", construction_print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=1250,height=920,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+        <%= link_to "標準様式で印刷", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 font-medium" %>
+      <% else %>
+        <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+      <% end %>
       <%= link_to "封筒宛名", envelope_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'envelope_preview', 'width=1050,height=560,scrollbars=yes'); return false;", class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium" %>
       <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
       <%= button_to "複写", duplicate_document_path(@document), method: :post, class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium cursor-pointer" %>

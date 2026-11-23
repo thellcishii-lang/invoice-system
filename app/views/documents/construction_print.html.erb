@@ -1,0 +1,123 @@
+<% content_for :title, "#{@document.kind_label} #{@document.number}（建築様式）" %>
+<% tenant = @document.tenant %>
+<% band_color = band_color_for(@document) %>
+<% band_text_color = band_text_color_for(@document) %>
+<style>
+  @page { size: A4 landscape; margin: 0; }
+  .sheet { display: block; width: 297mm; min-height: 0; padding: 0; background: transparent; box-shadow: none; }
+  .cpage { width: 297mm; min-height: 210mm; padding: 12mm 15mm; background: #fff; page-break-after: always; position: relative;
+           <% if document_pattern_style(tenant) %><%= document_pattern_style(tenant) %><% end %> }
+  .cpage:last-child { page-break-after: auto; }
+  @media screen { .cpage { margin: 0 auto 8mm; box-shadow: 0 2px 14px rgba(0, 0, 0, 0.35); } }
+  @media print { .cpage { margin: 0; } }
+  .cover-band { background: <%= band_color %>; color: <%= band_text_color %>; text-align: center; font-size: 30px; font-weight: bold; letter-spacing: 0.6em; padding: 14px 0 14px 0.6em; margin-top: 18mm; }
+  .cover-client { font-size: 24px; font-weight: bold; border-bottom: 2px solid #000; display: inline-block; padding: 0 24px 4px 4px; margin-top: 16mm; }
+  .cover-title { font-size: 16px; margin-top: 8mm; }
+  .cover-total { font-size: 26px; font-weight: bold; margin-top: 10mm; }
+  .cover-total .yen { border-bottom: 3px double #000; padding: 0 12px; }
+  .cover-meta { position: absolute; right: 15mm; bottom: 14mm; text-align: left; font-size: 13px; line-height: 1.9; }
+  .cover-dates { position: absolute; left: 15mm; bottom: 14mm; font-size: 13px; line-height: 1.9; }
+  .page-heading { background: <%= band_color %>; color: <%= band_text_color %>; font-size: 17px; font-weight: bold; padding: 6px 12px; margin-bottom: 10px; }
+  .group-heading { background: <%= band_color %>; color: <%= band_text_color %>; font-size: 16px; font-weight: bold; padding: 6px 12px; margin-bottom: 10px; display: flex; justify-content: space-between; }
+  .sum-row td { font-weight: bold; background: #f8fafc; }
+  .total-row td { font-weight: bold; font-size: 14px; }
+  <% if tenant.document_striped? %>
+    .items-table tbody tr:nth-child(even) td { background: #eef2f7; }
+  <% end %>
+</style>
+
+<%# 1ページ目: 表紙 %>
+<div class="cpage">
+  <% if tenant.logo_image? && tenant.logo_placement_value == "top" %>
+    <div class="logo-top" style="text-align: <%= tenant.logo_alignment_value %>">
+      <img class="logo-img" src="<%= tenant.logo_data_uri %>" alt="">
+    </div>
+  <% end %>
+
+  <div class="cover-band"><%= @document.kind_label %></div>
+
+  <div class="cover-client"><%= @document.client.name %> 様</div>
+  <% if @document.title.present? %>
+    <div class="cover-title">件名：<%= @document.title %></div>
+  <% end %>
+
+  <div class="cover-total">御見積金額　<span class="yen">¥<%= number_with_delimiter(@document.total) %>―</span>（税込）</div>
+
+  <div class="cover-dates">
+    発行日：<%= @document.issue_date.strftime("%Y年%m月%d日") %><br>
+    <% if @document.due_date %>見積有効期限：<%= @document.due_date.strftime("%Y年%m月%d日") %><br><% end %>
+    番号：<%= @document.number %>
+  </div>
+
+  <div class="cover-meta">
+    <strong><%= tenant.name %></strong><br>
+    〒<%= tenant.postal_code %> <%= tenant.address %><br>
+    <% if tenant.phone.present? %>TEL: <%= tenant.phone %><br><% end %>
+    <% if tenant.invoice_registration_number.present? %>登録番号: <%= tenant.invoice_registration_number %><% end %>
+  </div>
+</div>
+
+<%# 2ページ目: 内訳集計（中分類ごとの合計） %>
+<div class="cpage">
+  <div class="page-heading">内訳書</div>
+  <table>
+    <thead>
+      <tr>
+        <th>中分類</th>
+        <th class="right" style="width: 180px;">金額</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @groups.each do |category, lines| %>
+        <tr>
+          <td><%= category ? category.path_name : "その他" %></td>
+          <td class="right"><%= number_with_delimiter(lines.sum(&:amount)) %>円</td>
+        </tr>
+      <% end %>
+      <tr class="sum-row">
+        <td>小計（税抜）</td>
+        <td class="right"><%= number_with_delimiter(@document.subtotal) %>円</td>
+      </tr>
+      <tr class="sum-row">
+        <td>消費税</td>
+        <td class="right"><%= number_with_delimiter(@document.tax_amount) %>円</td>
+      </tr>
+      <tr class="total-row">
+        <td>合計（税込）</td>
+        <td class="right"><%= number_with_delimiter(@document.total) %>円</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<%# 3ページ目以降: 中分類ごとの明細 %>
+<% @groups.each do |category, lines| %>
+  <div class="cpage">
+    <div class="group-heading">
+      <span><%= category ? category.path_name : "その他" %></span>
+      <span>小計　<%= number_with_delimiter(lines.sum(&:amount)) %>円</span>
+    </div>
+    <table class="items-table">
+      <thead>
+        <tr>
+          <th>品名</th>
+          <th class="right" style="width: 90px;">数量</th>
+          <th style="width: 60px;">単位</th>
+          <th class="right" style="width: 140px;">単価<%= tenant.inclusive? ? "（税込）" : "（税抜）" %></th>
+          <th class="right" style="width: 160px;">金額</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% lines.each do |line| %>
+          <tr>
+            <td><%= line.name %></td>
+            <td class="right"><%= format_quantity(line.quantity) %></td>
+            <td><%= line.unit %></td>
+            <td class="right"><%= number_with_delimiter(line.unit_price) %>円</td>
+            <td class="right"><%= number_with_delimiter(line.amount) %>円</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+<% end %>

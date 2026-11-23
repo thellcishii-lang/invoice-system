@@ -20,6 +20,7 @@
 
   <%# 決済（Stripe）へ画面遷移するため Turbo を無効化する %>
   <%= form_with model: @application, url: signups_path, data: { turbo: false }, class: "contents" do |form| %>
+    <%= form.hidden_field :edition %>
     <%= form.hidden_field :company_name %>
     <%= form.hidden_field :contact_name %>
     <%= form.hidden_field :email %>

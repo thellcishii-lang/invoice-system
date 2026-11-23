@@ -91,3 +91,14 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     assert_not tenants(:one).reload.seal_image?
   end
 end
+
+class SettingsEditionTest < ActionDispatch::IntegrationTest
+  test "switches the tenant edition" do
+    sign_in_as(users(:one))
+
+    patch setting_path, params: { tenant: { edition: "construction" } }
+
+    assert_redirected_to setting_path
+    assert tenants(:one).reload.construction?
+  end
+end

@@ -4,7 +4,9 @@ class SignupsController < ApplicationController
   allow_unauthenticated_access
 
   def new
-    @application = SignupApplication.new
+    # 製品ごとに申込入口を分ける（一般 / 建築）。?edition=construction で建築版の申込になる。
+    edition = Tenant::EDITIONS.include?(params[:edition]) ? params[:edition] : "general"
+    @application = SignupApplication.new(edition: edition)
     @stripe_configured = StripeClient.checkout_configured?
   end
 
@@ -48,6 +50,6 @@ class SignupsController < ApplicationController
 
   private
     def signup_params
-      params.expect(signup_application: [ :company_name, :contact_name, :email, :agreed_to_terms ])
+      params.expect(signup_application: [ :company_name, :contact_name, :email, :agreed_to_terms, :edition ])
     end
 end

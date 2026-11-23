@@ -16,6 +16,16 @@ class Tenant < ApplicationRecord
   has_many :item_categories, dependent: :restrict_with_error
   has_many :send_templates, dependent: :restrict_with_error
 
+  # 製品エディション: 申込時に決まる（一般 / 建築）。建築は見積書が建築様式になる。
+  EDITIONS = %w[ general construction ].freeze
+  EDITION_LABELS = { "general" => "一般", "construction" => "建築" }.freeze
+
+  validates :edition, inclusion: { in: EDITIONS }
+
+  def construction?
+    edition == "construction"
+  end
+
   DOCUMENT_PATTERNS = %w[ none dots diagonal grid ].freeze
   DOCUMENT_PATTERN_LABELS = { "none" => "なし", "dots" => "ドット", "diagonal" => "斜めストライプ", "grid" => "格子" }.freeze
 

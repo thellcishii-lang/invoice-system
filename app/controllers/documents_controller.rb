@@ -1,5 +1,5 @@
 class DocumentsController < ApplicationController
-  before_action :set_document, only: %i[ show edit update destroy print envelope fax_cover convert duplicate ]
+  before_action :set_document, only: %i[ show edit update destroy print construction_print envelope fax_cover convert duplicate ]
 
   def index
     @kind = params[:kind] if Document::KINDS.include?(params[:kind])
@@ -55,6 +55,15 @@ class DocumentsController < ApplicationController
 
   # 印刷用表示（ブラウザ印刷でPDF化する）
   def print
+    render layout: "print"
+  end
+
+  # 建築様式の印刷（横書き）: 表紙 → 内訳集計（中分類ごとの合計）→ 中分類ごとの明細。
+  # 中分類は品目の分類（ItemCategory）。分類のない明細は「その他」にまとめる。
+  def construction_print
+    lines = @document.document_lines.includes(item: { item_category: :parent })
+    grouped = lines.group_by { |line| line.item&.item_category }
+    @groups = grouped.sort_by { |category, _| category ? [ 0, category.full_code ] : [ 1, "" ] }
     render layout: "print"
   end
 
