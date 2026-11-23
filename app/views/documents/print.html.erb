@@ -104,10 +104,10 @@
   </div>
 <% end %>
 
-<% if @document.invoice? && tenant.bank_details.present? %>
+<% if @document.invoice? && tenant.bank_details_text.present? %>
   <div class="section">
     <div>お振込先</div>
-    <div class="notes"><%= tenant.bank_details %></div>
+    <div class="notes"><%= tenant.bank_details_text %></div>
   </div>
 <% end %>
 

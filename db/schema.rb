@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_23_020743) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_23_021106) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -184,6 +184,11 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_23_020743) do
     t.text "seal_image_data"
     t.string "seal_image_content_type"
     t.text "bank_details"
+    t.string "bank_name"
+    t.string "bank_branch"
+    t.string "bank_account_type"
+    t.string "bank_account_number"
+    t.string "bank_account_holder"
     t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end

@@ -12,7 +12,7 @@
   <% end %>
 
   <%= form_with model: @tenant, url: setting_path, method: :patch, class: "contents" do |form| %>
-    <h2 class="font-bold text-xl mt-4 mb-3">自社情報（会社マスター）</h2>
+    <h2 class="font-bold text-xl mt-4 mb-3">事業者マスター（自社情報）</h2>
 
     <div class="my-5">
       <%= form.label :name, "会社名" %>
@@ -58,10 +58,32 @@
       <p class="text-gray-500 text-sm mt-1">帳票の会社名の横に表示されます。メールで送る帳票にも付きます。</p>
     </div>
 
+    <h3 class="font-bold text-lg mt-8 mb-3">振込先口座（請求書に記載）</h3>
+
     <div class="my-5">
-      <%= form.label :bank_details, "振込先" %>
-      <%= form.text_area :bank_details, rows: 3, placeholder: "例: 〇〇銀行 〇〇支店 普通 1234567", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
-      <p class="text-gray-500 text-sm mt-1">請求書の下部に表示されます。</p>
+      <%= form.label :bank_name, "銀行名" %>
+      <%= form.text_field :bank_name, placeholder: "例: 〇〇銀行", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :bank_branch, "支店名" %>
+      <%= form.text_field :bank_branch, placeholder: "例: 〇〇支店", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :bank_account_type, "口座種別" %>
+      <%= form.select :bank_account_type, [ [ "普通", "普通" ], [ "当座", "当座" ] ], { include_blank: true }, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :bank_account_number, "口座番号" %>
+      <%= form.text_field :bank_account_number, placeholder: "例: 1234567", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :bank_account_holder, "口座名義" %>
+      <%= form.text_field :bank_account_holder, placeholder: "例: エブリワンズゴウドウガイシャ", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">振込先は請求書の下部に「銀行名 支店名 種別 番号／口座名義」の形で表示されます。</p>
     </div>
 
     <h2 class="font-bold text-xl mt-8 mb-3">帳票の設定</h2>

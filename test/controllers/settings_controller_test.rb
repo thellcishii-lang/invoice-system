@@ -42,19 +42,22 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "TS-", other.document_number_prefix
   end
 
-  test "saves bank details and a seal image" do
+  test "saves bank account fields and a seal image" do
     sign_in_as(users(:one))
 
     patch setting_path, params: { tenant: {
       name: tenants(:one).name,
-      bank_details: "〇〇銀行 〇〇支店 普通 1234567",
+      bank_name: "〇〇銀行", bank_branch: "〇〇支店", bank_account_type: "普通",
+      bank_account_number: "1234567", bank_account_holder: "テストカブシキガイシャ",
       seal_image: fixture_file_upload("seal.png", "image/png")
     } }
 
     assert_redirected_to setting_path
 
     tenant = tenants(:one).reload
-    assert_equal "〇〇銀行 〇〇支店 普通 1234567", tenant.bank_details
+    assert_equal "〇〇銀行", tenant.bank_name
+    assert_equal "1234567", tenant.bank_account_number
+    assert_equal "〇〇銀行 〇〇支店 普通 1234567\n口座名義：テストカブシキガイシャ", tenant.bank_details_text
     assert tenant.seal_image?
   end
 

@@ -52,6 +52,18 @@ class Tenant < ApplicationRecord
     seal_image_data.present?
   end
 
+  # 請求書に印字する振込先。構造化した口座情報があれば組み立て、
+  # なければ自由記述（旧フィールド）にフォールバックする。
+  def bank_details_text
+    if bank_name.present? || bank_account_number.present?
+      lines = [ [ bank_name, bank_branch, bank_account_type, bank_account_number ].compact_blank.join(" ") ]
+      lines << "口座名義：#{bank_account_holder}" if bank_account_holder.present?
+      lines.join("\n")
+    else
+      bank_details
+    end
+  end
+
   # 印刷ビューでそのまま <img src> に使える data URI
   def seal_image_data_uri
     return nil unless seal_image?
