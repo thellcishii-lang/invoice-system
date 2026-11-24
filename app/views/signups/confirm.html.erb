@@ -16,11 +16,16 @@
       <dt class="text-sm text-gray-500">メールアドレス</dt>
       <dd class="font-medium mt-1"><%= @application.email %></dd>
     </div>
+    <div>
+      <dt class="text-sm text-gray-500">お支払いプラン</dt>
+      <dd class="font-medium mt-1"><%= @application.billing_interval_label %>：<%= number_with_delimiter(@application.plan_price_tax_excluded) %>円（税別）</dd>
+    </div>
   </dl>
 
   <%# 決済（Stripe）へ画面遷移するため Turbo を無効化する %>
   <%= form_with model: @application, url: signups_path, data: { turbo: false }, class: "contents" do |form| %>
     <%= form.hidden_field :edition %>
+    <%= form.hidden_field :billing_interval %>
     <%= form.hidden_field :company_name %>
     <%= form.hidden_field :contact_name %>
     <%= form.hidden_field :email %>

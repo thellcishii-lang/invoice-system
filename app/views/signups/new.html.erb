@@ -7,7 +7,7 @@
   </p>
 
   <p class="text-gray-700 mt-2">
-    料金：月額 <%= number_with_delimiter(@application.price_tax_excluded) %>円（税別）・初期費用0円・最低契約期間はありません。
+    料金：月額 <%= number_with_delimiter(@application.price_tax_excluded) %>円（税別）／年額 <%= number_with_delimiter(SignupApplication::YEARLY_PRICE_TAX_EXCLUDED) %>円（税別）・初期費用0円・最低契約期間はありません。
   </p>
 
   <% unless @stripe_configured %>
@@ -42,6 +42,20 @@
       <%= form.label :email, "メールアドレス" %>
       <%= form.email_field :email, required: true, autocomplete: "email", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
       <p class="text-sm text-gray-500 mt-1">このメールアドレスがログイン用IDになります。</p>
+    </div>
+
+    <div class="my-5">
+      <p class="font-medium">お支払いプラン</p>
+      <div class="mt-2 space-y-2">
+        <label class="flex items-center gap-2">
+          <%= form.radio_button :billing_interval, "monthly", class: "border-gray-400" %>
+          <span>月払い：月額 <%= number_with_delimiter(@application.price_tax_excluded) %>円（税別）</span>
+        </label>
+        <label class="flex items-center gap-2">
+          <%= form.radio_button :billing_interval, "yearly", class: "border-gray-400" %>
+          <span>年払い：年額 <%= number_with_delimiter(SignupApplication::YEARLY_PRICE_TAX_EXCLUDED) %>円（税別）・月払いより2ヶ月分お得</span>
+        </label>
+      </div>
     </div>
 
     <div class="my-5">

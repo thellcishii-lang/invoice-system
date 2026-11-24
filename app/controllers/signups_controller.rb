@@ -12,7 +12,7 @@ class SignupsController < ApplicationController
 
   def confirm
     @application = SignupApplication.new(signup_params)
-    @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition)
+    @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition, interval: @application.billing_interval)
 
     if @application.valid?
       render :confirm
@@ -25,11 +25,11 @@ class SignupsController < ApplicationController
     @application = SignupApplication.new(signup_params)
 
     unless @application.valid?
-      @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition)
+      @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition, interval: @application.billing_interval)
       return render :new, status: :unprocessable_entity
     end
 
-    unless StripeClient.checkout_configured?(edition: @application.edition)
+    unless StripeClient.checkout_configured?(edition: @application.edition, interval: @application.billing_interval)
       return redirect_to new_signup_path(edition: @application.edition), alert: "現在お申し込みを受け付けておりません。"
     end
 
@@ -50,6 +50,6 @@ class SignupsController < ApplicationController
 
   private
     def signup_params
-      params.expect(signup_application: [ :company_name, :contact_name, :email, :agreed_to_terms, :edition ])
+      params.expect(signup_application: [ :company_name, :contact_name, :email, :agreed_to_terms, :edition, :billing_interval ])
     end
 end
