@@ -30,7 +30,7 @@
                         when "document_templates" then @kind
                         end %>
       <div class="min-h-screen flex flex-col">
-        <header class="bg-white border-b border-gray-200 flex items-center gap-4 px-5 py-2.5">
+        <header class="bg-white border-b border-gray-100 shadow-[0_2px_16px_-8px_rgba(15,23,42,0.28)] relative z-10 flex items-center gap-4 px-5 py-2.5">
           <span class="font-bold text-slate-800 whitespace-nowrap">見積・請求書システム</span>
           <div class="ml-auto flex items-center gap-4 text-sm">
             <span class="text-gray-600 whitespace-nowrap"><%= Current.tenant&.name %></span>
@@ -39,7 +39,7 @@
         </header>
 
         <div class="flex flex-1 items-stretch">
-          <aside class="w-52 shrink-0 bg-white border-r border-gray-200 py-2">
+          <aside class="w-52 shrink-0 bg-white border-r border-gray-100 shadow-[2px_0_16px_-10px_rgba(15,23,42,0.25)] py-2">
             <nav>
               <%= sidebar_link_to "ダッシュボード", root_path, active: controller_name == "dashboard" %>
 
@@ -79,12 +79,12 @@
             </nav>
           </aside>
 
-          <main class="flex-1 min-w-0 bg-gray-50 px-6 py-6">
+          <main class="flex-1 min-w-0 bg-[#edf0f5] px-6 py-6">
             <% if notice = flash[:notice] %>
-              <p class="py-2 px-3 bg-green-50 mb-5 text-green-600 font-medium rounded-lg inline-block" id="notice"><%= notice %></p>
+              <p class="py-2 px-3 bg-green-50 mb-5 text-green-600 font-medium rounded-lg inline-block shadow-sm" id="notice"><%= notice %></p>
             <% end %>
             <% if alert = flash[:alert] %>
-              <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block" id="alert"><%= alert %></p>
+              <p class="py-2 px-3 bg-red-50 mb-5 text-red-500 font-medium rounded-lg inline-block shadow-sm" id="alert"><%= alert %></p>
             <% end %>
 
             <%= yield %>

@@ -5,6 +5,6 @@
   <div class="mt-8 border-t border-gray-200 pt-5">
     <%= button_to "この分類を削除する", item_category_path(@item_category), method: :delete,
           data: { turbo_confirm: "分類「#{@item_category.name}」を削除しますか？配下の品目は「未分類」に移ります。子分類がある場合は削除できません。" },
-          class: "rounded-md px-3.5 py-2.5 bg-red-600 hover:bg-red-500 text-white font-medium cursor-pointer" %>
+          class: "btn btn-danger-fill" %>
   </div>
 </div>

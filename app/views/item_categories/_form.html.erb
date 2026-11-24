@@ -34,7 +34,7 @@
   </div>
 
   <div class="inline">
-    <%= form.submit item_category.persisted? ? "更新する" : "登録する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    <%= form.submit item_category.persisted? ? "更新する" : "登録する", class: "btn btn-primary" %>
   </div>
   <%= link_to "戻る", items_path, class: "ml-2 text-gray-700 hover:underline" %>
 <% end %>

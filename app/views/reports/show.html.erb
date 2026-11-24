@@ -2,11 +2,11 @@
   <h1 class="font-bold text-3xl mb-5">レポート</h1>
 
   <div class="grid grid-cols-2 gap-4 mb-8 max-w-xl">
-    <div class="rounded-lg border border-gray-200 p-4">
+    <div class="card p-4">
       <p class="text-sm text-gray-500">現在の未入金残高</p>
       <p class="font-bold text-2xl mt-1"><%= number_with_delimiter(@unpaid_balance) %>円</p>
     </div>
-    <div class="rounded-lg border border-gray-200 p-4">
+    <div class="card p-4">
       <p class="text-sm text-gray-500">期限超過の請求書</p>
       <p class="font-bold text-2xl mt-1"><%= @overdue_count %>件</p>
     </div>

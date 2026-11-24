@@ -2,19 +2,19 @@
   <div class="flex items-center justify-between mb-5 flex-wrap gap-2">
     <h1 class="font-bold text-3xl">品目</h1>
     <div class="flex gap-2">
-      <%= link_to "分類を追加", new_item_category_path, class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
-      <%= link_to "新規登録", new_item_path, class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+      <%= link_to "分類を追加", new_item_category_path, class: "btn" %>
+      <%= link_to "新規登録", new_item_path, class: "btn btn-primary" %>
     </div>
   </div>
 
   <%= form_with url: items_path, method: :get, class: "mb-5 flex gap-2" do |form| %>
     <%= hidden_field_tag :category, params[:category] %>
     <%= form.text_field :q, value: params[:q], placeholder: "品名・品目コードで検索", class: "shadow-sm rounded-md border border-gray-400 px-3 py-2 w-80" %>
-    <%= form.submit "検索", class: "rounded-md px-3.5 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium cursor-pointer" %>
+    <%= form.submit "検索", class: "btn" %>
     <% if params[:q].present? %><%= link_to "クリア", items_path(category: params[:category]), class: "text-sm text-gray-600 hover:underline self-center" %><% end %>
   <% end %>
 
-  <div class="border border-gray-200 rounded-lg p-4 mb-6">
+  <div class="card p-4 mb-6">
     <h2 class="font-bold text-lg mb-2">分類（全体像）</h2>
     <div class="py-1.5 px-2 rounded-md <%= @selected.nil? ? "bg-blue-50" : "hover:bg-gray-50" %>">
       <%= link_to "すべて", items_path, class: "hover:underline #{@selected.nil? ? "font-bold text-blue-700" : "text-gray-800"}" %>

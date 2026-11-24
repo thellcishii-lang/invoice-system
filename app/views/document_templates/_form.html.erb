@@ -41,7 +41,7 @@
       <% end %>
     </template>
 
-    <button type="button" data-action="document-lines#add" class="rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium cursor-pointer">＋ 明細を追加</button>
+    <button type="button" data-action="document-lines#add" class="btn">＋ 明細を追加</button>
   </div>
 
   <div class="my-5">
@@ -50,6 +50,6 @@
   </div>
 
   <div class="inline">
-    <%= form.submit document_template.persisted? ? "更新する" : "登録する", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+    <%= form.submit document_template.persisted? ? "更新する" : "登録する", class: "btn btn-primary" %>
   </div>
 <% end %>

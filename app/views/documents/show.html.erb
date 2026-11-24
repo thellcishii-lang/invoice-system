@@ -1,33 +1,33 @@
-<div class="mx-auto md:w-5/6 w-full">
-  <div class="flex items-start justify-between gap-4 flex-wrap mb-4">
-    <div class="shrink-0">
-      <h1 class="font-bold text-3xl"><%= @document.kind_label %></h1>
-      <p class="text-gray-500 mt-1 whitespace-nowrap">
-        番号：<span class="font-mono"><%= @document.number %></span> ／ <%= @document.status_label %>
-        <% if @document.converted_from %>
-          ／ 変換元：<%= link_to "#{@document.converted_from.kind_label} #{@document.converted_from.number}", @document.converted_from, class: "text-blue-600 hover:underline" %>
-        <% end %>
-      </p>
-    </div>
-    <div class="flex flex-wrap justify-end gap-2">
-      <%= link_to "送信", new_document_delivery_path(@document), class: "rounded-md px-3 py-2 bg-green-600 hover:bg-green-500 text-white text-sm font-medium whitespace-nowrap" %>
-      <% if @document.estimate? && Current.tenant.construction? %>
-        <%= link_to "印刷/PDF（建築様式）", construction_print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=1250,height=920,scrollbars=yes'); return false;", class: "rounded-md px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium whitespace-nowrap" %>
-        <%= link_to "標準様式で印刷", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap" %>
-      <% else %>
-        <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "rounded-md px-3 py-2 bg-gray-800 hover:bg-gray-700 text-white text-sm font-medium whitespace-nowrap" %>
+<div class="w-full">
+  <div class="mb-4">
+    <h1 class="font-bold text-3xl"><%= @document.kind_label %></h1>
+    <p class="text-gray-500 mt-1">
+      番号：<span class="font-mono"><%= @document.number %></span> ／ <%= @document.status_label %>
+      <% if @document.converted_from %>
+        ／ 変換元：<%= link_to "#{@document.converted_from.kind_label} #{@document.converted_from.number}", @document.converted_from, class: "text-blue-600 hover:underline" %>
       <% end %>
-      <%= link_to "封筒宛名", envelope_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'envelope_preview', 'width=1050,height=560,scrollbars=yes'); return false;", class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap" %>
-      <%= link_to "編集", edit_document_path(@document), class: "rounded-md px-3 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium whitespace-nowrap" %>
-      <%= button_to "複写", duplicate_document_path(@document), method: :post, class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap cursor-pointer" %>
-      <%= button_to "テンプレートとして保存", save_as_template_document_path(@document), method: :post, class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap cursor-pointer" %>
-      <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "rounded-md px-3 py-2 bg-red-50 hover:bg-red-100 text-red-600 text-sm font-medium whitespace-nowrap cursor-pointer" %>
-    </div>
+    </p>
   </div>
 
-  <div class="flex flex-wrap items-center gap-x-4 gap-y-2 border-y border-gray-200 py-3 mb-6">
+  <div class="card px-4 py-3 mb-6">
+    <div class="flex flex-wrap gap-2">
+      <%= link_to "送信", new_document_delivery_path(@document), class: "btn btn-primary" %>
+      <% if @document.estimate? && Current.tenant.construction? %>
+        <%= link_to "印刷/PDF（建築様式）", construction_print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=1250,height=920,scrollbars=yes'); return false;", class: "btn" %>
+        <%= link_to "標準様式で印刷", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "btn" %>
+      <% else %>
+        <%= link_to "印刷/PDF", print_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'print_preview', 'width=920,height=1250,scrollbars=yes'); return false;", class: "btn" %>
+      <% end %>
+      <%= link_to "封筒宛名", envelope_document_path(@document), target: "_blank", rel: "noopener", onclick: "window.open(this.href, 'envelope_preview', 'width=1050,height=560,scrollbars=yes'); return false;", class: "btn" %>
+      <%= link_to "編集", edit_document_path(@document), class: "btn btn-primary" %>
+      <%= button_to "複写", duplicate_document_path(@document), method: :post, class: "btn" %>
+      <%= button_to "テンプレートとして保存", save_as_template_document_path(@document), method: :post, class: "btn" %>
+      <%= button_to "削除", @document, method: :delete, data: { turbo_confirm: "この帳票を削除しますか？" }, class: "btn btn-danger" %>
+    </div>
+    <hr class="border-gray-100 my-3">
+    <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
     <% if @document.invoice? %>
-      <%= link_to "定期請求にする", new_recurring_document_path(template_document_id: @document.id), class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap" %>
+      <%= link_to "定期請求にする", new_recurring_document_path(template_document_id: @document.id), class: "btn" %>
     <% end %>
     <div class="flex items-center gap-2">
       <span class="text-sm text-gray-500 whitespace-nowrap">FAX送り状：</span>
@@ -35,7 +35,7 @@
         <%= form.select :send_template_id,
               [ [ "標準の文面", nil ] ] + Current.tenant.send_templates.where(channel: "fax").order(:id).map { |t| [ t.name, t.id ] },
               {}, class: "shadow-sm rounded-md border border-gray-400 px-2 py-1.5 text-sm" %>
-        <%= form.submit "送り状を印刷", class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap cursor-pointer" %>
+        <%= form.submit "送り状を印刷", class: "btn" %>
       <% end %>
     </div>
     <% if @document.convertible_kinds.any? %>
@@ -43,12 +43,14 @@
         <span class="text-sm text-gray-500 whitespace-nowrap">変換：</span>
         <% @document.convertible_kinds.each do |target_kind| %>
           <%= button_to "#{Document::KIND_LABELS[target_kind]}に変換", convert_document_path(@document, target_kind: target_kind),
-                method: :post, class: "rounded-md px-3 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-medium whitespace-nowrap cursor-pointer" %>
+                method: :post, class: "btn" %>
         <% end %>
       </div>
     <% end %>
+    </div>
   </div>
 
+  <div class="card p-6 mb-6">
   <dl class="grid grid-cols-2 gap-x-6 gap-y-3 mb-8 text-sm">
     <div><dt class="text-gray-500">取引先</dt><dd class="mt-0.5"><%= link_to @document.client.name, @document.client, class: "text-blue-600 hover:underline" %></dd></div>
     <div><dt class="text-gray-500">発行日</dt><dd class="mt-0.5"><%= @document.issue_date %></dd></div>
@@ -87,7 +89,7 @@
     </tbody>
   </table>
 
-  <div class="flex justify-end mb-8">
+  <div class="flex justify-end">
     <table class="text-left w-80">
       <% DocumentTaxCalculator::RATES.each_key do |tax_rate| %>
         <% next unless (group = @document.tax_breakdown[tax_rate]) %>
@@ -103,8 +105,9 @@
       <tr class="font-bold"><td class="py-1.5 pr-4" colspan="3">合計（税込）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.total) %>円</td></tr>
     </table>
   </div>
+  </div>
 
-  <div class="border border-gray-200 rounded-lg p-4 mb-8 bg-white">
+  <div class="card p-4 mb-6">
     <h2 class="font-bold text-lg mb-2">粗利 <span class="text-sm font-normal text-gray-400">（社内用・帳票には印刷されません）</span></h2>
     <div class="flex flex-wrap gap-8 text-sm">
       <div>
@@ -223,7 +226,7 @@
         <%= form.collection_select :send_template_id, Current.tenant.send_templates.where(channel: "email"), :id, :name,
               { include_blank: "標準の文面" }, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1" %>
       </div>
-      <%= form.submit "予約する", class: "rounded-md px-3.5 py-2 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+      <%= form.submit "予約する", class: "btn btn-primary" %>
     </div>
     <p class="text-gray-500 text-sm mt-2">指定した日時に自動で送信されます。FAX用の送り状は帳票の画面の「FAX送り状」から印刷できます。</p>
   <% end %>
@@ -274,5 +277,5 @@
     </div>
   <% end %>
 
-  <%= link_to "一覧に戻る", documents_path(kind: @document.kind_value), class: "rounded-md px-3.5 py-2.5 bg-gray-100 hover:bg-gray-50 inline-block font-medium" %>
+  <%= link_to "一覧に戻る", documents_path(kind: @document.kind_value), class: "btn" %>
 </div>

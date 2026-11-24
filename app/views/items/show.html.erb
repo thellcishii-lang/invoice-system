@@ -37,7 +37,7 @@
   </dl>
 
   <div class="mt-8 flex items-center gap-4">
-    <%= link_to "編集", edit_item_path(@item), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+    <%= link_to "編集", edit_item_path(@item), class: "btn btn-primary" %>
     <%= link_to "一覧に戻る", items_path, class: "text-gray-700 hover:underline" %>
     <%= button_to "削除", @item, method: :delete, class: "text-red-600 hover:underline cursor-pointer", data: { turbo_confirm: "この品目を削除しますか？" } %>
   </div>

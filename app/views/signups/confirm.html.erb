@@ -32,7 +32,7 @@
     <%= form.hidden_field :agreed_to_terms, value: "1" %>
 
     <div class="mt-8 flex items-center gap-4">
-      <%= form.submit "お支払いへ進む", class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium cursor-pointer" %>
+      <%= form.submit "お支払いへ進む", class: "btn btn-primary" %>
       <%= link_to "入力に戻る", new_signup_path, class: "text-gray-700 underline hover:no-underline" %>
     </div>
   <% end %>

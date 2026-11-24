@@ -3,10 +3,10 @@
     <h1 class="font-bold text-3xl"><%= @channel == "email" ? "メールテンプレート" : (@channel == "fax" ? "FAXテンプレート" : "送り状テンプレート") %></h1>
     <div class="flex gap-2">
       <% if @channel.nil? || @channel == "email" %>
-        <%= link_to "メール用を追加", new_send_template_path(channel: "email"), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+        <%= link_to "メール用を追加", new_send_template_path(channel: "email"), class: "btn btn-primary" %>
       <% end %>
       <% if @channel.nil? || @channel == "fax" %>
-        <%= link_to "FAX用を追加", new_send_template_path(channel: "fax"), class: "rounded-md px-3.5 py-2.5 bg-gray-800 hover:bg-gray-700 text-white font-medium" %>
+        <%= link_to "FAX用を追加", new_send_template_path(channel: "fax"), class: "btn" %>
       <% end %>
     </div>
   </div>

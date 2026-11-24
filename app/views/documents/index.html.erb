@@ -1,12 +1,12 @@
 <div class="w-full">
   <div class="flex items-center justify-between mb-5">
     <h1 class="font-bold text-3xl"><%= @kind ? Document::KIND_LABELS[@kind] : "帳票" %></h1>
-    <%= link_to "新規作成", new_document_path(kind: @kind), class: "rounded-md px-3.5 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-medium" %>
+    <%= link_to "新規作成", new_document_path(kind: @kind), class: "btn btn-primary" %>
   </div>
 
   <% issue_label = { "estimate" => "見積日", "order" => "発注日", "delivery" => "納品日", "invoice" => "請求日", "receipt" => "領収日" }[@kind] || "発行日" %>
   <% due_label = { "estimate" => "有効期限", "invoice" => "お支払期限", "order" => "納期" }[@kind] || "期限" %>
-  <details class="mb-5 bg-white border border-gray-200 rounded-lg">
+  <details class="mb-5 card">
     <summary class="px-4 py-3 cursor-pointer font-medium text-sm">フィルター<% if @filter_active %> <span class="text-blue-600">（絞り込み中）</span><% end %></summary>
     <%= form_with url: documents_path, method: :get, scope: :f, class: "px-4 pb-4" do |form| %>
       <%= hidden_field_tag :kind, @kind %>
@@ -95,7 +95,7 @@
         </div>
       </div>
       <div class="mt-4 flex items-center gap-3">
-        <%= form.submit "絞り込む", class: "rounded-md px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium cursor-pointer" %>
+        <%= form.submit "絞り込む", class: "btn btn-primary" %>
         <%= link_to "クリア", documents_path(kind: @kind), class: "text-sm text-gray-600 hover:underline" %>
       </div>
     <% end %>
@@ -104,6 +104,7 @@
   <% if @documents.empty? %>
     <p class="text-gray-500"><%= @filter_active ? "条件に合う帳票はありません。" : "帳票はまだありません。" %></p>
   <% else %>
+    <div class="card px-5 py-2">
     <table class="w-full text-left">
       <thead>
         <tr class="border-b border-gray-200 text-sm text-gray-500">
@@ -136,5 +137,6 @@
         <% end %>
       </tbody>
     </table>
+    </div>
   <% end %>
 </div>
