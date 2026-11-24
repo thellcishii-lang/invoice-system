@@ -7,12 +7,12 @@ class SignupsController < ApplicationController
     # 製品ごとに申込入口を分ける（一般 / 建築）。?edition=construction で建築版の申込になる。
     edition = Tenant::EDITIONS.include?(params[:edition]) ? params[:edition] : "general"
     @application = SignupApplication.new(edition: edition)
-    @stripe_configured = StripeClient.checkout_configured?
+    @stripe_configured = StripeClient.checkout_configured?(edition: edition)
   end
 
   def confirm
     @application = SignupApplication.new(signup_params)
-    @stripe_configured = StripeClient.checkout_configured?
+    @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition)
 
     if @application.valid?
       render :confirm
@@ -25,24 +25,24 @@ class SignupsController < ApplicationController
     @application = SignupApplication.new(signup_params)
 
     unless @application.valid?
-      @stripe_configured = StripeClient.checkout_configured?
+      @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition)
       return render :new, status: :unprocessable_entity
     end
 
-    unless StripeClient.checkout_configured?
-      return redirect_to new_signup_path, alert: "現在お申し込みを受け付けておりません。"
+    unless StripeClient.checkout_configured?(edition: @application.edition)
+      return redirect_to new_signup_path(edition: @application.edition), alert: "現在お申し込みを受け付けておりません。"
     end
 
     @application.save!
     checkout_session = StripeClient.create_checkout_session(
       application: @application,
       success_url: complete_signups_url,
-      cancel_url: new_signup_url
+      cancel_url: new_signup_url(edition: @application.edition)
     )
     @application.update!(stripe_checkout_session_id: checkout_session.id)
     redirect_to checkout_session.url, allow_other_host: true
   rescue StripeClient::NotConfiguredError, Stripe::StripeError
-    redirect_to new_signup_path, alert: "決済の準備に失敗しました。しばらくしてからもう一度お試しください。"
+    redirect_to new_signup_path(edition: @application.edition), alert: "決済の準備に失敗しました。しばらくしてからもう一度お試しください。"
   end
 
   def complete

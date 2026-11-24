@@ -1,20 +1,27 @@
 # Stripe へのアクセスはすべてこのクラス経由にする（テストでは
 # define_singleton_method で差し替えられるようにするため）。
-# 料金は未決定のため、価格ID・税率IDは環境変数から読む。金額はコードに書かない。
+# 価格ID・税率IDは環境変数から読む。金額はコードに書かない。
+# 料金はエディションごとに価格IDを分ける（一般: STRIPE_PRICE_ID /
+# 建築: STRIPE_PRICE_ID_CONSTRUCTION）。
 class StripeClient
   class NotConfiguredError < StandardError; end
 
   class << self
-    # 秘密鍵と価格IDが揃っていれば申込受付可能
-    def checkout_configured?
-      ENV["STRIPE_SECRET_KEY"].present? && ENV["STRIPE_PRICE_ID"].present?
+    # エディションに対応する Stripe 価格ID
+    def price_id_for(edition)
+      edition.to_s == "construction" ? ENV["STRIPE_PRICE_ID_CONSTRUCTION"] : ENV["STRIPE_PRICE_ID"]
+    end
+
+    # 秘密鍵と、そのエディションの価格IDが揃っていれば申込受付可能
+    def checkout_configured?(edition: "general")
+      ENV["STRIPE_SECRET_KEY"].present? && price_id_for(edition).present?
     end
 
     # サブスクリプション用の Checkout Session を作る
     def create_checkout_session(application:, success_url:, cancel_url:)
-      ensure_checkout_configured!
+      ensure_checkout_configured!(application.edition)
 
-      line_item = { price: ENV.fetch("STRIPE_PRICE_ID"), quantity: 1 }
+      line_item = { price: price_id_for(application.edition), quantity: 1 }
       line_item[:tax_rates] = [ ENV.fetch("STRIPE_TAX_RATE_ID") ] if ENV["STRIPE_TAX_RATE_ID"].present?
 
       Stripe::Checkout::Session.create(
@@ -35,8 +42,8 @@ class StripeClient
     end
 
     private
-      def ensure_checkout_configured!
-        raise NotConfiguredError, "Stripe が設定されていません" unless checkout_configured?
+      def ensure_checkout_configured!(edition)
+        raise NotConfiguredError, "Stripe が設定されていません" unless checkout_configured?(edition: edition)
 
         Stripe.api_key = ENV.fetch("STRIPE_SECRET_KEY")
       end

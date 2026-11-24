@@ -58,7 +58,7 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
       post signups_path, params: @params
     end
 
-    assert_redirected_to new_signup_path
+    assert_redirected_to new_signup_path(edition: "general")
     assert_equal "現在お申し込みを受け付けておりません。", flash[:alert]
   end
 
