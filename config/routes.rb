@@ -5,6 +5,9 @@ Rails.application.routes.draw do
   # 公開申込フロー（ログイン不要）と Stripe Webhook、招待用パスワード設定
   resources :signups, only: %i[ new create ] do
     collection do
+      get :confirm, action: :confirmation
+    end
+    collection do
       post :confirm
       get :complete
     end

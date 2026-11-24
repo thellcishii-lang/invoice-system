@@ -10,19 +10,32 @@ class SignupsController < ApplicationController
     @stripe_configured = StripeClient.checkout_configured?(edition: edition)
   end
 
+  # 入力の検証だけを行い、内容はセッションに入れて確認画面へリダイレクトする。
+  # Turbo はフォーム応答にリダイレクトを要求し、200で直接描画すると
+  # ブラウザの画面遷移が止まる（代理店管理システムで踏んだ不具合と同じ）。
   def confirm
     @application = SignupApplication.new(signup_params)
-    @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition, interval: @application.billing_interval)
 
     if @application.valid?
-      render :confirm
+      session[:signup_attributes] = signup_params.to_h
+      redirect_to confirm_signups_path
     else
+      @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition, interval: @application.billing_interval)
       render :new, status: :unprocessable_entity
     end
   end
 
+  # 確認画面の表示（GET）。入力内容はセッションから復元する。
+  def confirmation
+    attributes = session[:signup_attributes]
+    return redirect_to new_signup_path, alert: "お申し込み内容の有効期限が切れました。もう一度入力してください。" if attributes.blank?
+
+    @application = SignupApplication.new(attributes)
+    render :confirm
+  end
+
   def create
-    @application = SignupApplication.new(signup_params)
+    @application = SignupApplication.new(session[:signup_attributes].presence || signup_params)
 
     unless @application.valid?
       @stripe_configured = StripeClient.checkout_configured?(edition: @application.edition, interval: @application.billing_interval)
@@ -34,6 +47,7 @@ class SignupsController < ApplicationController
     end
 
     @application.save!
+    session.delete(:signup_attributes)
     checkout_session = StripeClient.create_checkout_session(
       application: @application,
       success_url: complete_signups_url,

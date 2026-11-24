@@ -34,15 +34,24 @@ class SignupsControllerTest < ActionDispatch::IntegrationTest
     assert_match "現在、準備中のためお申し込みを受け付けておりません", response.body
   end
 
-  test "confirm renders the entered values and a turbo-disabled payment form" do
+  test "confirm redirects to the confirmation page, which renders the entered values" do
     post confirm_signups_path, params: @params
 
+    assert_redirected_to confirm_signups_path
+
+    get confirm_signups_path
     assert_response :success
     assert_match "申込テスト株式会社", response.body
     assert_match "申込太郎", response.body
     assert_match "apply@example.co.jp", response.body
     assert_match "お支払いへ進む", response.body
     assert_match 'data-turbo="false"', response.body
+  end
+
+  test "confirmation without input redirects back to the form" do
+    get confirm_signups_path
+
+    assert_redirected_to new_signup_path
   end
 
   test "confirm with invalid params re-renders the form" do

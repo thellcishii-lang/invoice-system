@@ -23,6 +23,11 @@ class SignupApplication < ApplicationRecord
     edition == "construction"
   end
 
+  # エラーメッセージで属性名が英語にならないようにする
+  def self.human_attribute_name(attribute, options = {})
+    { "agreed_to_terms" => "利用規約" }[attribute.to_s] || super
+  end
+
   # この申込の月額料金（税別）
   def price_tax_excluded
     PRICE_TAX_EXCLUDED.fetch(edition)
