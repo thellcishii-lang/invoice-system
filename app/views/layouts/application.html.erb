@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title><%= content_for(:title) || "請求書システム（仮）" %></title>
+    <title><%= content_for(:title) || "見積・見積・請求書システム" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="application-name" content="Invoice System">
@@ -31,7 +31,7 @@
                         end %>
       <div class="min-h-screen flex flex-col">
         <header class="bg-white border-b border-gray-200 flex items-center gap-4 px-5 py-2.5">
-          <span class="font-bold text-slate-800 whitespace-nowrap">請求書システム（仮）</span>
+          <span class="font-bold text-slate-800 whitespace-nowrap">見積・見積・請求書システム</span>
           <div class="ml-auto flex items-center gap-4 text-sm">
             <span class="text-gray-600 whitespace-nowrap"><%= Current.tenant&.name %></span>
             <%= button_to "ログアウト", session_path, method: :delete, class: "text-gray-500 hover:text-gray-800 hover:underline whitespace-nowrap cursor-pointer" %>

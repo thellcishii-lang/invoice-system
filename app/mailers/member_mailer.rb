@@ -6,6 +6,6 @@ def invite(user:, token:)
 @password_setup_url = password_setup_url(token)
 
 mail to: user.email_address,
-subject: "請求書システムへのご招待"
+subject: "見積・請求書システムへのご招待"
 end
 end
