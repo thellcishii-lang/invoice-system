@@ -33,6 +33,6 @@ class StripeClientTest < ActiveSupport::TestCase
 
   test "plan prices are decided per edition" do
     assert_equal 2500, SignupApplication.new(edition: "general").price_tax_excluded
-    assert_equal 3900, SignupApplication.new(edition: "construction").price_tax_excluded
+    assert_equal 2500, SignupApplication.new(edition: "construction").price_tax_excluded
   end
 end

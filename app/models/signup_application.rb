@@ -1,8 +1,8 @@
 # 公開申込フォームからの申込。Stripe Checkout の決済完了（Webhook）で
 # テナントと最初のユーザーを発行し、completed になる。
 class SignupApplication < ApplicationRecord
-  # 月額料金（税別）。2026-11-24 決定。実際の課金は Stripe の価格ID側で行う。
-  PRICE_TAX_EXCLUDED = { "general" => 2500, "construction" => 3900 }.freeze
+  # 月額料金（税別）。2026-11-24 決定（一般・建築とも同額）。実際の課金は Stripe の価格ID側で行う。
+  PRICE_TAX_EXCLUDED = { "general" => 2500, "construction" => 2500 }.freeze
 
   enum :status, { pending: "pending", completed: "completed" }, validate: true
 
