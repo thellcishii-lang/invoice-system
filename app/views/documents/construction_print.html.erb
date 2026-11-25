@@ -79,7 +79,7 @@
         <td class="right"><%= number_with_delimiter(@document.subtotal) %>円</td>
       </tr>
       <tr class="sum-row">
-        <td>消費税</td>
+        <td>消費税（<%= @document.tenant.inclusive? ? "内税" : "外税" %>）</td>
         <td class="right"><%= number_with_delimiter(@document.tax_amount) %>円</td>
       </tr>
       <tr class="total-row">

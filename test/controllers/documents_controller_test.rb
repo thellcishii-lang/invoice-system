@@ -383,6 +383,22 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_redirected_to document_path(documents(:invoice_one))
   end
 
+  test "print and show label the tax as exclusive or inclusive per the tenant setting" do
+    sign_in_as(users(:one))
+
+    get print_document_path(documents(:estimate_one))
+    assert_response :success
+    assert_match "消費税（外税）", response.body
+
+    get document_path(documents(:estimate_one))
+    assert_match "消費税（外税）", response.body
+
+    tenants(:one).update!(tax_display: "inclusive")
+
+    get print_document_path(documents(:estimate_one))
+    assert_match "消費税（内税）", response.body
+  end
+
   test "print renders a qualified invoice with issuer registration number" do
     sign_in_as(users(:one))
 

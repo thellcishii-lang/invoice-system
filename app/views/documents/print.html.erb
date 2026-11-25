@@ -68,7 +68,7 @@
 <table class="summary-table">
   <tr>
     <th style="background: <%= band_color %>"><%= amount_label %></th>
-    <th style="background: <%= band_color %>">消費税</th>
+    <th style="background: <%= band_color %>">消費税（<%= tenant.inclusive? ? "内税" : "外税" %>）</th>
     <% if deadline_label && @document.due_date %>
       <th style="background: <%= band_color %>"><%= deadline_label %></th>
     <% end %>
@@ -116,7 +116,7 @@
 
 <table class="totals">
   <tr><td>小計（税抜）</td><td class="right"><%= number_with_delimiter(@document.subtotal) %>円</td></tr>
-  <tr><td>消費税</td><td class="right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
+  <tr><td>消費税（<%= tenant.inclusive? ? "内税" : "外税" %>）</td><td class="right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
   <tr class="grand-total"><td>合計（税込）</td><td class="right"><%= number_with_delimiter(@document.total) %>円</td></tr>
 </table>
 

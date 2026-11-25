@@ -101,7 +101,7 @@
         </tr>
       <% end %>
       <tr class="border-b border-gray-100"><td class="py-1.5 pr-4" colspan="3">小計（税抜）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.subtotal) %>円</td></tr>
-      <tr class="border-b border-gray-100"><td class="py-1.5 pr-4" colspan="3">消費税</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
+      <tr class="border-b border-gray-100"><td class="py-1.5 pr-4" colspan="3">消費税（<%= Current.tenant.inclusive? ? "内税" : "外税" %>）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.tax_amount) %>円</td></tr>
       <tr class="font-bold"><td class="py-1.5 pr-4" colspan="3">合計（税込）</td><td class="py-1.5 text-right"><%= number_with_delimiter(@document.total) %>円</td></tr>
     </table>
   </div>
