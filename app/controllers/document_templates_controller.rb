@@ -62,6 +62,7 @@ class DocumentTemplatesController < ApplicationController
 
     def load_items
       @items = Current.tenant.items.active.order(:code)
+      @units = Unit.names_for(Current.tenant)
     end
 
     def document_template_params

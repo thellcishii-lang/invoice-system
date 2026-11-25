@@ -29,7 +29,7 @@
 
   <div data-controller="document-lines"
        data-document-lines-items-value="<%= @items.map { |item| { id: item.id, name: item.name, unit_price: item.unit_price, cost_price: item.cost_price, unit: item.unit, tax_rate: item.tax_rate } }.to_json %>">
-    <div data-document-lines-target="container">
+    <div data-document-lines-target="container" class="line-rows">
       <%= form.fields_for :document_template_lines do |line_form| %>
         <%= render "documents/line_fields", line_form: line_form %>
       <% end %>

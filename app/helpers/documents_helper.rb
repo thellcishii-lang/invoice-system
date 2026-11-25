@@ -49,6 +49,13 @@ module DocumentsHelper
     TAX_RATE_LABELS[tax_rate.to_s]
   end
 
+  # 単位セレクトの選択肢。行に保存済みの単位がマスタに無ければ先頭に足して、
+  # 既存の帳票を開いても単位が消えて見えないようにする。
+  def unit_options_for(current_unit)
+    names = @units || []
+    current_unit.present? && !names.include?(current_unit) ? [ current_unit ] + names : names
+  end
+
   # 数量の表示（1.50 → "1.5"、2.00 → "2" のように末尾のゼロを落とす）
   def format_quantity(quantity)
     quantity = quantity.to_d

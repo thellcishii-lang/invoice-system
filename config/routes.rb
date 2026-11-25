@@ -21,6 +21,7 @@ Rails.application.routes.draw do
     post :test_smtp
   end
   resources :clients
+  resources :units, only: %i[ create ]
   resources :items
   resources :item_categories, only: %i[ new create edit update destroy ]
   resources :documents do

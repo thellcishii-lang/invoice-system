@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_24_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_090000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -297,6 +297,15 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_120000) do
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end
 
+  create_table "units", force: :cascade do |t|
+    t.bigint "tenant_id", null: false
+    t.string "name", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tenant_id", "name"], name: "index_units_on_tenant_id_and_name", unique: true
+    t.index ["tenant_id"], name: "index_units_on_tenant_id"
+  end
+
   create_table "users", force: :cascade do |t|
     t.bigint "tenant_id", null: false
     t.string "name", null: false
@@ -339,5 +348,6 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_24_120000) do
   add_foreign_key "send_templates", "tenants"
   add_foreign_key "sessions", "users"
   add_foreign_key "signup_applications", "tenants"
+  add_foreign_key "units", "tenants"
   add_foreign_key "users", "tenants"
 end

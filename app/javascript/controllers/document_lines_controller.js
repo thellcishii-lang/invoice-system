@@ -5,10 +5,25 @@ export default class extends Controller {
   static targets = ["container", "template"]
   static values = { items: Array }
 
+  connect() {
+    this.restripe()
+  }
+
+  // 表示中の明細行を交互に色分けする（削除で隠れた行は数えない）
+  restripe() {
+    let alt = false
+    this.containerTarget.querySelectorAll("[data-line-row]").forEach((row) => {
+      if (row.style.display === "none") return
+      row.classList.toggle("line-row-alt", alt)
+      alt = !alt
+    })
+  }
+
   add(event) {
     event.preventDefault()
     const content = this.templateTarget.innerHTML.replaceAll("NEW_RECORD", Date.now().toString())
     this.containerTarget.insertAdjacentHTML("beforeend", content)
+    this.restripe()
   }
 
   remove(event) {
@@ -24,6 +39,7 @@ export default class extends Controller {
     } else {
       row.remove()
     }
+    this.restripe()
   }
 
   itemChanged(event) {
@@ -35,7 +51,14 @@ export default class extends Controller {
     row.querySelector("input[name$='[unit_price]']").value = item.unit_price
     const costField = row.querySelector("input[name$='[cost_unit_price]']")
     if (costField) costField.value = item.cost_price ?? ""
-    row.querySelector("input[name$='[unit]']").value = item.unit || ""
+    const unitSelect = row.querySelector("select[name$='[unit]']")
+    if (unitSelect) {
+      // 品目の単位がセレクトに無ければ足してから選ぶ（単位マスタに無い単位でも反映する）
+      if (item.unit && ![...unitSelect.options].some((option) => option.value === item.unit)) {
+        unitSelect.add(new Option(item.unit, item.unit))
+      }
+      unitSelect.value = item.unit || ""
+    }
     row.querySelector("select[name$='[tax_rate]']").value = item.tax_rate
   }
 }

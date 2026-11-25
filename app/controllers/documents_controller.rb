@@ -120,6 +120,7 @@ class DocumentsController < ApplicationController
     def load_form_data
       @clients = Current.tenant.clients.order(:name)
       @items = Current.tenant.items.active.order(:code)
+      @units = Unit.names_for(Current.tenant)
     end
 
     def document_params
