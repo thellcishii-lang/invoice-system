@@ -107,6 +107,78 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal 10000, document.document_lines.first.amount
   end
 
+  test "create always saves as a draft even if a status is posted" do
+    sign_in_as(users(:one))
+
+    post documents_path, params: { document: {
+      kind: "estimate", client_id: clients(:one).id, issue_date: "2026-11-06",
+      title: "下書きテスト", status: "issued",
+      document_lines_attributes: [ { name: "作業費", quantity: 1, unit_price: 1000, tax_rate: "standard" } ]
+    } }
+
+    assert_equal "draft", Document.order(:id).last.status
+  end
+
+  test "create with the issue button saves as issued" do
+    sign_in_as(users(:one))
+
+    post documents_path, params: { commit_action: "issue", document: {
+      kind: "estimate", client_id: clients(:one).id, issue_date: "2026-11-06",
+      title: "すぐ発行する見積",
+      document_lines_attributes: [ { name: "作業費", quantity: 1, unit_price: 1000, tax_rate: "standard" } ]
+    } }
+
+    document = Document.order(:id).last
+    assert_equal "issued", document.status
+    assert_redirected_to document_path(document)
+  end
+
+  test "create with after_save=list returns to the index (leave-guard save)" do
+    sign_in_as(users(:one))
+
+    post documents_path, params: { commit_action: "draft", after_save: "list", document: {
+      kind: "estimate", client_id: clients(:one).id, issue_date: "2026-11-06",
+      title: "下書きで一覧へ",
+      document_lines_attributes: [ { name: "作業費", quantity: 1, unit_price: 1000, tax_rate: "standard" } ]
+    } }
+
+    assert_equal "draft", Document.order(:id).last.status
+    assert_redirected_to documents_path(kind: "estimate")
+  end
+
+  test "updating a draft with the issue button issues it" do
+    sign_in_as(users(:one))
+    draft = build_document(status: "draft")
+    line = draft.document_lines.first
+
+    patch document_path(draft), params: { commit_action: "issue", document: {
+      title: "発行する下書き",
+      document_lines_attributes: [
+        { id: line.id, name: line.name, quantity: 1, unit_price: 3000, tax_rate: "standard" }
+      ]
+    } }
+
+    assert_redirected_to document_path(draft)
+    draft.reload
+    assert_equal "issued", draft.status
+    assert_equal "発行する下書き", draft.title
+  end
+
+  test "index hides drafts by default and scope=drafts lists only drafts" do
+    sign_in_as(users(:one))
+    draft = build_document(status: "draft")
+    draft.update!(title: "下書きの請求書")
+
+    get documents_path(kind: "invoice")
+    assert_response :success
+    assert_no_match "下書きの請求書", response.body
+
+    get documents_path(kind: "invoice", scope: "drafts")
+    assert_response :success
+    assert_match "下書きの請求書", response.body
+    assert_no_match documents(:invoice_one).title, response.body
+  end
+
   test "creates a document from an item picker selection" do
     sign_in_as(users(:one))
 
@@ -323,6 +395,20 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_match "48,100円", response.body
     assert_match "10%", response.body
     assert_match "8%", response.body
+  end
+
+  private
+
+  # 明細1行つきの帳票をモデル経由で作る（番号はテスト専用のものを使う）
+  def build_document(status:)
+    document = tenants(:one).documents.build(
+      kind: "invoice", client: clients(:one), number: "202611-T#{SecureRandom.hex(3)}",
+      issue_date: "2026-11-06", title: "テスト請求書", status: status
+    )
+    document.document_lines.build(name: "作業費", quantity: 1, unit_price: 1000, tax_rate: "standard")
+    document.save!
+    document.recalculate_totals!
+    document
   end
 end
 

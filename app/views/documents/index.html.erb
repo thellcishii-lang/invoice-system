@@ -1,7 +1,14 @@
 <div class="w-full">
   <div class="flex items-center justify-between mb-5">
-    <h1 class="font-bold text-3xl"><%= @kind ? Document::KIND_LABELS[@kind] : "帳票" %></h1>
-    <%= link_to "新規作成", new_document_path(kind: @kind), class: "btn btn-primary" %>
+    <h1 class="font-bold text-3xl"><%= @drafts_mode ? "#{@kind ? Document::KIND_LABELS[@kind] : "帳票"}の下書き" : (@kind ? Document::KIND_LABELS[@kind] : "帳票") %></h1>
+    <div class="flex gap-2">
+      <% if @drafts_mode %>
+        <%= link_to "一覧に戻る", documents_path(kind: @kind), class: "btn" %>
+      <% else %>
+        <%= link_to "下書き（#{@draft_count}）", documents_path(kind: @kind, scope: "drafts"), class: "btn" %>
+      <% end %>
+      <%= link_to "新規作成", new_document_path(kind: @kind), class: "btn btn-primary" %>
+    </div>
   </div>
 
   <% issue_label = { "estimate" => "見積日", "order" => "発注日", "delivery" => "納品日", "invoice" => "請求日", "receipt" => "領収日" }[@kind] || "発行日" %>
@@ -102,7 +109,7 @@
   </details>
 
   <% if @documents.empty? %>
-    <p class="text-gray-500"><%= @filter_active ? "条件に合う帳票はありません。" : "帳票はまだありません。" %></p>
+    <p class="text-gray-500"><%= @drafts_mode ? "下書きはありません。" : (@filter_active ? "条件に合う帳票はありません。" : "帳票はまだありません。") %></p>
   <% else %>
     <div class="card px-5 py-2">
     <table class="w-full text-left">
@@ -123,7 +130,7 @@
       <tbody>
         <% @documents.each do |document| %>
           <tr class="border-b border-gray-100">
-            <td class="py-2 pr-4 font-mono"><%= link_to document.number, document, class: "text-blue-600 hover:underline" %></td>
+            <td class="py-2 pr-4 font-mono"><%= link_to document.number, @drafts_mode ? edit_document_path(document) : document, class: "text-blue-600 hover:underline" %></td>
             <% if @kind.nil? %><td class="py-2 pr-4"><%= document.kind_label %></td><% end %>
             <td class="py-2 pr-4"><%= document.issue_date %></td>
             <td class="py-2 pr-4"><%= document.client.name %></td>

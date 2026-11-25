@@ -6,6 +6,16 @@ class DocumentsController < ApplicationController
     @documents = Current.tenant.documents.includes(:client, :created_by, :document_lines).order(issue_date: :desc, id: :desc)
     @documents = @documents.where(kind: @kind) if @kind
     apply_filters
+    # 下書きは通常の一覧に出さず、「下書き」ボタン先の一覧でだけ見る
+    @drafts_mode = params[:scope] == "drafts"
+    if @drafts_mode
+      @documents = @documents.where(status: :draft)
+    elsif @f[:status].blank?
+      @documents = @documents.where.not(status: :draft)
+    end
+    @draft_count = Current.tenant.documents
+    @draft_count = @draft_count.where(kind: @kind) if @kind
+    @draft_count = @draft_count.draft.count
     @clients = Current.tenant.clients.order(:name)
     @members = Current.tenant.users.order(:id)
   end
@@ -42,10 +52,18 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Current.tenant.documents.build(document_params)
+    # 状態はフォームのボタンで決まる（「発行する」→ 発行済み、それ以外 → 下書き）
+    @document.status = params[:commit_action] == "issue" ? :issued : :draft
 
     if @document.save
       @document.recalculate_totals!
-      redirect_to @document, notice: "#{@document.kind_label}を作成しました。"
+      if params[:after_save] == "list"
+        redirect_to documents_path(kind: @document.kind_value), notice: "#{@document.kind_label}を下書きとして保存しました。"
+      elsif @document.issued?
+        redirect_to @document, notice: "#{@document.kind_label}を発行しました。"
+      else
+        redirect_to @document, notice: "#{@document.kind_label}を下書きとして保存しました。"
+      end
     else
       load_form_data
       render :new, status: :unprocessable_entity
@@ -60,7 +78,15 @@ class DocumentsController < ApplicationController
     # 帳票番号は種別と発行年月で採番済みのため、種別は変更しない
     if @document.update(document_params.except("kind"))
       @document.recalculate_totals!
-      redirect_to @document, notice: "#{@document.kind_label}を更新しました。"
+      # 下書きの編集で「発行する」が押されたら、保存と同時に発行済みにする
+      @document.update!(status: :issued) if params[:commit_action] == "issue" && @document.draft?
+      if params[:after_save] == "list"
+        redirect_to documents_path(kind: @document.kind_value), notice: "#{@document.kind_label}を下書きとして保存しました。"
+      elsif params[:commit_action] == "issue"
+        redirect_to @document, notice: "#{@document.kind_label}を発行しました。"
+      else
+        redirect_to @document, notice: "#{@document.kind_label}を更新しました。"
+      end
     else
       load_form_data
       render :edit, status: :unprocessable_entity
@@ -124,7 +150,7 @@ class DocumentsController < ApplicationController
     end
 
     def document_params
-      params.expect(document: [ :kind, :client_id, :issue_date, :due_date, :title, :status, :notes, :internal_memo,
+      params.expect(document: [ :kind, :client_id, :issue_date, :due_date, :title, :notes, :internal_memo,
         { document_lines_attributes: [ %i[ id item_id name quantity unit unit_price cost_unit_price tax_rate _destroy ] ] } ])
     end
 
