@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_25_140000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_150000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -279,7 +279,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_140000) do
     t.string "stripe_subscription_id"
     t.string "billing_status", default: "none", null: false
     t.datetime "contract_ended_at"
-    t.integer "monthly_invoice_limit", default: 100
+    t.integer "monthly_invoice_limit"
     t.text "seal_image_data"
     t.string "seal_image_content_type"
     t.text "bank_details"

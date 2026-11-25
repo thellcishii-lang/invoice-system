@@ -30,7 +30,7 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     assert tenant.billing_active?
     assert_equal "cus_test_123", tenant.stripe_customer_id
     assert_equal "sub_test_123", tenant.stripe_subscription_id
-    assert_equal 100, tenant.monthly_invoice_limit
+    assert_nil tenant.monthly_invoice_limit
 
     user = tenant.users.sole
     assert_equal "申込太郎", user.name

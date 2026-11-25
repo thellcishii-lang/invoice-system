@@ -19,15 +19,14 @@ class InvoiceLimitTest < ActiveSupport::TestCase
     assert_includes over.errors[:base].join, "発行上限（2通）に達しました"
   end
 
-  test "100th invoice is allowed and 101st is rejected with the default limit" do
-    assert_equal 100, @tenant.monthly_invoice_limit
+  test "invoices are unlimited by default; a set limit still applies" do
+    assert_nil @tenant.monthly_invoice_limit
 
     100.times { assert build_invoice.save }
     assert_equal 100, @tenant.invoice_count_for(Date.current)
 
-    over = build_invoice
-    assert_not over.save
-    assert_includes over.errors[:base].join, "発行上限（100通）に達しました"
+    assert build_invoice.save
+    assert_equal 101, @tenant.invoice_count_for(Date.current)
   end
 
   test "tenant with nil limit is unlimited" do
