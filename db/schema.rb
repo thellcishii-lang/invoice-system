@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_25_120000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_130000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -127,6 +127,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_120000) do
     t.bigint "created_by_id"
     t.text "internal_memo"
     t.datetime "public_viewed_at"
+    t.string "order_type"
     t.index ["client_id"], name: "index_documents_on_client_id"
     t.index ["converted_from_id"], name: "index_documents_on_converted_from_id"
     t.index ["created_by_id"], name: "index_documents_on_created_by_id"

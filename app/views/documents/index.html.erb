@@ -137,7 +137,7 @@
             <td class="py-2 pr-4"><%= document.title %></td>
             <td class="py-2 pr-4 text-right"><%= number_with_delimiter(document.total) %>円</td>
             <td class="py-2 pr-4 text-right <%= document.gross_profit.negative? ? "text-red-600" : "text-gray-600" %>"><%= number_with_delimiter(document.gross_profit) %>円<% if document.gross_margin_rate %> <span class="text-xs">(<%= document.gross_margin_rate.round(0) %>%)</span><% end %></td>
-            <td class="py-2 pr-4"><%= document.status_label %></td>
+            <td class="py-2 pr-4"><%= document.status_label %><% if document.purchase_order? && document.order_type.present? %><div class="text-xs text-gray-500"><%= Document::ORDER_TYPE_SHORT_LABELS[document.order_type] %></div><% end %></td>
             <td class="py-2 pr-4 text-gray-600"><%= document.created_by&.name || "（自動）" %></td>
             <td class="py-2 text-right"><%= link_to "編集", edit_document_path(document), class: "text-gray-700 hover:underline text-sm" %></td>
           </tr>

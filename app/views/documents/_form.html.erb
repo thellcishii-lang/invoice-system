@@ -20,6 +20,22 @@
     <% end %>
   </div>
 
+  <% if document.purchase_order? %>
+    <div class="my-5">
+      <p class="text-sm text-gray-500">発注の区分</p>
+      <div class="flex flex-wrap gap-x-5 gap-y-2 mt-2">
+        <label class="flex items-center gap-2">
+          <%= form.radio_button :order_type, "received", checked: document.order_type == "received", class: "border-gray-400" %>
+          受注（お客さんからの発注）
+        </label>
+        <label class="flex items-center gap-2">
+          <%= form.radio_button :order_type, "placed", checked: document.order_type != "received", class: "border-gray-400" %>
+          発注（業者への発注）
+        </label>
+      </div>
+    </div>
+  <% end %>
+
   <div class="my-5" data-controller="quick-client">
     <%= form.label :client_id, "取引先" %>
     <div class="flex gap-2 mt-2 items-start">

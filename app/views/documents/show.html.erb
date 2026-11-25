@@ -53,6 +53,9 @@
   <div class="card p-6 mb-6">
   <dl class="grid grid-cols-2 gap-x-6 gap-y-3 mb-8 text-sm">
     <div><dt class="text-gray-500">取引先</dt><dd class="mt-0.5"><%= link_to @document.client.name, @document.client, class: "text-blue-600 hover:underline" %></dd></div>
+    <% if @document.purchase_order? %>
+      <div><dt class="text-gray-500">区分</dt><dd class="mt-0.5"><%= @document.order_type_label || "発注（業者への発注）" %></dd></div>
+    <% end %>
     <div><dt class="text-gray-500">発行日</dt><dd class="mt-0.5"><%= @document.issue_date %></dd></div>
     <div><dt class="text-gray-500">件名</dt><dd class="mt-0.5"><%= @document.title %></dd></div>
     <% if @document.due_date %>

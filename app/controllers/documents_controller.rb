@@ -52,6 +52,8 @@ class DocumentsController < ApplicationController
 
   def create
     @document = Current.tenant.documents.build(document_params)
+    # 発注の区分は発注書だけが持つ
+    @document.order_type = nil unless @document.purchase_order?
     # 状態はフォームのボタンで決まる（「発行する」→ 発行済み、それ以外 → 下書き）
     @document.status = params[:commit_action] == "issue" ? :issued : :draft
 
@@ -76,7 +78,9 @@ class DocumentsController < ApplicationController
 
   def update
     # 帳票番号は種別と発行年月で採番済みのため、種別は変更しない
-    if @document.update(document_params.except("kind"))
+    update_params = document_params.except("kind")
+    update_params.delete("order_type") unless @document.purchase_order?
+    if @document.update(update_params)
       @document.recalculate_totals!
       # 下書きの編集で「発行する」が押されたら、保存と同時に発行済みにする
       @document.update!(status: :issued) if params[:commit_action] == "issue" && @document.draft?
@@ -153,7 +157,7 @@ class DocumentsController < ApplicationController
     end
 
     def document_params
-      params.expect(document: [ :kind, :client_id, :issue_date, :due_date, :title, :notes, :internal_memo,
+      params.expect(document: [ :kind, :client_id, :issue_date, :due_date, :title, :order_type, :notes, :internal_memo,
         { document_lines_attributes: [ %i[ id item_id name quantity unit unit_price cost_unit_price tax_rate _destroy ] ] } ])
     end
 

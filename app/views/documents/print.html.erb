@@ -13,7 +13,7 @@
   </style>
 <% end %>
 
-<% if tenant.logo_image? && tenant.logo_placement_value == "top" %>
+<% if tenant.logo_image? && tenant.logo_placement_value == "top" && !@document.received_order? %>
   <div class="logo-top" style="text-align: <%= tenant.logo_alignment_value %>">
     <%= image_tag tenant.logo_image_data_uri, alt: "", class: "logo-img" %>
   </div>
@@ -22,7 +22,7 @@
 <h1 style="background: <%= band_color %>; color: <%= band_text_color %>"><%= @document.kind_label %></h1>
 
 <div class="meta">
-  発行日：<%= @document.issue_date.strftime("%Y年%m月%d日") %><br>
+  <%= @document.received_order? ? "発注日" : "発行日" %>：<%= @document.issue_date.strftime("%Y年%m月%d日") %><br>
   番号：<%= @document.number %>
   <% if @document.invoice? && @document.due_date %>
     <br>お支払期限：<%= @document.due_date.strftime("%Y年%m月%d日") %>
@@ -32,6 +32,35 @@
   <% end %>
 </div>
 
+<% if @document.received_order? %>
+  <%# 受注した発注書: 宛先は自社、発行するのはお客さん（印鑑を押す欄つき） %>
+  <div class="parties">
+    <div>
+      <div class="client-name"><%= tenant.name %> 御中</div>
+      <% if tenant.postal_code.present? || tenant.address.present? %>
+        <div>
+          <%= "〒#{tenant.postal_code}" if tenant.postal_code.present? %>
+          <%= tenant.address %>
+        </div>
+      <% end %>
+      <% if @document.title.present? %>
+        <div class="section">件名：<%= @document.title %></div>
+      <% end %>
+      <div class="section">下記内容で発注します。</div>
+    </div>
+
+    <div class="issuer" style="padding-right: 23mm;">
+      <div style="position: absolute; top: 0; right: 0; width: 21mm; height: 21mm; border: 1px solid #999; color: #bbb; display: flex; align-items: center; justify-content: center; font-size: 15px;">印</div>
+      <div><strong><%= @document.client.name %></strong></div>
+      <% if @document.client.postal_code.present? %><div>〒<%= @document.client.postal_code %></div><% end %>
+      <% if @document.client.address.present? %><div><%= @document.client.address %></div><% end %>
+      <% if @document.client.phone.present? %><div>TEL: <%= @document.client.phone %></div><% end %>
+      <% if @document.client.registration_number.present? %>
+        <div>登録番号：<%= @document.client.registration_number %></div>
+      <% end %>
+    </div>
+  </div>
+<% else %>
 <div class="parties">
   <div>
     <div class="client-name"><%= @document.client.name %> 様</div>
@@ -60,6 +89,7 @@
     <% end %>
   </div>
 </div>
+<% end %>
 
 <%
   amount_label = { "estimate" => "お見積金額", "order" => "発注金額", "delivery" => "納品金額", "invoice" => "ご請求金額", "receipt" => "領収金額" }[@document.kind_value]
@@ -147,7 +177,7 @@
   <div class="remarks-body"><%= @document.notes %></div>
 </div>
 
-<% if tenant.logo_image? && tenant.logo_placement_value == "bottom" %>
+<% if tenant.logo_image? && tenant.logo_placement_value == "bottom" && !@document.received_order? %>
   <div class="logo-bottom" style="text-align: <%= tenant.logo_alignment_value %>">
     <%= image_tag tenant.logo_image_data_uri, alt: "", class: "logo-img" %>
   </div>

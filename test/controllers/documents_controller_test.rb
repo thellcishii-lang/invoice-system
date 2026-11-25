@@ -310,6 +310,58 @@ class DocumentsControllerTest < ActionDispatch::IntegrationTest
     assert_equal (original.due_date - original.issue_date).to_i, (copy.due_date - copy.issue_date).to_i
   end
 
+  test "converting an estimate to an order makes it a received order" do
+    sign_in_as(users(:one))
+
+    post convert_document_path(documents(:estimate_one), target_kind: "order")
+
+    order = Document.order(:id).last
+    assert_equal "order", order.kind_value
+    assert_equal "received", order.order_type
+  end
+
+  test "a placed order cannot be converted to delivery or invoice" do
+    sign_in_as(users(:one))
+    order = tenants(:one).documents.build(kind: "order", client: clients(:one),
+      issue_date: "2026-11-06", title: "業者への発注", status: "issued", order_type: "placed")
+    order.document_lines.build(name: "外注費", quantity: 1, unit_price: 5000, tax_rate: "standard")
+    order.save!
+
+    assert_empty order.convertible_kinds
+    post convert_document_path(order, target_kind: "delivery")
+    assert_redirected_to document_path(order)
+    assert_equal "その変換はできません。", flash[:alert]
+  end
+
+  test "print of a received order addresses the tenant and is issued by the client" do
+    sign_in_as(users(:one))
+    order = tenants(:one).documents.build(kind: "order", client: clients(:one),
+      issue_date: "2026-11-06", title: "受注した発注", status: "issued", order_type: "received")
+    order.document_lines.build(name: "作業費", quantity: 1, unit_price: 5000, tax_rate: "standard")
+    order.save!
+    order.recalculate_totals!
+
+    get print_document_path(order)
+
+    assert_response :success
+    assert_match "下記内容で発注します", response.body
+    assert_match "#{ERB::Util.html_escape(tenants(:one).name)} 御中", response.body
+    assert_match "発注日", response.body
+    assert_match clients(:one).phone, response.body
+  end
+
+  test "order_type is saved only for orders" do
+    sign_in_as(users(:one))
+
+    post documents_path, params: { document: {
+      kind: "invoice", client_id: clients(:one).id, issue_date: "2026-11-06",
+      title: "区分を持たない請求", order_type: "placed",
+      document_lines_attributes: [ { name: "作業費", quantity: 1, unit_price: 1000, tax_rate: "standard" } ]
+    } }
+
+    assert_nil Document.order(:id).last.order_type
+  end
+
   test "creates an order document and converts estimate to order to delivery" do
     sign_in_as(users(:one))
 

@@ -9,6 +9,8 @@ class Document < ApplicationRecord
   }.freeze
   STATUS_LABELS = { "draft" => "下書き", "issued" => "発行済み" }.freeze
   PAYMENT_STATUS_LABELS = { "unpaid" => "未入金", "partial" => "一部入金", "paid" => "入金済み" }.freeze
+  ORDER_TYPE_LABELS = { "received" => "受注（お客さんからの発注）", "placed" => "発注（業者への発注）" }.freeze
+  ORDER_TYPE_SHORT_LABELS = { "received" => "受注", "placed" => "発注" }.freeze
   # 変換できる組み合わせ（変換元の種別 => 変換先の種別）
   CONVERSIONS = {
     "estimate" => %w[ order delivery invoice ],
@@ -22,6 +24,9 @@ class Document < ApplicationRecord
   # purchase_order にし、DBの値だけ "order" にしている。
   enum :kind, { estimate: "estimate", purchase_order: "order", delivery: "delivery", invoice: "invoice", receipt: "receipt" }, validate: true
   enum :status, { draft: "draft", issued: "issued" }, validate: true
+  # 発注書の区分: received = お客さんからの発注（受注）、placed = 業者への発注。
+  # 発注書以外は NULL（enum の validate は使わず allow_nil 付きで自前検証する）
+  enum :order_type, { received: "received", placed: "placed" }, prefix: :order_type
   # 入金ステータスは請求書だけが持つ（他の種別は NULL のため、
   # enum の validate は使わず allow_nil 付きで自前検証する）
   enum :payment_status, { unpaid: "unpaid", partial: "partial", paid: "paid" }, prefix: :payment
@@ -49,6 +54,7 @@ class Document < ApplicationRecord
     reject_if: ->(attrs) { attrs["name"].blank? && attrs["quantity"].blank? && attrs["unit_price"].blank? }
 
   validates :payment_status, inclusion: { in: PAYMENT_STATUS_LABELS.keys }, allow_nil: true
+  validates :order_type, inclusion: { in: ORDER_TYPE_LABELS.keys }, allow_nil: true
   validates :issue_date, presence: true
   validates :number, presence: true, uniqueness: { scope: %i[ tenant_id kind ] }
   validate :must_have_lines
@@ -121,7 +127,24 @@ class Document < ApplicationRecord
   end
 
   def convertible_kinds
+    # 業者への発注書は販売の流れに乗らないので、納品書・請求書へは変換しない
+    return [] if placed_order?
+
     CONVERSIONS.fetch(kind_value)
+  end
+
+  def order_type_label
+    ORDER_TYPE_LABELS[order_type]
+  end
+
+  # お客さんからの発注書（宛先は自社、発行はお客さん）
+  def received_order?
+    purchase_order? && order_type == "received"
+  end
+
+  # 業者への発注書（自社が発行）
+  def placed_order?
+    purchase_order? && order_type == "placed"
   end
 
   # 明細から合計を再計算して保存する。明細の保存後に呼ぶこと
@@ -231,6 +254,8 @@ class Document < ApplicationRecord
       notes: notes,
       issue_date: Date.current,
       status: :draft,
+      # 見積などから作る発注書は、お客さんからの発注（受注）
+      order_type: (target_kind == "order" ? "received" : nil),
       converted_from: self
     )
     document_lines.each do |line|
@@ -256,7 +281,8 @@ class Document < ApplicationRecord
       notes: notes,
       issue_date: Date.current,
       due_date: new_due_date,
-      status: :draft
+      status: :draft,
+      order_type: order_type
     )
     document_lines.each do |line|
       copy.document_lines.build(
