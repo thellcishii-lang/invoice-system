@@ -1,0 +1,15 @@
+<div class="login-box">
+  <h1 style="font-size:18px; margin-top:0;">運営者ログイン</h1>
+  <p style="font-size:13px; color:#64748b;">見積・請求書システムの販売先ダッシュボード（運営専用）</p>
+  <%= form_with url: operator_session_path do |f| %>
+    <div class="field">
+      <label>メールアドレス</label>
+      <%= f.email_field :email, required: true, autocomplete: "username" %>
+    </div>
+    <div class="field">
+      <label>パスワード</label>
+      <%= f.password_field :password, required: true, autocomplete: "current-password" %>
+    </div>
+    <button class="btn" type="submit" style="width:100%;">ログイン</button>
+  <% end %>
+</div>

@@ -2,6 +2,14 @@ Rails.application.routes.draw do
   resource :session
   resources :passwords, param: :token
 
+  # Operator-only sales dashboard (販売先の見える化). Separate login
+  # from tenant users; lists every tenant that bought the system.
+  namespace :operator do
+    root "dashboards#show"
+    resource :session, only: %i[ new create destroy ]
+    resource :password, only: %i[ edit update ]
+  end
+
   # 公開申込フロー（ログイン不要）と Stripe Webhook、招待用パスワード設定
   resources :signups, only: %i[ new create ] do
     collection do

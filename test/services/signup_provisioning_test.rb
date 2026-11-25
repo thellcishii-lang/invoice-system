@@ -14,6 +14,18 @@ class SignupProvisioningTest < ActiveSupport::TestCase
     assert application.reload.completed?
   end
 
+  test "provisions the tenant with the application's billing interval" do
+    application = SignupApplication.create!(
+      company_name: "年払い商店", contact_name: "鈴木", email: "suzuki@example.co.jp",
+      agreed_to_terms: true, billing_interval: "yearly"
+    )
+    checkout_session = Struct.new(:customer, :subscription).new("cus_test789", "sub_test789")
+
+    tenant = SignupProvisioning.call(application: application, checkout_session: checkout_session)
+
+    assert tenant.yearly?
+  end
+
   test "provisions a general tenant by default" do
     application = SignupApplication.create!(
       company_name: "テスト商店", contact_name: "佐藤", email: "sato@example.co.jp",

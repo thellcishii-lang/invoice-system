@@ -8,6 +8,8 @@ class Tenant < ApplicationRecord
   # （billing_active? のように prefix 付きで使う）
   enum :billing_status, { none: "none", active: "active", suspended: "suspended", cancelled: "cancelled" },
        prefix: :billing, validate: true
+  # 契約プランの支払い区分（申込から引き継ぐ。運営ダッシュボードの集計に使う）
+  enum :billing_interval, { monthly: "monthly", yearly: "yearly" }, validate: true
 
   has_many :users, dependent: :restrict_with_error
   has_many :clients, dependent: :restrict_with_error

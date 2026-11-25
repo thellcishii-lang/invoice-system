@@ -1,0 +1,70 @@
+<h1 style="font-size:20px;">販売先ダッシュボード</h1>
+
+<div class="cards">
+  <div class="card"><div class="label">契約中</div><div class="value"><%= @active_count %>件</div></div>
+  <div class="card"><div class="label">MRR（税別・年払いは月換算）</div><div class="value">¥<%= number_with_delimiter(@mrr) %></div></div>
+  <div class="card"><div class="label">停止中（未払い等）</div><div class="value"><%= @suspended_count %>件</div></div>
+  <div class="card"><div class="label">解約済</div><div class="value"><%= @cancelled_count %>件</div></div>
+  <div class="card"><div class="label">今月の申込</div><div class="value"><%= @signups_this_month %>件</div></div>
+</div>
+
+<h2 style="font-size:16px;">販売先一覧</h2>
+<table>
+  <thead>
+    <tr>
+      <th>会社名</th><th>担当者 / メール</th><th>版</th><th>プラン</th><th>契約開始</th><th>状態</th>
+      <th>メンバー</th><th>帳票</th><th>Stripe</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tenants.each do |tenant| %>
+      <% app = @applications_by_tenant[tenant.id] %>
+      <% status = display_status(tenant) %>
+      <tr>
+        <td><strong><%= tenant.name %></strong></td>
+        <td>
+          <% if app %>
+            <%= app.contact_name %><br>
+            <span style="color:#64748b;"><%= app.email %></span>
+          <% else %>
+            <span style="color:#94a3b8;">（手動発行）</span>
+          <% end %>
+        </td>
+        <td><%= tenant.construction? ? "建築" : "一般" %></td>
+        <td><%= tenant.yearly? ? "年払い" : "月払い" %></td>
+        <td><%= tenant.created_at.strftime("%Y/%m/%d") %></td>
+        <td>
+          <span class="badge badge-<%= status %>">
+            <%= { active: "契約中", suspended: "停止中", cancelled: "解約済", none: "対象外" }[status] %>
+          </span>
+        </td>
+        <td><%= tenant.users.size %></td>
+        <td><%= tenant.documents.size %></td>
+        <td>
+          <% if tenant.stripe_customer_id.present? %>
+            <%= link_to "顧客", "https://dashboard.stripe.com/customers/#{tenant.stripe_customer_id}", target: "_blank", rel: "noopener" %>
+          <% else %>―<% end %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<% if @pending_applications.any? %>
+  <h2 style="font-size:16px; margin-top:28px;">決済未完了の申込（見込み）</h2>
+  <table>
+    <thead><tr><th>申込日</th><th>会社名</th><th>担当者</th><th>メール</th><th>版</th><th>プラン</th></tr></thead>
+    <tbody>
+      <% @pending_applications.each do |app| %>
+        <tr>
+          <td><%= app.created_at.strftime("%Y/%m/%d %H:%M") %></td>
+          <td><%= app.company_name %></td>
+          <td><%= app.contact_name %></td>
+          <td><%= app.email %></td>
+          <td><%= app.construction? ? "建築" : "一般" %></td>
+          <td><%= app.billing_interval_label %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

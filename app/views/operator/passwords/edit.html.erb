@@ -1,0 +1,9 @@
+<h1 style="font-size:18px;">パスワード変更</h1>
+<div class="login-box" style="margin:16px 0;">
+  <%= form_with url: operator_password_path, method: :patch do |f| %>
+    <div class="field"><label>現在のパスワード</label><%= f.password_field :current_password, required: true %></div>
+    <div class="field"><label>新しいパスワード（8文字以上）</label><%= f.password_field :password, required: true %></div>
+    <div class="field"><label>新しいパスワード（確認）</label><%= f.password_field :password_confirmation, required: true %></div>
+    <button class="btn" type="submit">変更する</button>
+  <% end %>
+</div>

@@ -23,6 +23,7 @@ class SignupProvisioning
         email: @application.email,
         edition: @application.edition,
         billing_status: :active,
+        billing_interval: @application.billing_interval,
         stripe_customer_id: @checkout_session.customer,
         stripe_subscription_id: @checkout_session.subscription
       )
