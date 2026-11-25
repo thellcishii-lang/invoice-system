@@ -79,7 +79,7 @@ assert_response :success
 assert_match "235mm 120mm", response.body
 end
 
-test "envelope renders vertical writing when the tenant direction is vertical" do
+test "envelope stands vertical when the tenant direction is vertical" do
 sign_in_as(users(:one))
 tenants(:one).update!(envelope_direction: "vertical")
 document = documents(:invoice_one)
@@ -87,7 +87,9 @@ document = documents(:invoice_one)
 get envelope_document_path(document)
 
 assert_response :success
-assert_match "vertical-rl", response.body
+# 長形4号を縦に置くので、ページは 90mm × 205mm の縦長になる（文字は横向きのまま）
+assert_match "size: 90mm 205mm", response.body
+assert_no_match "vertical-rl", response.body
 end
 
 test "envelope hides the sender block when the tenant turns it off" do

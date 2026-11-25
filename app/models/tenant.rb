@@ -78,7 +78,7 @@ class Tenant < ApplicationRecord
   # 封筒印刷: [幅mm, 高さmm]（横向きに置いた寸法）
   ENVELOPE_SIZES = { "chou3" => [ 235, 120 ], "chou4" => [ 205, 90 ] }.freeze
   ENVELOPE_SIZE_LABELS = { "chou3" => "長形3号（120×235mm）", "chou4" => "長形4号（90×205mm）" }.freeze
-  ENVELOPE_DIRECTION_LABELS = { "horizontal" => "横書き", "vertical" => "縦書き" }.freeze
+  ENVELOPE_DIRECTION_LABELS = { "horizontal" => "横向き", "vertical" => "縦向き" }.freeze
 
   def envelope_dimensions(size = envelope_size)
     ENVELOPE_SIZES.fetch(size, ENVELOPE_SIZES["chou4"])
