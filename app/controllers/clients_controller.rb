@@ -23,9 +23,16 @@ class ClientsController < ApplicationController
     @client = Current.tenant.clients.build(client_params)
 
     if @client.save
-      redirect_to @client, notice: "取引先を登録しました。"
+      respond_to do |format|
+        format.html { redirect_to @client, notice: "取引先を登録しました。" }
+        # 帳票フォームのポップアップ登録用：作った取引先をそのまま選択できるよう返す
+        format.json { render json: { id: @client.id, name: @client.name }, status: :created }
+      end
     else
-      render :new, status: :unprocessable_entity
+      respond_to do |format|
+        format.html { render :new, status: :unprocessable_entity }
+        format.json { render json: { errors: @client.errors.full_messages }, status: :unprocessable_entity }
+      end
     end
   end
 

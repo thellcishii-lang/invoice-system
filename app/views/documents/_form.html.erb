@@ -10,22 +10,73 @@
 
 <%= form_with model: document, class: "contents" do |form| %>
   <div class="my-5">
+    <p class="text-sm text-gray-500">種別</p>
     <% if document.persisted? %>
-      <p class="text-sm text-gray-500">種別</p>
       <p class="mt-1"><%= document.kind_label %>（番号：<span class="font-mono"><%= document.number %></span>）</p>
     <% else %>
-      <%= form.label :kind, "種別" %>
-      <%= form.select :kind,
-            Document::KIND_LABELS.invert.to_a,
-            {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <%# 種別は入ってきた一覧で決まる（見積一覧からなら見積書）。ここでは変えられない %>
+      <p class="mt-1"><%= document.kind_label %></p>
+      <%= form.hidden_field :kind, value: document.kind_value %>
     <% end %>
   </div>
 
-  <div class="my-5">
+  <div class="my-5" data-controller="quick-client">
     <%= form.label :client_id, "取引先" %>
-    <%= form.collection_select :client_id, @clients, :id, :name,
-          { prompt: "取引先を選択" },
-          required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    <div class="flex gap-2 mt-2 items-start">
+      <%= form.collection_select :client_id, @clients, :id, :name,
+            { prompt: "取引先を選択" },
+            required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 flex-1 min-w-0",
+            data: { quick_client_target: "select" } %>
+      <button type="button" class="btn whitespace-nowrap" data-action="quick-client#open">＋ 取引先を新規追加</button>
+    </div>
+
+    <dialog data-quick-client-target="dialog" data-action="click->quick-client#backdropClose keydown->quick-client#keydown"
+            class="m-auto w-[min(560px,92vw)] rounded-2xl border border-gray-200 bg-white p-0 shadow-2xl backdrop:bg-slate-900/45">
+      <div class="p-6">
+        <h3 class="font-bold text-lg mb-4">取引先を新規追加</h3>
+        <div data-quick-client-target="errors" class="hidden py-2 px-3 bg-red-50 mb-4 text-red-500 font-medium rounded-lg text-sm"></div>
+        <div class="space-y-4">
+          <div>
+            <label class="text-sm text-gray-500">会社名（必須）</label>
+            <input type="text" data-quick-client-target="name" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+          </div>
+          <div class="flex gap-3">
+            <div class="flex-1">
+              <label class="text-sm text-gray-500">担当者</label>
+              <input type="text" data-quick-client-target="contactPerson" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+            </div>
+            <div class="flex-1">
+              <label class="text-sm text-gray-500">メールアドレス</label>
+              <input type="email" data-quick-client-target="email" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="flex-1">
+              <label class="text-sm text-gray-500">電話番号</label>
+              <input type="tel" data-quick-client-target="phone" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+            </div>
+            <div class="flex-1">
+              <label class="text-sm text-gray-500">FAX番号</label>
+              <input type="tel" data-quick-client-target="faxNumber" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+            </div>
+          </div>
+          <div class="flex gap-3">
+            <div class="w-32">
+              <label class="text-sm text-gray-500">郵便番号</label>
+              <input type="text" data-quick-client-target="postalCode" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+            </div>
+            <div class="flex-1">
+              <label class="text-sm text-gray-500">住所</label>
+              <input type="text" data-quick-client-target="address" autocomplete="off" class="block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-1 w-full">
+            </div>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 mt-6">
+          <button type="button" class="btn" data-action="quick-client#close">キャンセル</button>
+          <button type="button" class="btn btn-primary" data-action="quick-client#submit">登録する</button>
+        </div>
+      </div>
+    </dialog>
   </div>
 
   <div class="flex gap-4">
@@ -56,7 +107,7 @@
 
   <div data-controller="document-lines"
        data-document-lines-items-value="<%= @items.map { |item| { id: item.id, name: item.name, unit_price: item.unit_price, cost_price: item.cost_price, unit: item.unit, tax_rate: item.tax_rate } }.to_json %>">
-    <div data-document-lines-target="container">
+    <div data-document-lines-target="container" class="line-rows">
       <%= form.fields_for :document_lines do |line_form| %>
         <%= render "line_fields", line_form: line_form %>
       <% end %>

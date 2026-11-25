@@ -32,6 +32,30 @@ class ClientsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "新規取引先株式会社", client.name
   end
 
+  test "creates a client via JSON for the quick-add popup" do
+    sign_in_as(users(:one))
+
+    assert_difference("Client.count", 1) do
+      post clients_path, params: { client: { name: "ポップアップ登録株式会社", email: "pop@example.co.jp" } }, as: :json
+    end
+
+    assert_response :created
+    body = JSON.parse(response.body)
+    assert_equal "ポップアップ登録株式会社", body["name"]
+    assert_equal Client.order(:id).last.id, body["id"]
+  end
+
+  test "JSON create returns errors when the name is blank" do
+    sign_in_as(users(:one))
+
+    assert_no_difference("Client.count") do
+      post clients_path, params: { client: { name: "" } }, as: :json
+    end
+
+    assert_response :unprocessable_entity
+    assert JSON.parse(response.body)["errors"].any?
+  end
+
   test "cannot show another tenant's client" do
     sign_in_as(users(:one))
 
