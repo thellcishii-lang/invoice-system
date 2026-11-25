@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ご利用ガイド（建築版）｜見積・請求書システム</title>
+<meta name="description" content="見積・請求書システム（建築版）のご利用ガイドです。工事の分類と建築様式の見積印刷を中心に説明します。">
+<link rel="icon" type="image/webp" href="/favicon.webp">
+<style>
+  :root { --navy:#1e2a3a; --accent:#2563eb; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Noto Sans JP",sans-serif; color:var(--ink); background:#f6f7f9; line-height:1.9; }
+  header { background:var(--navy); color:#fff; }
+  .hwrap { max-width:880px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  .brand { color:#fff; text-decoration:none; font-weight:700; }
+  .hnav a { color:#cbd5e1; text-decoration:none; margin-left:16px; font-size:.9rem; }
+  .hnav a:hover { color:#fff; }
+  main { max-width:880px; margin:0 auto; padding:36px 20px 56px; }
+  .card { background:#fff; border-radius:12px; padding:36px 40px; box-shadow:0 1px 4px rgba(15,23,42,.06); }
+  h1 { font-size:1.6rem; margin:0 0 8px; color:var(--navy); }
+  h2 { font-size:1.15rem; margin:34px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--navy); color:var(--navy); }
+  h3 { font-size:1.02rem; margin:22px 0 6px; color:var(--navy); }
+  p { margin:8px 0; }
+  ul, ol { margin:8px 0 8px 1.2em; padding:0; }
+  li { margin:4px 0; }
+  table { border-collapse:collapse; width:100%; margin:12px 0; font-size:.94rem; }
+  th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:#eef2f7; color:var(--navy); }
+  blockquote { margin:12px 0; padding:10px 16px; background:#eef2f7; border-left:4px solid var(--accent); color:#334155; }
+  blockquote p { margin:2px 0; }
+  code { background:#f1f5f9; padding:0 5px; border-radius:4px; font-size:.9em; }
+  hr { border:none; border-top:1px solid var(--line); margin:28px 0; }
+  footer { background:var(--navy); color:#cbd5e1; }
+  .fwrap { max-width:880px; margin:0 auto; padding:24px 20px; font-size:.88rem; }
+  .fwrap a { color:#cbd5e1; margin-right:16px; text-decoration:none; }
+  .fwrap a:hover { color:#fff; }
+  .copy { margin-top:12px; color:#94a3b8; }
+  @media (max-width:640px) { .card { padding:24px 18px; } }
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <a class="brand" href="/">見積・請求書システム</a>
+  <nav class="hnav"><a href="/construction/">建築版</a><a href="/html-mail/">HTMLメール</a><a href="/guide/">ご利用ガイド</a></nav>
+</div></header>
+<main><div class="card">
+<h1>見積・請求書システム ご利用ガイド（建築版）</h1>
+<blockquote><p>このページは、見積・請求書システム（建築版）の利用者向けガイドです。</p><p>工事の分類の作り方と建築様式の見積印刷を中心に、共通機能は要点のみ説明します。</p><p>基本操作は一般版ガイドと共通です。</p></blockquote>
+<hr>
+<h2>1. 建築版について</h2>
+<p>建築版は、建設業・工務店・リフォーム業向けの版です。一般版の全機能に加えて、見積書を建築様式（表紙・内訳書・明細）で印刷できます。料金は一般版と同額です。版は申込時に決まります。</p>
+<ul><li></li><li></li></ul>
+<hr>
+<h2>2. 工事の分類と品目マスター</h2>
+<h3>2.1 分類ツリーを工事の体系に合わせる</h3>
+<p>品目マスターの分類は、横（兄弟分類）にも下（階層）にも無制限に作れます。たとえば次のような工事の体系を、そのまま再現できます。</p>
+<ul><li></li><li>  </li><li>  </li><li>  </li><li>  </li><li>  </li><li></li></ul>
+<p>「全体像」画面でツリー全体を確認でき、分類を選ぶとその分類と配下の品目が一覧になります。</p>
+<h3>2.2 階層式の品番</h3>
+<p>品目を登録すると、分類の階層に沿った品番が自動で振られます（各階層3桁、例：A001-002001001001）。番号を見るだけで、どの分類の品目かが分かります。一度使った番号は再利用されません。</p>
+<h3>2.3 品目の項目</h3>
+<p>品名、単価、税率（標準10%／軽減8%）、単位、仕入単価（原価）を登録します。単位はマスター管理で、作成中にも追加できます。原価は粗利計算に使われ、帳票には印刷されません。</p>
+<hr>
+<h2>3. 建築様式の見積印刷</h2>
+<p>見積書の詳細画面から「建築様式で印刷」を選ぶと、A4横で次の構成で印刷されます。</p>
+<ol><li><strong>表紙</strong>：工事名、施主、金額、工期などをまとめた表紙</li><li><strong>内訳書</strong>：中分類ごとの合計金額の一覧</li><li><strong>明細</strong>：中分類ごとに分かれた明細ページ</li></ol>
+<ul><li></li><li></li><li></li></ul>
+<hr>
+<h2>4. 発注書（受注と発注）</h2>
+<p>建設業では発注が双方向に発生します。発注書には2区分があります。</p>
+<table><thead><tr><th>区分</th><th>内容</th></tr></thead><tbody><tr><td>受注</td><td>元請・施主から受ける発注。見積書からの変換で自動的にこの区分になります。印刷では立場が入れ替わり、宛先は自社、発行者は発注者になり、押印欄が付きます。</td></tr><tr><td>発注</td><td>下請・業者へ出す発注。印刷は通常形式です。納品書・請求書への変換はできません。</td></tr></tbody></table>
+<p>「見積を作る → 相手に内容を確認してもらう → その内容が丸ごと発注書になる」流れで、工事内容と金額の言った・言わないを防げます。受注の発注書は、納品書・請求書へ変換して進められます。</p>
+<hr>
+<h2>5. 共通機能（要点）</h2>
+<p>一般版ガイドに詳しい説明があります。建築版でも同じように使えます。</p>
+<ul><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li><li></li></ul>
+<hr>
+<h2>6. よくある質問</h2>
+<p><strong>Q. 建築様式の印刷は見積書だけですか。</strong>A. はい、建築様式（表紙・内訳書・明細）は見積書専用です。他の帳票は通常の印刷形式です。</p>
+<p><strong>Q. 分類に入れていない明細はどうなりますか。</strong>A. 内訳書・明細では「その他」にまとまります。</p>
+<p><strong>Q. 請求書の通数やメンバー数に上限はありますか。</strong>A. ありません。すべて無制限です。</p>
+<p><strong>Q. インボイス制度（適格請求書）に対応していますか。</strong>A. 対応しています。登録番号の印字、税率ごとの区分記載と消費税額の計算、軽減税率との混在に対応しています。</p>
+<p><strong>Q. 発行した帳票はどこに保管されますか。</strong>A. クラウド上に保管され、取引先名・金額・日付・件名などで検索して、いつでも再印刷・PDF表示ができます。受け取った書類の保存機能はありません。</p>
+<p><strong>Q. 契約を解約するとデータはどうなりますか。</strong>A. 解約すると次回以降の課金は止まり、次回支払日の前日まで利用できます。データは契約終了後30日間保持し、その後削除します。</p>
+<hr>
+<h2>7. サポート</h2>
+<p>お問い合わせは admin@agent-partners.space までお願いします。運営：Everyone&#x27;s 合同会社（〒357-0123 埼玉県飯能市中藤下郷23-21、TEL 050-6881-6160）</p>
+</div></main>
+<footer><div class="fwrap">
+  <nav><a href="/terms/">利用規約</a><a href="/privacy/">プライバシーポリシー</a><a href="/tokushoho/">特定商取引法に基づく表記</a><a href="/guide/">ご利用ガイド（一般版）</a><a href="/guide-construction/">ご利用ガイド（建築版）</a></nav>
+  <div class="copy">© Everyone's 合同会社</div>
+</div></footer>
+</body>
+</html>

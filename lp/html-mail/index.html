@@ -1,0 +1,810 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="light dark">
+<link rel="icon" type="image/webp" href="/favicon.webp">
+<title>HTMLメール｜月額2,500円（税別）・年払い契約で初年度無料</title>
+<meta name="description" content="HTMLメールで他社と差別化！信用実績にも！様式を選んで、会社らしい体裁の業務メールを送る。月額2,500円（税別）の単体製品。今なら見積・請求書システムの年払い契約で初年度無料。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Noto+Sans+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{
+color-scheme: light;
+--navy:#0f2740; --navy-2:#16395c; --navy-3:#1d4a73;
+--accent:#1f8fd1; --accent-strong:#0f76b8; --accent-soft:#e6f3fb; --accent-ink:#0b5d8f;
+--bg:#f5f7fa; --surface:#ffffff; --surface-2:#eef2f6;
+--ink:#182635; --ink-2:#3d5064; --muted:#6b7d8f;
+--line:#d9e2ea; --line-soft:#e7edf2;
+--green:#1d8a5f; --green-soft:#e7f4ee;
+--amber:#a96a12; --amber-soft:#fdf1de;
+--radius:14px;
+--shadow:0 10px 30px rgba(15,39,64,.08);
+--shadow-lg:0 24px 60px rgba(15,39,64,.16);
+}
+@media (prefers-color-scheme: dark){
+:root{
+color-scheme: dark;
+--bg:#0a141f; --surface:#101f30; --surface-2:#0d1a29;
+--ink:#e8eff5; --ink-2:#b9c9d8; --muted:#8ba0b4;
+--line:#26394e; --line-soft:#1e3043;
+--accent-soft:#12314a; --accent-ink:#7cc4ee;
+--green-soft:#123327; --amber-soft:#3a2a10;
+--shadow:0 10px 30px rgba(0,0,0,.35); --shadow-lg:0 24px 60px rgba(0,0,0,.5);
+}
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:"Noto Sans JP","Hiragino Kaku Gothic ProN","Hiragino Sans",Meiryo,sans-serif;background:var(--bg);color:var(--ink);line-height:1.75;font-size:16px;-webkit-font-smoothing:antialiased}
+a{color:var(--accent-strong)}
+@media (prefers-color-scheme: dark){a{color:#6db9e8}}
+.wrap{max-width:1140px;margin:0 auto;padding:0 20px}
+.mono{font-family:"Noto Sans Mono",monospace}
+section{padding:84px 0}
+section.alt{background:var(--surface)}
+section[id]{scroll-margin-top:76px}
+@media(max-width:640px){section{padding:60px 0}}
+.sec-head{max-width:780px;margin:0 0 44px}
+.sec-head.center{margin-left:auto;margin-right:auto;text-align:center}
+.sec-label{display:inline-block;font-size:.8rem;font-weight:700;letter-spacing:.14em;color:var(--accent-ink);background:var(--accent-soft);padding:5px 12px;border-radius:6px;margin:0 0 14px}
+.sec-label.light{background:rgba(255,255,255,.13);color:#a8d4f0}
+.sec-head h2{font-size:clamp(1.55rem,3.4vw,2.15rem);font-weight:900;line-height:1.45;margin:0 0 14px}
+.sec-head p{color:var(--ink-2);margin:0;font-size:1.02rem}
+.sec-head.light p{color:#c8dcee}
+
+/* header */
+.site-header{position:sticky;top:0;z-index:50;background:color-mix(in srgb, var(--surface) 92%, transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line-soft)}
+.site-header .wrap{display:flex;align-items:center;gap:20px;min-height:64px}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);font-weight:900;font-size:1.02rem;white-space:nowrap}
+.brand-mark{width:34px;height:34px;flex:0 0 34px;border-radius:9px;background:var(--navy);display:grid;place-items:center;color:#fff}
+.brand small{font-weight:500;color:var(--muted);font-size:.72rem;display:block;line-height:1.2;letter-spacing:.04em}
+.main-nav{margin-left:auto;display:flex;align-items:center;gap:4px}
+.main-nav a{color:var(--ink-2);text-decoration:none;font-size:.9rem;font-weight:500;padding:10px 12px;border-radius:8px;min-height:44px;display:inline-flex;align-items:center}
+.main-nav a:hover{background:var(--surface-2);color:var(--ink)}
+.nav-cta{background:var(--navy);color:#fff!important;font-weight:700;padding:10px 18px!important;margin-left:8px}
+.nav-toggle{display:none;margin-left:auto;background:var(--surface);border:1px solid var(--line);border-radius:9px;width:44px;height:44px;cursor:pointer;color:var(--ink);align-items:center;justify-content:center}
+@media(max-width:820px){
+.nav-toggle{display:inline-flex}
+.main-nav{display:none;position:absolute;left:12px;right:12px;top:70px;background:var(--surface);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);flex-direction:column;align-items:stretch;padding:10px}
+.main-nav.open{display:flex}
+.main-nav a{padding:12px 14px}
+.nav-cta{margin-left:0;text-align:center;justify-content:center}
+}
+@media(min-width:821px){.main-nav a{padding:10px 9px;font-size:.88rem}}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:52px;padding:13px 28px;border-radius:10px;font-weight:700;font-size:1rem;text-decoration:none;border:1px solid transparent;cursor:pointer}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{background:var(--accent-strong)}
+.btn-navy{background:var(--navy);color:#fff}
+.btn-white{background:#fff;color:var(--navy)}
+.btn-outline-white{background:transparent;color:#fff;border-color:rgba(255,255,255,.55)}
+.btn-ghost{background:transparent;color:var(--ink);border-color:var(--line)}
+
+/* hero */
+.hero{background:var(--navy);color:#fff;position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(560px 320px at 88% -60px, rgba(56,163,224,.35), transparent 65%),radial-gradient(420px 260px at -80px 110%, rgba(56,163,224,.18), transparent 65%);pointer-events:none}
+.hero .wrap{position:relative;z-index:1;padding:72px 20px 84px}
+.hero-grid{display:grid;grid-template-columns:1.08fr.92fr;gap:48px;align-items:center}
+.hero-eyebrow{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(255,255,255,.35);border-radius:999px;padding:6px 14px;font-size:.82rem;font-weight:500;color:#cfe7f7;margin:0 0 22px}
+.hero-eyebrow .dot{width:8px;height:8px;border-radius:50%;background:#4cc38a;flex:0 0 8px}
+.hero h1{font-size:clamp(1.9rem,4.6vw,3rem);line-height:1.35;font-weight:900;margin:0 0 20px}
+.hero h1 .hl{color:#7cc4ee}
+.hero-sub{font-size:1.06rem;line-height:1.9;color:#d7e5f0;margin:0 0 14px;max-width:34em}
+.hero-points{list-style:none;margin:18px 0 30px;padding:0;display:grid;gap:8px}
+.hero-points li{display:flex;gap:10px;align-items:flex-start;color:#eaf3fa;font-size:.97rem}
+.hero-points svg{flex:0 0 20px;margin-top:4px;color:#4cc38a}
+.hero-cta{display:flex;gap:12px;flex-wrap:wrap}
+.hero-note{font-size:.82rem;color:#9db8cc;margin:16px 0 0}
+@media(max-width:900px){.hero-grid{grid-template-columns:1fr;gap:36px}.hero .wrap{padding:52px 20px 60px}}
+
+/* mail preview in hero */
+.mail-preview{background:#fff;color:#182635;border-radius:16px;box-shadow:var(--shadow-lg);overflow:hidden}
+.mail-preview-head{display:flex;align-items:center;gap:8px;background:#e9eef3;padding:10px 14px;border-bottom:1px solid #d9e2ea}
+.mail-preview-head .dot{width:11px;height:11px;border-radius:50%}
+.mail-preview-head .url{margin-left:8px;background:#fff;border:1px solid #d9e2ea;border-radius:6px;font-size:.72rem;color:#5a7186;padding:3px 12px;font-family:"Noto Sans Mono",monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mail-card{margin:18px;border:1px solid #e1e9f0;border-radius:12px;overflow:hidden}
+.mail-card-header{padding:20px 22px 16px;color:#fff;transition:background.25s}
+.mail-card-header .brand-name{font-weight:900;font-size:1.05rem;letter-spacing:.02em}
+.mail-card-header .catch{font-size:.82rem;opacity:.92;margin-top:2px}
+.mail-card-body{padding:20px 22px;font-size:.9rem;color:#26394e;line-height:1.8}
+.mail-card-body p{margin:0 0 10px}
+.mail-card-body .sig{color:#5a7186;font-size:.82rem;border-top:1px solid #e7edf2;padding-top:12px;margin-top:14px}
+.theme-picker{padding:0 18px 18px}
+.theme-picker p{font-size:.78rem;font-weight:700;color:#5a7186;margin:0 0 10px;letter-spacing:.04em}
+.theme-swatches{display:flex;gap:10px;flex-wrap:wrap}
+.swatch{width:44px;height:44px;border-radius:10px;border:3px solid transparent;cursor:pointer;padding:0;position:relative}
+.swatch[aria-pressed="true"]{border-color:#0f2740;box-shadow:0 0 0 2px #fff inset}
+.swatch:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+
+/* compare strip */
+.strip{display:grid;grid-template-columns:1fr auto 1fr;gap:20px;align-items:stretch}
+.strip-box{border-radius:14px;padding:24px 26px;border:1px solid var(--line)}
+.strip-box.plain{background:var(--surface)}
+.strip-box.rich{background:var(--navy);color:#fff;border-color:var(--navy)}
+.strip-box h3{margin:0 0 10px;font-size:1rem;font-weight:900}
+.strip-box p{margin:0;font-size:.93rem;color:var(--ink-2)}
+.strip-box.rich p{color:#c8dcee}
+.strip-vs{display:grid;place-items:center;font-weight:900;color:var(--muted);font-size:.9rem}
+.mini-mail{border:1px solid var(--line);border-radius:8px;padding:12px 14px;font-size:.82rem;color:var(--muted);background:#f7fafc;margin-top:14px;line-height:1.7;white-space:pre-line}
+.mini-mail-rich{border-radius:8px;overflow:hidden;margin-top:14px;text-align:left}
+.mini-mail-rich .mm-h{background:#1f8fd1;color:#fff;padding:10px 14px;font-weight:900;font-size:.85rem}
+.mini-mail-rich .mm-b{background:#fff;color:#26394e;padding:12px 14px;font-size:.82rem;line-height:1.7}
+@media(max-width:760px){.strip{grid-template-columns:1fr}.strip-vs{padding:2px 0}}
+
+/* features */
+.feat-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.feat-card{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--radius);padding:26px}
+section.alt .feat-card{background:var(--bg)}
+.feat-icon{width:44px;height:44px;border-radius:10px;background:var(--navy);color:#fff;display:grid;place-items:center;margin-bottom:14px}
+.feat-card h3{font-size:1.05rem;font-weight:900;margin:0 0 8px}
+.feat-card p{font-size:.93rem;color:var(--ink-2);margin:0}
+.feat-card .tag{display:inline-block;margin-top:12px;font-size:.75rem;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);padding:3px 10px;border-radius:999px}
+@media(max-width:900px){.feat-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:560px){.feat-grid{grid-template-columns:1fr}}
+
+/* steps */
+.loop-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.loop-step{position:relative}
+.loop-icon{width:48px;height:48px;border-radius:12px;background:var(--accent-soft);color:var(--accent-ink);display:grid;place-items:center;margin-bottom:16px}
+.loop-step h3{font-size:1.02rem;font-weight:900;margin:0 0 8px;line-height:1.55}
+.loop-step p{font-size:.92rem;color:var(--ink-2);margin:0}
+@media(max-width:760px){.loop-steps{grid-template-columns:1fr}}
+
+/* theme detail */
+.split{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center}
+.split h3{font-size:clamp(1.3rem,2.6vw,1.62rem);font-weight:900;line-height:1.5;margin:0 0 14px}
+.split p{color:var(--ink-2);margin:0 0 14px}
+.s-list{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:9px}
+.s-list li{display:flex;gap:10px;font-size:.95rem;color:var(--ink-2)}
+.s-list li svg{flex:0 0 20px;margin-top:4px;color:var(--green)}
+.theme-table{width:100%;border-collapse:collapse;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+section.alt .theme-table{background:var(--bg)}
+.theme-table th,.theme-table td{padding:13px 18px;text-align:left;font-size:.93rem;border-top:1px solid var(--line-soft);vertical-align:top}
+.theme-table tr:first-child th,.theme-table tr:first-child td{border-top:none}
+.theme-table th{width:38%;color:var(--muted);font-weight:500}
+.theme-table td{font-weight:700}
+@media(max-width:860px){.split{grid-template-columns:1fr;gap:26px}}
+
+/* console mock */
+.mock-frame{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:#fff;box-shadow:var(--shadow-lg);color:#182635;margin-top:8px}
+.mock-chrome{display:flex;align-items:center;gap:8px;background:#e9eef3;padding:9px 14px;border-bottom:1px solid #d9e2ea}
+.mock-chrome .dot{width:11px;height:11px;border-radius:50%}
+.mock-chrome .url{margin-left:10px;background:#fff;border:1px solid #d9e2ea;border-radius:6px;font-size:.72rem;color:#5a7186;padding:3px 12px;font-family:"Noto Sans Mono",monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mock-app{display:flex;min-height:340px}
+.mock-side{background:#0f2740;color:#c6d8e8;width:178px;flex:0 0 178px;padding:16px 12px;display:flex;flex-direction:column;gap:2px;font-size:.78rem}
+.mock-side .ms-brand{color:#fff;font-weight:900;font-size:.86rem;padding:4px 8px 12px;border-bottom:1px solid rgba(255,255,255,.14);margin-bottom:10px}
+.mock-side .ms-brand small{display:block;font-weight:500;color:#8fb0c9;font-size:.66rem;margin-top:2px}
+.mock-side a{color:#c6d8e8;text-decoration:none;padding:7px 9px;border-radius:7px;display:flex;gap:8px;align-items:center;line-height:1.3}
+.mock-side a.on{background:#1d4a73;color:#fff;font-weight:700}
+.mock-main{flex:1;min-width:0;padding:20px 22px;background:#f7fafc}
+.mock-main .mm-title{font-size:1.02rem;font-weight:900;color:#0f2740;margin:0}
+.mock-main .mm-sub{font-size:.74rem;color:#6b7d8f;margin:2px 0 16px}
+.pill{display:inline-block;font-size:.66rem;font-weight:700;padding:2px 9px;border-radius:999px}
+.pill-green{background:#e7f4ee;color:#157347}
+.pill-gray{background:#edf1f5;color:#5a7186}
+.pill-blue{background:#e6f3fb;color:#0b5d8f}
+.pill-amber{background:#fdf1de;color:#a96a12}
+table.mtable{border-collapse:collapse;width:100%;font-size:.8rem}
+.mtable th{text-align:left;background:#eef3f8;color:#41586e;font-weight:700;font-size:.72rem;padding:9px 12px;border-bottom:1px solid #d9e2ea;white-space:nowrap}
+.mtable td{padding:10px 12px;border-bottom:1px solid #e7edf2;color:#26394e}
+.mtable .strong{font-weight:700;color:#0f2740}
+.mock-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px;align-items:center}
+.mock-search{display:flex;align-items:center;gap:7px;background:#fff;border:1px solid #d9e2ea;border-radius:8px;padding:7px 12px;font-size:.76rem;color:#6b7d8f;flex:1 1 180px;min-width:150px}
+.mock-chip{font-size:.72rem;font-weight:700;border:1px solid #d9e2ea;background:#fff;color:#41586e;border-radius:999px;padding:5px 13px}
+.mock-chip.on{background:#0f2740;color:#fff;border-color:#0f2740}
+@media(max-width:760px){
+.mock-app{flex-direction:column;min-height:0}
+.mock-side{width:100%;flex-basis:auto;flex-direction:row;align-items:center;padding:10px 12px;overflow:hidden}
+.mock-side a span,.mock-side .ms-brand{display:none}
+.mock-side a{justify-content:center;padding:9px}
+.mock-main{padding:16px 12px}
+.mtable th:nth-child(3),.mtable td:nth-child(3){display:none}
+}
+
+/* pricing */
+.price-layout{display:grid;grid-template-columns:1.05fr.95fr;gap:28px;align-items:start}
+.price-card{background:var(--surface);border:2px solid var(--navy);border-radius:16px;overflow:hidden;box-shadow:var(--shadow)}
+@media(prefers-color-scheme:dark){.price-card{border-color:var(--navy-3)}}
+.price-card-head{background:var(--navy);color:#fff;padding:24px 30px}
+.price-card-head h3{margin:0;font-size:1.05rem;font-weight:900}
+.price-card-head p{margin:4px 0 0;color:#b9d2e6;font-size:.88rem}
+.bonus-banner{margin:20px 30px 0;background:var(--accent-soft);border:1px solid color-mix(in srgb, var(--accent) 35%, transparent);border-radius:10px;padding:14px 16px}
+.bonus-banner p{margin:0;font-size:.92rem;font-weight:700;color:var(--accent-ink)}
+.bonus-banner span{font-weight:500;color:var(--ink-2)}
+.price-amounts{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid var(--line-soft);margin-top:8px}
+.price-amount{padding:20px 30px 18px}
+.price-amount +.price-amount{border-left:1px solid var(--line-soft)}
+.price-amount.highlight{background:color-mix(in srgb, var(--accent-soft) 55%, transparent)}
+.price-amount .pa-label{font-size:.8rem;font-weight:700;color:var(--muted);letter-spacing:.05em;margin:0 0 2px}
+.price-amount .yen{font-size:2.1rem;font-weight:900;line-height:1.15}
+.price-amount .yen small{font-size:.95rem;font-weight:700}
+.price-amount .tax{color:var(--muted);font-size:.86rem;margin:4px 0 0}
+.price-amount .save{display:inline-block;margin-top:8px;font-size:.76rem;font-weight:700;color:var(--green);background:var(--green-soft);padding:2px 10px;border-radius:999px}
+@media(max-width:520px){.price-amounts{grid-template-columns:1fr}.price-amount +.price-amount{border-left:none;border-top:1px solid var(--line-soft)}}
+table.spec{border-collapse:collapse;width:100%;margin:6px 0}
+table.spec th,table.spec td{padding:13px 30px;border-top:1px solid var(--line-soft);font-size:.95rem;text-align:left;vertical-align:top}
+table.spec th{color:var(--muted);font-weight:500;width:44%}
+table.spec td{font-weight:700}
+.price-card .price-foot{padding:18px 30px 26px;display:grid;gap:10px}
+.price-side h3{font-size:1.15rem;font-weight:900;margin:0 0 14px}
+.price-side p{color:var(--ink-2);font-size:.96rem;margin:0 0 16px}
+.price-side ul{list-style:none;margin:0 0 20px;padding:0;display:grid;gap:10px}
+.price-side li{display:flex;gap:10px;font-size:.96rem;color:var(--ink-2)}
+.price-side li svg{flex:0 0 20px;margin-top:4px;color:var(--green)}
+.cmp-note{font-size:.85rem;color:var(--muted);margin:14px 0 0}
+@media(max-width:860px){.price-layout{grid-template-columns:1fr}}
+
+/* comparison */
+.cmp{border-collapse:separate;border-spacing:0;width:100%;background:var(--surface);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.cmp th,.cmp td{padding:13px 18px;text-align:left;vertical-align:top;font-size:.93rem;border-top:1px solid var(--line-soft)}
+.cmp thead th{background:var(--surface-2);font-weight:900;border-top:none;font-size:.95rem}
+.cmp thead th span{font-weight:500;font-size:.78rem;color:var(--muted)}
+.cmp thead th.own{background:var(--navy);color:#fff}
+.cmp tbody th{width:24%;font-weight:700}
+.cmp td.own{background:var(--accent-soft);font-weight:700}
+@media(max-width:700px){
+.cmp thead{display:none}
+.cmp,.cmp tbody,.cmp tr,.cmp td{display:block;width:100%}
+.cmp{border:none;background:transparent;overflow:visible}
+.cmp tr{border:1px solid var(--line);border-radius:12px;margin-bottom:12px;background:var(--surface);overflow:hidden}
+.cmp tbody th{display:block;width:auto;background:var(--surface-2);border-top:none;padding:11px 16px}
+.cmp td{display:flex;justify-content:space-between;gap:16px;border-top:1px solid var(--line-soft);padding:11px 16px;text-align:right}
+.cmp td::before{content:attr(data-label);color:var(--muted);font-weight:500;flex:0 0 auto;text-align:left}
+}
+
+/* FAQ */
+.faq-list{max-width:820px;margin:0 auto;display:grid;gap:12px}
+.faq-item{background:var(--surface);border:1px solid var(--line-soft);border-radius:12px;overflow:hidden}
+.faq-item summary{cursor:pointer;list-style:none;padding:18px 22px;font-weight:700;font-size:1rem;display:flex;gap:12px;align-items:center;min-height:56px}
+.faq-item summary::-webkit-details-marker{display:none}
+.faq-item summary .q{flex:0 0 26px;width:26px;height:26px;border-radius:50%;background:var(--navy);color:#fff;display:grid;place-items:center;font-size:.78rem;font-weight:900}
+.faq-item summary .chev{margin-left:auto;color:var(--muted);transition:transform.2s;flex:0 0 18px}
+.faq-item[open] summary .chev{transform:rotate(180deg)}
+.faq-answer{padding:0 22px 20px 60px;color:var(--ink-2);font-size:.96rem}
+.faq-answer p{margin:0}
+@media(max-width:560px){.faq-answer{padding-left:22px}}
+
+/* final CTA / footer / related */
+.final-cta{background:var(--navy);color:#fff;padding:80px 0}
+.final-cta h2{font-size:clamp(1.6rem,3.6vw,2.2rem);font-weight:900;line-height:1.5;margin:0 0 14px;text-align:center}
+.final-cta p{text-align:center;color:#c8dcee;margin:0 auto 30px;max-width:40em}
+.final-cta .hero-cta{justify-content:center}
+.related-sec{padding:64px 0 72px;background:var(--bg)}
+.related-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.related-card{display:flex;align-items:flex-start;gap:20px;background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:26px 28px;text-decoration:none;color:var(--ink);box-shadow:var(--shadow)}
+.related-card:hover{border-color:var(--accent)}
+.related-card:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+.related-icon{width:56px;height:56px;flex:0 0 56px;border-radius:14px;background:var(--navy);color:#fff;display:grid;place-items:center}
+.related-body{display:block;min-width:0}
+.related-name{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;font-size:1.12rem;font-weight:900;line-height:1.4}
+.related-domain{font-size:.75rem;font-weight:700;color:var(--accent-ink);background:var(--accent-soft);padding:3px 10px;border-radius:999px;white-space:nowrap}
+.related-copy{display:block;font-size:.98rem;font-weight:700;color:var(--navy-3);margin:8px 0 6px;line-height:1.6}
+@media(prefers-color-scheme:dark){.related-copy{color:#7cc4ee}}
+.related-desc{display:block;font-size:.9rem;color:var(--ink-2);line-height:1.75}
+.related-arrow{margin-left:auto;flex:0 0 42px;width:42px;height:42px;border-radius:50%;border:1px solid var(--line);color:var(--accent-strong);display:grid;place-items:center;background:var(--surface)}
+@media(max-width:760px){.related-grid{grid-template-columns:1fr}.related-card{flex-direction:column;gap:14px;padding:24px 22px}.related-arrow{margin-left:0}}
+footer{padding:44px 0 36px;font-size:.88rem;color:var(--muted);border-top:1px solid var(--line-soft);background:var(--surface)}
+footer .footer-main{display:flex;gap:32px 56px;flex-wrap:wrap;justify-content:space-between;padding-bottom:28px;border-bottom:1px solid var(--line-soft)}
+footer .footer-brand-block{display:flex;flex-direction:column;gap:6px;max-width:360px}
+footer .f-brand{font-weight:900;color:var(--ink);font-size:1rem}
+footer .footer-company{min-width:min(100%,340px)}
+footer .footer-company h3{font-size:.82rem;font-weight:900;letter-spacing:.08em;color:var(--ink);margin:2px 0 12px}
+footer .footer-company dl{margin:0;display:grid;gap:9px}
+footer .footer-company dl div{display:flex;gap:14px;align-items:baseline}
+footer .footer-company dt{flex:0 0 52px;font-weight:700;color:var(--ink-2)}
+footer .footer-company dd{margin:0;color:var(--ink-2);line-height:1.6}
+footer .footer-company a{color:var(--ink-2);text-decoration:none;font-weight:700}
+footer .footer-bottom{display:flex;gap:12px 24px;flex-wrap:wrap;justify-content:space-between;align-items:center;padding-top:20px;font-size:.82rem}
+footer .legal-links{display:flex;gap:4px 22px;flex-wrap:wrap}
+footer .legal-links a{color:var(--muted);text-decoration:none;display:inline-flex;align-items:center;min-height:36px;padding:4px 2px}
+footer .legal-links a:hover{color:var(--ink);text-decoration:underline}
+@media(max-width:640px){footer .footer-main{flex-direction:column}footer .footer-company dl div{flex-direction:column;gap:1px}footer .footer-company dt{flex-basis:auto}}
+</style>
+</head>
+<body>
+
+<header class="site-header">
+<div class="wrap">
+<a class="brand" href="#top" aria-label="HTMLメール トップへ">
+<span class="brand-mark" aria-hidden="true">
+<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>
+</span>
+<span>HTMLメール<small>様式を選んで送る業務メール</small></span>
+</a>
+<button class="nav-toggle" id="navToggle" aria-label="メニューを開く" aria-expanded="false" aria-controls="mainNav">
+<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+</button>
+<nav class="main-nav" id="mainNav" aria-label="メインメニュー">
+<a href="#difference">違い</a>
+<a href="#features">できること</a>
+<a href="#theme">様式</a>
+<a href="#console">画面イメージ</a>
+<a href="#compare">比較</a>
+<a href="#pricing">料金</a>
+<a href="#faq">よくある質問</a>
+<a href="#pricing" class="nav-cta">年払いで申し込む</a>
+</nav>
+</div>
+</header>
+
+<main id="top">
+
+<!-- HERO -->
+<div class="hero">
+<div class="wrap">
+<div class="hero-grid">
+<div>
+<p class="hero-eyebrow"><span class="dot"></span>今なら 見積・請求書システムの年払い契約で初年度無料</p>
+<h1>HTMLメールで<br>他社と差別化！<br><span class="hl">信用実績にも！</span></h1>
+<p class="hero-sub">テキストだけのメールでは出ない、会社らしい体裁と信用感を。様式（テーマ）を選ぶだけで、ヘッダー・ブランド名・フッターまで整ったHTMLメールが送れます。月額2,500円（税別）の単体製品としてご利用いただけます。</p>
+<ul class="hero-points">
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>様式にブランド名・ヘッダーの色・キャッチコピー・フッターの会社情報・送信元アドレスを保存して使い分け</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>受信もできる。アドレスごとに受信・送信を分けて管理</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>個別送信と一斉送信（最大100件）、添付ファイル対応、送信済み管理まで</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>単体は月額 税抜2,500円。今なら見積・請求書システムの年払い契約で、初年度は無料で付いてきます</li>
+</ul>
+<div class="hero-cta">
+<a class="btn btn-primary" href="https://invoice-system-fsta.onrender.com/signups/new" target="_blank" rel="noopener">見積・請求書システムを年払いで申し込む</a>
+<a class="btn btn-outline-white" href="#pricing">料金とキャンペーンを見る</a>
+</div>
+<p class="hero-note">※ キャンペーン実施中：見積・請求書システムを年払い（税抜25,000円／年）でご契約いただくと、HTMLメールの初年度利用料が無料になります。</p>
+</div>
+
+<div class="mail-preview" aria-label="HTMLメールのプレビュー。ヘッダーの色を切り替えられます">
+<div class="mail-preview-head" aria-hidden="true">
+<span class="dot" style="background:#e06c5a"></span><span class="dot" style="background:#e8b84b"></span><span class="dot" style="background:#4cc38a"></span>
+<span class="url">受信トレイ — HTMLメール プレビュー</span>
+</div>
+<div class="mail-card">
+<div class="mail-card-header" id="previewHeader" style="background:#0f2740">
+<div class="brand-name" id="previewBrand">御社ブランド名</div>
+<div class="catch" id="previewCatch">確かな仕事で、地域に貢献する。</div>
+</div>
+<div class="mail-card-body">
+<p><strong>件名：お見積書送付のご案内</strong></p>
+<p>平素より大変お世話になっております。<br>ご依頼いただいたお見積書をお送りいたします。内容をご確認のうえ、ご不明点があればお気軽にご連絡ください。</p>
+<p>テキストだけでは伝わりにくい会社情報や実績も、フッターまで整った体裁で届けられます。</p>
+<div class="sig" id="previewFooter">Everyone's 合同会社<br>〒357-0123 埼玉県飯能市中藤下郷23-21 ／ TEL 050-6881-6160</div>
+</div>
+</div>
+<div class="theme-picker">
+<p>ヘッダーの色を切り替えてみる（様式のイメージ）</p>
+<div class="theme-swatches" role="group" aria-label="ヘッダーカラーの切り替え">
+<button class="swatch" type="button" data-color="#0f2740" data-brand="御社ブランド名" data-catch="確かな仕事で、地域に貢献する。" style="background:#0f2740" aria-pressed="true" aria-label="ネイビー"></button>
+<button class="swatch" type="button" data-color="#1f8fd1" data-brand="御社ブランド名" data-catch="スピードと丁寧さでお応えします。" style="background:#1f8fd1" aria-pressed="false" aria-label="ブルー"></button>
+<button class="swatch" type="button" data-color="#1d8a5f" data-brand="御社ブランド名" data-catch="安心をお届けするパートナー。" style="background:#1d8a5f" aria-pressed="false" aria-label="グリーン"></button>
+<button class="swatch" type="button" data-color="#7a3b1e" data-brand="御社ブランド名" data-catch="職人の技と誠実な対応を。" style="background:#7a3b1e" aria-pressed="false" aria-label="ブラウン"></button>
+<button class="swatch" type="button" data-color="#3a3f4a" data-brand="御社ブランド名" data-catch="確かな品質を、すべてのお客様へ。" style="background:#3a3f4a" aria-pressed="false" aria-label="チャコール"></button>
+</div>
+</div>
+</div>
+
+</div>
+</div>
+</div>
+
+<!-- DIFFERENCE -->
+<section id="difference">
+<div class="wrap">
+<div class="sec-head">
+<p class="sec-label">違い</p>
+<h2>同じ内容でも、見え方で信用が変わる</h2>
+<p>見積の案内も、請求の連絡も、キャンペーンのお知らせも。文章が同じでも、テキストだけのメールと、会社名・色・フッターまで整ったHTMLメールでは、受け取る側の印象が違います。初めて取引する相手ほど、その差が効きます。</p>
+</div>
+<div class="strip">
+<div class="strip-box plain">
+<h3>テキストメールだけの場合</h3>
+<p>誰が送ったのか一目で分かりにくく、他のメールに埋もれがちです。会社情報も毎回手で書くため、表記がぶれることもあります。</p>
+<div class="mini-mail" aria-hidden="true">件名：見積書の件
+
+お世話になっております。
+見積書を添付します。
+よろしくお願いいたします。</div>
+</div>
+<div class="strip-vs" aria-hidden="true">VS</div>
+<div class="strip-box rich">
+<h3>様式を選んだHTMLメール</h3>
+<p>ヘッダーにブランド名とキャッチコピー、フッターに会社情報。開いた瞬間に「どこの会社の、正式な連絡か」が伝わります。</p>
+<div class="mini-mail-rich" aria-hidden="true">
+<div class="mm-h">御社ブランド名<span style="font-weight:500;font-size:.78rem;display:block;opacity:.9">確かな仕事で、地域に貢献する。</span></div>
+<div class="mm-b">お世話になっております。<br>お見積書をお送りいたします。内容をご確認ください。<br><span style="color:#5a7186;font-size:.78rem">— フッターに会社名・住所・電話番号を自動表示 —</span></div>
+</div>
+</div>
+</div>
+<p style="color:var(--ink-2);margin:22px 0 0;max-width:52em">このHTMLメールは、配信リストに課金されるメルマガ配信ツールではありません。「様式を選んで、会社らしい体裁の業務メールを送る」ための仕組みです。日々の見積・請求・ご案内の連絡そのものを、会社の顔として届けることに絞っています。</p>
+</div>
+</section>
+
+<!-- FEATURES -->
+<section class="alt" id="features">
+<div class="wrap">
+<div class="sec-head">
+<p class="sec-label">できること</p>
+<h2>送る・受ける・分ける。業務メールに必要な一式</h2>
+<p>HTMLメールの作成・送信だけでなく、受信と整理までひとつの画面で完結します。</p>
+</div>
+<div class="feat-grid">
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.9 4.6L18.5 9l-4.6 1.4L12 15l-1.9-4.6L5.5 9l4.6-1.4Z"/><path d="M19 15l.8 2 2.8-2.8-.8 2-.8-2-2-.8 2-.8Z"/></svg></div>
+<h3>様式（テーマ）を選んで送る</h3>
+<p>あらかじめ保存した様式を選ぶだけで、体裁の整ったHTMLメールになります。デザインを毎回作り直す必要はありません。</p>
+<span class="tag">用途ごとに使い分け可</span>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg></div>
+<h3>受信もできる</h3>
+<p>送るだけでなく、受信も同じ画面で確認できます。返信の見落としを防ぎ、やり取りを一か所にまとめられます。</p>
+<span class="tag">送受信を一元管理</span>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h10M4 18h13"/></svg></div>
+<h3>アドレスごとに受信・送信を分ける</h3>
+<p>アドレスは複数登録できます。問い合わせ用、請求用、案内用など、用途ごとにアドレスを分けて、受信と送信を整理できます。</p>
+<span class="tag">複数アドレス登録可</span>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"/></svg></div>
+<h3>フォルダで整理</h3>
+<p>受信トレイ／迷惑メール／削除済みのフォルダでメールを整理。削除したメールはまず削除済みに移り、そこで再度削除すると完全に消えます。</p>
+<span class="tag">受信トレイ・迷惑メール・削除済み</span>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg></div>
+<h3>アドレス別の絞り込み</h3>
+<p>どのアドレス宛てのメールかで絞り込んで表示できます。複数アドレスを運用しても、目的のメールをすぐ見つけられます。</p>
+<span class="tag">探す手間を削減</span>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-7-4 16-6-4-4 3v-6L3 11Z"/><path d="M11 16 21 4"/></svg></div>
+<h3>個別送信と一斉送信</h3>
+<p>1件ずつの個別送信に加えて、一斉送信は最大100件まで対応。お知らせやご案内を、同じ様式でまとめて送れます。</p>
+<span class="tag">一斉送信 最大100件</span>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m21 12.5-8.5 8.5a5.5 5.5 0 0 1-7.8-7.8L13 5a3.7 3.7 0 0 1 5.2 5.2l-8.2 8.2a1.8 1.8 0 0 1-2.6-2.6l7.4-7.3"/></svg></div>
+<h3>添付ファイル対応</h3>
+<p>見積書や資料などのファイルを添付して送れます。HTMLメールの体裁のまま、必要な書類も一緒に届けられます。</p>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16M4 12h16M4 18h10"/><path d="m16 17 2 2 4-4"/></svg></div>
+<h3>送信済み管理</h3>
+<p>送ったメールは送信済みとして残り、あとから確認できます。「送ったかどうか」「何を送ったか」をチームで共有できます。</p>
+</article>
+<article class="feat-card">
+<div class="feat-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M16 5.5a3.2 3.2 0 0 1 0 5.8M17.5 14.7c1.7.6 2.7 1.9 3 4.3"/></svg></div>
+<h3>会社の顔として届く</h3>
+<p>ブランド名と会社情報が毎回同じ体裁で入るため、担当者が変わっても会社の印象はぶれません。実績や案内を伝える土台になります。</p>
+</article>
+</div>
+</div>
+</section>
+
+<!-- HOW -->
+<section id="how">
+<div class="wrap">
+<div class="sec-head">
+<p class="sec-label">使い方</p>
+<h2>様式を選んで、書いて、送る。3ステップだけ</h2>
+<p>HTMLの知識は要りません。様式は最初に保存しておけば、次からは選ぶだけです。</p>
+</div>
+<div class="loop-steps">
+<div class="loop-step">
+<div class="loop-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M7 15h6"/></svg></div>
+<h3>1. 様式を選ぶ</h3>
+<p>用途に合った様式（テーマ）を選択します。見積送付用、請求用、ご案内用など、使い分けができます。</p>
+</div>
+<div class="loop-step">
+<div class="loop-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg></div>
+<h3>2. 件名と本文を書く</h3>
+<p>宛先・件名・本文を入力し、必要ならファイルを添付します。ヘッダーとフッターは様式から自動で付きます。</p>
+</div>
+<div class="loop-step">
+<div class="loop-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-7-4 16-6-4-4 3v-6L3 11Z"/><path d="M11 16 21 4"/></svg></div>
+<h3>3. 個別にも、一斉にも送る</h3>
+<p>個別送信、または最大100件までの一斉送信ができます。送ったメールは送信済みに残り、返信は受信トレイで確認できます。</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- THEME -->
+<section class="alt" id="theme">
+<div class="wrap">
+<div class="split">
+<div>
+<h3>様式に保存できるのは、この5つ</h3>
+<p>様式（テーマ）には、会社の見え方を決める情報をまとめて保存できます。一度作れば、誰が送っても同じ体裁になります。</p>
+<ul class="s-list">
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>営業用・サポート用など、用途ごとに様式を分けて保存できます</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>送信元アドレスも様式ごとに持てるので、送り分けが自然にできます</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>フッターの会社情報が毎回自動で入るため、書き忘れや表記のぶれがなくなります</li>
+</ul>
+</div>
+<div>
+<table class="theme-table" aria-label="様式に保存できる項目">
+<tr><th>ブランド名</th><td>ヘッダーに表示する会社・サービス名</td></tr>
+<tr><th>ヘッダーの色</th><td>会社のイメージカラーに合わせた色</td></tr>
+<tr><th>キャッチコピー</th><td>ブランド名の下に添える一言</td></tr>
+<tr><th>フッターの会社情報</th><td>会社名・住所・電話番号などの連絡先</td></tr>
+<tr><th>送信元アドレス</th><td>その様式で送るときの差出人アドレス</td></tr>
+</table>
+</div>
+</div>
+</div>
+</section>
+
+<!-- CONSOLE -->
+<section id="console">
+<div class="wrap">
+<div class="sec-head">
+<p class="sec-label">画面イメージ</p>
+<h2>受信・送信・フォルダを、ひとつの画面で</h2>
+<p>アドレス別の絞り込みとフォルダ切り替えで、複数アドレスの運用でも迷いません。下記は画面のイメージです。</p>
+</div>
+<div class="mock-frame" role="img" aria-label="HTMLメール管理画面のイメージ。左に受信トレイ・迷惑メール・削除済み・送信済みのフォルダとアドレス一覧、右にメール一覧が表示されている">
+<div class="mock-chrome" aria-hidden="true">
+<span class="dot" style="background:#e06c5a;width:11px;height:11px;border-radius:50%;display:inline-block"></span>
+<span class="dot" style="background:#e8b84b;width:11px;height:11px;border-radius:50%;display:inline-block"></span>
+<span class="dot" style="background:#4cc38a;width:11px;height:11px;border-radius:50%;display:inline-block"></span>
+<span class="url">HTMLメール — 受信トレイ</span>
+</div>
+<div class="mock-app" aria-hidden="true">
+<div class="mock-side">
+<div class="ms-brand">HTMLメール<small>MAIL CONSOLE</small></div>
+<a href="#" class="on" onclick="return false">受信トレイ</a>
+<a href="#" onclick="return false">送信済み</a>
+<a href="#" onclick="return false">迷惑メール</a>
+<a href="#" onclick="return false">削除済み</a>
+<a href="#" onclick="return false">様式（テーマ）</a>
+<a href="#" onclick="return false">アドレス管理</a>
+<a href="#" onclick="return false">新規作成</a>
+</div>
+<div class="mock-main">
+<p class="mm-title">受信トレイ</p>
+<p class="mm-sub">アドレスで絞り込んで表示しています</p>
+<div class="mock-toolbar">
+<span class="mock-search">メールを検索…</span>
+<span class="mock-chip on">すべてのアドレス</span>
+<span class="mock-chip">問い合わせ用</span>
+<span class="mock-chip">請求用</span>
+</div>
+<div style="overflow-x:auto">
+<table class="mtable">
+<thead><tr><th>差出人</th><th>件名</th><th>宛先アドレス</th><th>状態</th></tr></thead>
+<tbody>
+<tr><td class="strong">取引先ご担当者様</td><td>見積書の件、確認しました</td><td>問い合わせ用</td><td><span class="pill pill-blue">未読</span></td></tr>
+<tr><td class="strong">取引先ご担当者様</td><td>請求書の送付先について</td><td>請求用</td><td><span class="pill pill-gray">既読</span></td></tr>
+<tr><td class="strong">自社（送信控え）</td><td>年末年始のご案内</td><td>案内用から送信</td><td><span class="pill pill-green">送信済み 42件</span></td></tr>
+<tr><td class="strong">取引先ご担当者様</td><td>資料添付のご依頼</td><td>問い合わせ用</td><td><span class="pill pill-amber">添付あり</span></td></tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+<p class="cmp-note">※ 画面はイメージです。フォルダ（受信トレイ／迷惑メール／削除済み）、アドレス別の絞り込み、送信済み管理の構成を示しています。</p>
+</div>
+</section>
+
+<!-- COMPARE -->
+<section class="alt" id="compare">
+<div class="wrap">
+<div class="sec-head">
+<p class="sec-label">比較</p>
+<h2>一般的なメール配信ツールと、ここが違う</h2>
+<p>世の中のメール配信ツールは月額4,000円〜数万円と高く、初期費用や最低契約期間があるものも少なくありません（2026年11月時点の公式情報に基づく一般的な傾向）。こちらは目的も、料金の形も違います。</p>
+</div>
+<table class="cmp" aria-label="一般的なメール配信ツールとの比較">
+<thead>
+<tr><th scope="col">項目</th><th scope="col">一般的なメール配信ツール <span>（メルマガ配信型）</span></th><th scope="col" class="own">このHTMLメール <span style="color:#a8d4f0">（単体製品）</span></th></tr>
+</thead>
+<tbody>
+<tr><th scope="row">主な目的</th><td data-label="一般的な配信ツール">配信リストへのメルマガ配信</td><td class="own" data-label="このHTMLメール">様式を選んで、会社らしい体裁の業務メールを送ること</td></tr>
+<tr><th scope="row">料金の形</th><td data-label="一般的な配信ツール">月額4,000円〜数万円が中心。リスト数・配信数で課金されるものも多い</td><td class="own" data-label="このHTMLメール">月額 税抜2,500円の単体製品。今なら見積・請求書システムの年払い契約で初年度無料</td></tr>
+<tr><th scope="row">初期費用・契約期間</th><td data-label="一般的な配信ツール">初期費用や最低契約期間があるものも多い</td><td class="own" data-label="このHTMLメール">キャンペーン対象の見積・請求書システムは初期費用0円・最低利用期間なし</td></tr>
+<tr><th scope="row">受信・整理</th><td data-label="一般的な配信ツール">配信が中心で、受信管理は別ツールになることが多い</td><td class="own" data-label="このHTMLメール">受信もでき、フォルダとアドレス別絞り込みで整理できる</td></tr>
+<tr><th scope="row">送信の単位</th><td data-label="一般的な配信ツール">大規模な一斉配信が前提</td><td class="own" data-label="このHTMLメール">個別送信と、一斉送信（最大100件）。日々の業務連絡の規模に合う</td></tr>
+</tbody>
+</table>
+<p class="cmp-note">※ 比較は一般的な傾向を示したものです。個別のサービスの料金・条件は各公式サイトをご確認ください。</p>
+</div>
+</section>
+
+<!-- PRICING -->
+<section id="pricing">
+<div class="wrap">
+<div class="sec-head">
+<p class="sec-label">料金</p>
+<h2>月額2,500円（税別）。今なら年払い契約で初年度無料</h2>
+<p>HTMLメールは、月額2,500円（税別）の単体製品です。さらに今なら、見積・請求書システムを年払いでご契約いただくと、初年度はHTMLメールが無料で付いてきます。</p>
+</div>
+<div class="price-layout">
+<div class="price-card">
+<div class="price-card-head">
+<h3>HTMLメール</h3>
+<p>様式を選んで送る、会社らしい体裁の業務メール</p>
+</div>
+<div class="bonus-banner">
+<p>キャンペーン：年払い契約で初年度無料 <span>— 見積・請求書システムを年払い（税抜25,000円／年）でご契約いただくと、HTMLメールの初年度利用料が無料になります。</span></p>
+</div>
+<div class="price-amounts">
+<div class="price-amount highlight">
+<p class="pa-label">単体プラン（月額）</p>
+<p class="yen"><small>税抜 </small>¥2,500<small> / 月</small></p>
+<p class="tax">税込 ¥2,750</p>
+</div>
+<div class="price-amount">
+<p class="pa-label">年払い契約キャンペーン</p>
+<p class="yen"><small>初年度 </small>¥0</p>
+<p class="tax">見積・請求書システム 年払い 税抜25,000円／年のご契約で適用</p>
+<span class="save">初年度の利用料 税抜30,000円分が無料</span>
+</div>
+</div>
+<table class="spec" aria-label="HTMLメールの料金仕様">
+<tr><th>単体プラン</th><td>月額 税抜2,500円（税込2,750円）</td></tr>
+<tr><th>キャンペーン</th><td>見積・請求書システムの年払い契約で、初年度の利用料が無料</td></tr>
+<tr><th>送信</th><td>個別送信／一斉送信（最大100件）・添付ファイル対応</td></tr>
+<tr><th>お支払い</th><td>クレジットカード払い</td></tr>
+</table>
+<div class="price-foot">
+<a class="btn btn-primary" href="https://invoice-system-fsta.onrender.com/signups/new" target="_blank" rel="noopener">年払いで申し込む（申込フォームへ）</a>
+<a class="btn btn-ghost" href="#faq">よくある質問を見る</a>
+</div>
+</div>
+<div class="price-side">
+<h3>単体でも使える。今なら初年度が付いてくる</h3>
+<p>HTMLメール単体は月額 税抜2,500円。今なら、見積・請求書システムを年払い（税抜25,000円／年）でご契約いただくと、初年度はHTMLメールが無料で付いてきます。初年度の利用料 税抜30,000円分が、そのままかかりません。</p>
+<ul>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>帳票を送る仕事と、会社らしいメールを送る仕事が、ひとつの契約でそろいます</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>別途メール配信ツールを契約する月額4,000円〜数万円の負担が要りません</li>
+<li><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>単体でのご利用も月額 税抜2,500円から。様式を選ぶだけなので、HTMLの知識は要りません</li>
+</ul>
+<p style="font-size:.9rem;color:var(--muted)">キャンペーンの適用には、見積・請求書システムの申込の際に年払いをお選びください。申込フォーム → カード決済 → ログインIDの発行メール、の順で使い始められます。</p>
+</div>
+</div>
+</div>
+</section>
+
+<!-- FAQ -->
+<section class="alt" id="faq">
+<div class="wrap">
+<div class="sec-head center">
+<p class="sec-label">よくある質問</p>
+<h2>申込の前に</h2>
+</div>
+<div class="faq-list">
+<details class="faq-item">
+<summary><span class="q">Q</span>HTMLメールだけを申し込むことはできますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+<div class="faq-answer"><p>できます。HTMLメールは月額 税抜2,500円（税込2,750円）の単体製品です。なお、今なら見積・請求書システムを年払い（税抜25,000円／年）でご契約いただくと、初年度はHTMLメールが無料で付いてきます。</p></div>
+</details>
+<details class="faq-item">
+<summary><span class="q">Q</span>メルマガ配信ツールとは何が違うのですか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+<div class="faq-answer"><p>目的が違います。一般的な配信ツールは配信リストへのメルマガ配信が中心で、リスト数などで課金されるものも多く、月額4,000円〜数万円が中心です。こちらは配信リスト課金型ではなく、「様式を選んで、会社らしい体裁の業務メールを送る」ための仕組みです。一斉送信は最大100件までで、日々の業務連絡の規模に合わせた作りになっています。</p></div>
+</details>
+<details class="faq-item">
+<summary><span class="q">Q</span>様式（テーマ）には何を保存できますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+<div class="faq-answer"><p>ブランド名、ヘッダーの色、キャッチコピー、フッターの会社情報、送信元アドレスを保存できます。用途ごとに様式を使い分けることができます。</p></div>
+</details>
+<details class="faq-item">
+<summary><span class="q">Q</span>受信もできますか？アドレスは分けられますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+<div class="faq-answer"><p>はい、受信もできます。アドレスは複数登録でき、アドレスごとに受信・送信を分けられます。受信したメールは受信トレイ／迷惑メール／削除済みのフォルダで整理でき、アドレス別の絞り込みもできます。</p></div>
+</details>
+<details class="faq-item">
+<summary><span class="q">Q</span>添付ファイルは送れますか？送信履歴は残りますか？<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+<div class="faq-answer"><p>添付ファイルに対応しています。送ったメールは送信済みとして管理でき、あとから内容を確認できます。</p></div>
+</details>
+<details class="faq-item">
+<summary><span class="q">Q</span>年払い契約で初年度無料になるキャンペーンについて教えてください<svg class="chev" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m6 9 6 6 6-6"/></svg></summary>
+<div class="faq-answer"><p>見積・請求書システムを年払い（税抜25,000円／年）でご契約いただくと、HTMLメールの初年度利用料（月額 税抜2,500円）が無料になります。すでにご利用中の方のプラン変更の手続きについては、見積・請求書システムのサポート（admin@agent-partners.space）へお問い合わせください。</p></div>
+</details>
+</div>
+</div>
+</section>
+
+<!-- FINAL CTA -->
+<div class="final-cta">
+<div class="wrap">
+<h2>帳票も、メールも、<br>会社の顔として届ける。</h2>
+<p>見積・請求書システムの年払いで、帳票の発行から送信、入金管理まで。今なら年払い契約で、初年度はHTMLメールも無料で付いてきます。日々の連絡まで、体裁の整った形に。年払い 税抜25,000円、初期費用0円、最低利用期間なしです。</p>
+<div class="hero-cta">
+<a class="btn btn-white" href="https://invoice-system-fsta.onrender.com/signups/new" target="_blank" rel="noopener">年払いで申し込む</a>
+<a class="btn btn-outline-white" href="#compare">配信ツールとの違いを見る</a>
+</div>
+</div>
+</div>
+
+<!-- RELATED -->
+<div class="related-sec">
+<div class="wrap">
+<div class="sec-head" style="margin-bottom:26px">
+<p class="sec-label">関連製品</p>
+<h2 style="font-size:1.5rem">あわせてご覧ください</h2>
+</div>
+<div class="related-grid">
+<a class="related-card" href="https://invoice-system-fsta.onrender.com/signups/new" target="_blank" rel="noopener">
+<span class="related-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2.8h12V21l-2-1.4L14 21l-2-1.4L10 21l-2-1.4L6 21Z"/><path d="M9.2 7.5h5.6M9.2 11h5.6M9.2 14.5h3.2"/></svg></span>
+<span class="related-body">
+<span class="related-name">見積・請求書システム <span class="related-domain">本体製品</span></span>
+<span class="related-copy">見積書から請求書、入金確認まで。帳票づくりの全部をまかなう。</span>
+<span class="related-desc">見積書・発注書・納品書・請求書・領収書の5帳票がすべて無制限。品目分類は横にも下にも無制限のツリー、送信は封筒・メール・FAX送り状に対応。月額 税抜2,500円／年払い 税抜25,000円（年払い契約で初年度HTMLメール無料）。</span>
+</span>
+<span class="related-arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</a>
+<a class="related-card" href="https://代理店管理システム.com" target="_blank" rel="noopener">
+<span class="related-icon" aria-hidden="true"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M3.5 19c.6-3 2.8-4.5 5.5-4.5s4.9 1.5 5.5 4.5"/><path d="M16 5.5a3.2 3.2 0 0 1 0 5.8M17.5 14.7c1.7.6 2.7 1.9 3 4.3"/></svg></span>
+<span class="related-body">
+<span class="related-name">代理店管理システム <span class="related-domain">代理店管理システム.com</span></span>
+<span class="related-copy">販路を広げて、売り上げを伸ばす仕組みを簡単に導入</span>
+<span class="related-desc">本部が一次代理店・二次代理店を管理し、販売報酬と差額報酬を自動で計算。月末締め・翌月末払いの支払明細まで発行できる、代理店販売のための仕組みです。</span>
+</span>
+<span class="related-arrow" aria-hidden="true"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+</a>
+</div>
+</div>
+</div>
+
+</main>
+
+<footer>
+<div class="wrap">
+<div class="footer-main">
+<div class="footer-brand-block">
+<span class="f-brand">HTMLメール</span>
+<span>様式を選んで送るHTMLメール（月額 税抜2,500円）のご案内です。今なら見積・請求書システムの年払い契約で初年度無料。</span>
+</div>
+<div class="footer-company">
+<h3>運営会社</h3>
+<dl>
+<div><dt>会社名</dt><dd>Everyone's 合同会社</dd></div>
+<div><dt>所在地</dt><dd>〒357-0123 埼玉県飯能市中藤下郷23-21</dd></div>
+<div><dt>電話</dt><dd><a href="tel:05068816160">050-6881-6160</a></dd></div>
+<div><dt>メール</dt><dd><a href="mailto:admin@agent-partners.space">admin@agent-partners.space</a></dd></div>
+</dl>
+</div>
+</div>
+<div class="footer-bottom">
+<span>© Everyone's 合同会社</span>
+<nav class="legal-links" aria-label="法務ページ">
+<a href="/terms/">利用規約</a>
+<a href="/privacy/">プライバシーポリシー</a>
+<a href="/tokushoho/">特定商取引法に基づく表記</a>
+</nav>
+</div>
+</div>
+</footer>
+
+<script>
+(function(){
+var toggle=document.getElementById('navToggle');
+var nav=document.getElementById('mainNav');
+if(toggle&&nav){
+toggle.addEventListener('click',function(){
+var open=nav.classList.toggle('open');
+toggle.setAttribute('aria-expanded', open?'true':'false');
+toggle.setAttribute('aria-label', open?'メニューを閉じる':'メニューを開く');
+});
+nav.addEventListener('click',function(e){
+if(e.target.closest('a')){ nav.classList.remove('open'); toggle.setAttribute('aria-expanded','false');}
+});
+}
+// Theme preview switcher
+var header=document.getElementById('previewHeader');
+var brand=document.getElementById('previewBrand');
+var catchEl=document.getElementById('previewCatch');
+var swatches=document.querySelectorAll('.swatch');
+swatches.forEach(function(btn){
+btn.addEventListener('click',function(){
+swatches.forEach(function(b){ b.setAttribute('aria-pressed','false');});
+btn.setAttribute('aria-pressed','true');
+if(header) header.style.background=btn.getAttribute('data-color');
+if(brand) brand.textContent=btn.getAttribute('data-brand');
+if(catchEl) catchEl.textContent=btn.getAttribute('data-catch');
+});
+});
+})();
+</script>
+</body>
+</html>

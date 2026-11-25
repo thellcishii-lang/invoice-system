@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ご利用ガイド（一般版）｜見積・請求書システム</title>
+<meta name="description" content="見積・請求書システム（一般版）のご利用ガイドです。初期設定から帳票の作成・送信、入金管理までを説明します。">
+<link rel="icon" type="image/webp" href="/favicon.webp">
+<style>
+  :root { --navy:#1e2a3a; --accent:#2563eb; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Noto Sans JP",sans-serif; color:var(--ink); background:#f6f7f9; line-height:1.9; }
+  header { background:var(--navy); color:#fff; }
+  .hwrap { max-width:880px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  .brand { color:#fff; text-decoration:none; font-weight:700; }
+  .hnav a { color:#cbd5e1; text-decoration:none; margin-left:16px; font-size:.9rem; }
+  .hnav a:hover { color:#fff; }
+  main { max-width:880px; margin:0 auto; padding:36px 20px 56px; }
+  .card { background:#fff; border-radius:12px; padding:36px 40px; box-shadow:0 1px 4px rgba(15,23,42,.06); }
+  h1 { font-size:1.6rem; margin:0 0 8px; color:var(--navy); }
+  h2 { font-size:1.15rem; margin:34px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--navy); color:var(--navy); }
+  h3 { font-size:1.02rem; margin:22px 0 6px; color:var(--navy); }
+  p { margin:8px 0; }
+  ul, ol { margin:8px 0 8px 1.2em; padding:0; }
+  li { margin:4px 0; }
+  table { border-collapse:collapse; width:100%; margin:12px 0; font-size:.94rem; }
+  th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:#eef2f7; color:var(--navy); }
+  blockquote { margin:12px 0; padding:10px 16px; background:#eef2f7; border-left:4px solid var(--accent); color:#334155; }
+  blockquote p { margin:2px 0; }
+  code { background:#f1f5f9; padding:0 5px; border-radius:4px; font-size:.9em; }
+  hr { border:none; border-top:1px solid var(--line); margin:28px 0; }
+  footer { background:var(--navy); color:#cbd5e1; }
+  .fwrap { max-width:880px; margin:0 auto; padding:24px 20px; font-size:.88rem; }
+  .fwrap a { color:#cbd5e1; margin-right:16px; text-decoration:none; }
+  .fwrap a:hover { color:#fff; }
+  .copy { margin-top:12px; color:#94a3b8; }
+  @media (max-width:640px) { .card { padding:24px 18px; } }
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <a class="brand" href="/">見積・請求書システム</a>
+  <nav class="hnav"><a href="/construction/">建築版</a><a href="/html-mail/">HTMLメール</a><a href="/guide/">ご利用ガイド</a></nav>
+</div></header>
+<main><div class="card">
+<h1>見積・請求書システム ご利用ガイド（一般版）</h1>
+<blockquote><p>このページは、見積・請求書システム（一般版）の利用者向けガイドです。</p><p>初期設定から、帳票の作成・送信、入金管理までを順に説明します。</p></blockquote>
+<hr>
+<h2>1. はじめに</h2>
+<h3>1.1 システムの全体像</h3>
+<p>見積・請求書システムは、見積書から領収書までの帳票を一つの流れで作るクラウドシステムです。</p>
+<ul><li></li><li></li><li></li></ul>
+<h3>1.2 用語</h3>
+<table><thead><tr><th>用語</th><th>意味</th></tr></thead><tbody><tr><td>テナント</td><td>契約単位＝自社の管理領域。1契約で1テナントです。データはテナントごとに完全に分かれています。</td></tr><tr><td>メンバー</td><td>ログインして利用する担当者。招待制で、人数は無制限です。</td></tr><tr><td>帳票</td><td>見積書・発注書・納品書・請求書・領収書の総称です。</td></tr><tr><td>下書き</td><td>まだ発行していない帳票。番号は発行時に確定します。</td></tr><tr><td>品番</td><td>品目を登録すると自動で振られる階層式の番号（例：A001-002001001001）。一度振られた番号は再利用されません。</td></tr><tr><td>社内メモ</td><td>帳票に付けられる社内専用のメモ。印刷にも公開ページにも表示されません。</td></tr><tr><td>原価</td><td>品目の仕入単価をもとに計算される社内情報。帳票には印刷されません。</td></tr></tbody></table>
+<hr>
+<h2>2. 初期設定（事業者マスター）</h2>
+<p>ログイン後、まず左メニューの「事業者マスター」で自社情報を登録してください。</p>
+<h3>2.1 基本情報と印字まわり</h3>
+<ul><li></li><li></li><li></li><li></li></ul>
+<h3>2.2 振込先</h3>
+<p>銀行名・支店名・口座種別・口座番号・口座名義を登録すると、請求書等に「お振込先」として印字されます。発注書には印字されません。</p>
+<h3>2.3 消費税の扱い（内税／外税）</h3>
+<p>単価の入力が税抜か税込かを選びます。選んだ方式は、帳票の単価表示と「消費税（外税）」「消費税（内税）」の表記、合計計算に反映されます。端数処理（切り捨て等）もここで設定します。</p>
+<h3>2.4 帳票のデザイン</h3>
+<ul><li></li><li></li><li></li></ul>
+<p>見積書・発注書・納品書・請求書・領収書それぞれに、種類を表す色の帯が付きます。</p>
+<h3>2.5 封筒印刷の設定</h3>
+<ul><li></li><li></li><li></li><li></li></ul>
+<h3>2.6 自社メール（SMTP）設定</h3>
+<p>自社のメールサーバーを設定すると、帳票メールを自社のメールアドレスから送信できます。設定がない場合は運営者のアドレスから送信され、返信先（Reply-To）は自社のアドレスになります。パスワードは暗号化して保管されます。「テスト送信」ボタンで接続を確認できます。</p>
+<hr>
+<h2>3. 取引先マスター</h2>
+<ul><li></li><li></li><li></li><li></li></ul>
+<hr>
+<h2>4. 品目マスター</h2>
+<h3>4.1 分類ツリー</h3>
+<p>品目は分類で整理します。分類は横（兄弟分類）にも下（階層）にも無制限に作れます。「全体像」画面でツリー全体を確認でき、分類を選ぶとその分類と配下の品目が一覧になります。品目構成が複雑な業種でも、そのままの構造で管理できます。</p>
+<h3>4.2 階層式の品番</h3>
+<p>品目を登録すると、分類の階層に沿った品番が自動で振られます。各階層3桁の数字でつながった形式（例：A001-002001001001）で、番号を見るだけでどの分類の品目か分かります。一度使った番号は、品目を削除しても再利用されません。</p>
+<h3>4.3 品目の項目</h3>
+<p>品名、単価、税率（標準10%／軽減8%）、単位、仕入単価（原価）を登録します。単位はマスターで管理でき、帳票の作成中にもその場で追加できます。</p>
+<hr>
+<h2>5. 帳票の作成</h2>
+<h3>5.1 下書きと発行</h3>
+<ol><li>左メニューの帳票の種類から「新規作成」を開きます（種類は作成画面では固定です）。</li><li>取引先、発行日、明細を入力します。明細は品目マスターから選ぶと単価・単位・原価が自動で入ります。明細行はシマシマ（ストライプ）表示で、行の追加・削除ができます。</li><li>画面下のボタンで保存します。</li></ol>
+<ul><li>   </li><li>   </li><li>   </li></ul>
+<ol><li>下書きの帳票は、詳細画面ではなく編集画面が開きます。編集画面の下のボタンから発行できます。</li></ol>
+<h3>5.2 明細と税金</h3>
+<ul><li></li><li></li><li></li></ul>
+<h3>5.3 複写</h3>
+<p>既存の帳票は「複写」で下書きとして複製できます。定期的に同じ内容を発行する場合に便利です。</p>
+<hr>
+<h2>6. 帳票の変換と発注書</h2>
+<h3>6.1 変換の流れ</h3>
+<p>発行済みの帳票の詳細画面から、次の帳票へ変換できます。</p>
+<ul><li></li><li></li><li></li><li></li></ul>
+<p>変換した帳票は下書きとして作られ、元の帳票と関連付けて管理されます。</p>
+<h3>6.2 発注書の2区分</h3>
+<p>発注書には2つの種類があります。</p>
+<table><thead><tr><th>区分</th><th>内容</th></tr></thead><tbody><tr><td>受注</td><td>お客様から受ける発注。見積書からの変換で自動的にこの区分になります。印刷では立場が入れ替わり、宛先は自社、発行者はお客様になり、押印欄が付きます。</td></tr><tr><td>発注</td><td>業者・仕入先へ出す発注。印刷は通常の帳票と同じ形式です。納品書・請求書への変換はできません。</td></tr></tbody></table>
+<p>「見積を作る → お客様に内容を確認してもらう → その内容が丸ごと発注書になる」という流れで、言った・言わないの行き違いを防げます。</p>
+<hr>
+<h2>7. テンプレート</h2>
+<ul><li></li><li></li></ul>
+<hr>
+<h2>8. 送信</h2>
+<h3>8.1 メール送信</h3>
+<p>帳票の詳細画面からメールで送信できます。本文には帳票を表示する公開リンクが含まれます。相手がリンクを開くと「閲覧済み」が記録されるので、送った帳票を相手が見たかどうかが分かります。公開リンクの有効期間は30日です。</p>
+<h3>8.2 予約配信</h3>
+<p>日時を指定して送信を予約できます。予約の一覧から取り消しもできます。送信結果は「送信済み／失敗」の一覧で確認でき、失敗した場合は再送できます。</p>
+<h3>8.3 定期請求</h3>
+<p>毎月決まった帳票は、定期請求に登録すると自動で作成されます。送信方法（メール／FAX／指定しない）と送信日をあらかじめ設定でき、送信履歴と再送も可能です。送信方法を指定しない場合は、自動作成された帳票を印刷して手渡し・郵送してください。</p>
+<h3>8.4 FAX送り状と封筒</h3>
+<ul><li></li><li></li></ul>
+<h3>8.5 送信履歴</h3>
+<p>すべての送信は履歴に残ります（宛先、方法、成功／失敗、失敗理由）。履歴の画面から再送もできます。</p>
+<hr>
+<h2>9. 入金管理とレポート</h2>
+<ul><li></li><li></li><li></li></ul>
+<hr>
+<h2>10. 粗利管理</h2>
+<ul><li></li><li></li><li></li></ul>
+<hr>
+<h2>11. メンバー管理</h2>
+<ul><li></li><li></li><li></li><li></li></ul>
+<hr>
+<h2>12. 検索・絞り込み</h2>
+<p>帳票の一覧では、取引先、状態、入金状態、作成者、件名・番号、金額や日付の範囲、送信状況などで細かく絞り込めます。社内メモの中身でも検索できます。取引先・品目の一覧にも検索があります。</p>
+<hr>
+<h2>13. よくある質問</h2>
+<p><strong>Q. 請求書の通数に上限はありますか。</strong>A. ありません。帳票・取引先・品目・メンバーはすべて無制限です。</p>
+<p><strong>Q. インボイス制度（適格請求書）に対応していますか。</strong>A. 対応しています。登録番号の印字、税率ごとの区分記載と消費税額の計算、軽減税率との混在に対応しています。</p>
+<p><strong>Q. 発行した帳票はどこに保管されますか。</strong>A. クラウド上に保管され、取引先名・金額・日付・件名などで検索して、いつでも再印刷・PDF表示ができます。なお、受け取った書類の保存機能はありません。税法上の保存は利用者の責任で管理してください（利用規約第10条）。</p>
+<p><strong>Q. 帳票メールは自社のアドレスから送れますか。</strong>A. 事業者マスターで自社SMTPを設定すると、自社のアドレスから送信できます。未設定の場合は運営者のアドレスから送信され、返信先は自社のアドレスになります。</p>
+<p><strong>Q. FAXで送信できますか。</strong>A. 現在はFAX送り状の印刷まで対応しています。回線からのFAX送信は有料オプションとして準備中です。</p>
+<p><strong>Q. 契約を解約するとデータはどうなりますか。</strong>A. 解約すると次回以降の課金は止まり、次回支払日の前日まで利用できます。データは契約終了後30日間保持し、その後削除します。</p>
+<hr>
+<h2>14. サポート</h2>
+<p>お問い合わせは admin@agent-partners.space までお願いします。運営：Everyone&#x27;s 合同会社（〒357-0123 埼玉県飯能市中藤下郷23-21、TEL 050-6881-6160）</p>
+</div></main>
+<footer><div class="fwrap">
+  <nav><a href="/terms/">利用規約</a><a href="/privacy/">プライバシーポリシー</a><a href="/tokushoho/">特定商取引法に基づく表記</a><a href="/guide/">ご利用ガイド（一般版）</a><a href="/guide-construction/">ご利用ガイド（建築版）</a></nav>
+  <div class="copy">© Everyone's 合同会社</div>
+</div></footer>
+</body>
+</html>

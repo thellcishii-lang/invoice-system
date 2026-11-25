@@ -55,6 +55,18 @@ services:
       - key: APP_HOST
         value: invoice-system-fsta.onrender.com
 
+  # LP・法務ページ・ガイドの静的サイト（見積請求書システム.com で公開）
+  - type: web
+    name: invoice-system-lp
+    runtime: static
+    buildCommand: echo "LP is pre-built static HTML; no build step required"
+    staticPublishPath: ./lp
+    autoDeploy: true
+    envVars:
+      # リポジトリ直下の Gemfile 等に反応した依存インストール自動検出を止める
+      - key: SKIP_INSTALL_DEPS
+        value: "true"
+
 databases:
   - name: invoice-system-db
     databaseName: invoice_system_production
