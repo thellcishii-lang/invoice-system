@@ -42,6 +42,22 @@ class SettingsControllerTest < ActionDispatch::IntegrationTest
     assert_equal "TS-", other.document_number_prefix
   end
 
+  test "saves the envelope print settings" do
+    sign_in_as(users(:one))
+
+    patch setting_path, params: { tenant: {
+      envelope_size: "chou3", envelope_direction: "vertical",
+      envelope_sender: "0", envelope_logo: "1"
+    } }
+
+    assert_redirected_to setting_path
+    tenant = tenants(:one).reload
+    assert_equal "chou3", tenant.envelope_size
+    assert_equal "vertical", tenant.envelope_direction
+    assert_equal false, tenant.envelope_sender
+    assert_equal true, tenant.envelope_logo
+  end
+
   test "saves bank account fields and a seal image" do
     sign_in_as(users(:one))
 

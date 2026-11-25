@@ -65,4 +65,39 @@ assert_response:success
 assert_match ERB::Util.html_escape(document.client.name), response.body
 assert_match "御中", response.body
 end
+
+test "envelope defaults to chou4 and can switch to chou3" do
+sign_in_as(users(:one))
+document = documents(:invoice_one)
+
+get envelope_document_path(document)
+assert_response :success
+assert_match "205mm 90mm", response.body
+
+get envelope_document_path(document, size: "chou3")
+assert_response :success
+assert_match "235mm 120mm", response.body
+end
+
+test "envelope renders vertical writing when the tenant direction is vertical" do
+sign_in_as(users(:one))
+tenants(:one).update!(envelope_direction: "vertical")
+document = documents(:invoice_one)
+
+get envelope_document_path(document)
+
+assert_response :success
+assert_match "vertical-rl", response.body
+end
+
+test "envelope hides the sender block when the tenant turns it off" do
+sign_in_as(users(:one))
+tenants(:one).update!(envelope_sender: false)
+document = documents(:invoice_one)
+
+get envelope_document_path(document)
+
+assert_response :success
+assert_no_match ERB::Util.html_escape(tenants(:one).name), response.body
+end
 end

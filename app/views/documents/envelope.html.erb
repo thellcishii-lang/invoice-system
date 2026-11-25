@@ -1,27 +1,66 @@
 <% content_for(:title, "封筒宛名 #{@document.number}") %>
 <% client = @document.client %>
 <% tenant = @document.tenant %>
+<% ew, eh = tenant.envelope_dimensions(@envelope_size) %>
+<% small = @envelope_size == "chou4" %>
+<% vertical = @envelope_direction == "vertical" %>
 <style>
-  @page { size: 235mm 120mm; margin: 0; }
-  .sheet { width: 235mm; min-height: 120mm; padding: 12mm 16mm; position: relative; display: block; }
-  .env-recipient { margin-left: 52mm; margin-top: 4mm; }
-  .env-postal { font-size: 20px; letter-spacing: 0.25em; }
-  .env-address { font-size: 15px; margin-top: 5mm; line-height: 1.7; }
-  .env-name { font-size: 21px; font-weight: bold; margin-top: 7mm; }
-  .env-sender { position: absolute; left: 16mm; bottom: 9mm; font-size: 10px; color: #333; line-height: 1.6; }
-  .env-doc { position: absolute; right: 16mm; bottom: 9mm; font-size: 9px; color: #666; }
+  @page { size: <%= ew %>mm <%= eh %>mm; margin: 0; }
+  .sheet { width: <%= ew %>mm; min-height: <%= eh %>mm; padding: 0; position: relative; display: block; }
+  .env-toolbar { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 20; background: #fff; border: 1px solid #d4d4d8; border-radius: 999px; padding: 6px 14px; box-shadow: 0 2px 10px rgba(0, 0, 0, .18); font-size: 12px; white-space: nowrap; }
+  .env-toolbar a { color: #333; text-decoration: none; padding: 2px 8px; border-radius: 999px; }
+  .env-toolbar a.active { background: #dbeafe; color: #1d4ed8; font-weight: bold; }
+  .env-toolbar .sep { color: #ccc; }
+  @media print { .env-toolbar { display: none; } }
+  /* 横書き */
+  .env-recipient { margin-left: <%= small ? 40 : 52 %>mm; margin-right: 14mm; padding-top: <%= small ? 9 : 13 %>mm; }
+  .env-postal { font-size: <%= small ? 17 : 20 %>px; letter-spacing: 0.25em; }
+  .env-address { font-size: <%= small ? 13 : 15 %>px; margin-top: 4mm; line-height: 1.7; }
+  .env-name { font-size: <%= small ? 18 : 21 %>px; font-weight: bold; margin-top: 6mm; }
+  /* 縦書き */
+  .env-postal-v { position: absolute; top: 7mm; right: 9mm; font-size: <%= small ? 13 : 15 %>px; letter-spacing: 0.2em; }
+  .env-recipient-v { position: absolute; top: <%= small ? 15 : 18 %>mm; right: 9mm; height: <%= eh - (small ? 22 : 25) %>mm; writing-mode: vertical-rl; }
+  .env-address-v { font-size: <%= small ? 12 : 14 %>px; line-height: 1.9; margin-left: <%= small ? 5 : 7 %>mm; }
+  .env-name-v { font-size: <%= small ? 17 : 20 %>px; font-weight: bold; line-height: 1.9; letter-spacing: 0.02em; }
+  /* 差出人・在中 */
+  .env-sender { position: absolute; left: <%= small ? 12 : 16 %>mm; bottom: <%= small ? 7 : 9 %>mm; font-size: 10px; color: #333; line-height: 1.6; }
+  .env-sender img { height: 9mm; max-width: 40mm; object-fit: contain; display: block; margin-bottom: 2mm; }
+  .env-doc { position: absolute; right: <%= small ? 12 : 16 %>mm; bottom: <%= small ? 7 : 9 %>mm; font-size: 9px; color: #666; }
 </style>
 
-<div class="env-recipient">
-  <% if client.postal_code.present? %>
-    <div class="env-postal">〒<%= client.postal_code %></div>
-  <% end %>
-  <div class="env-address"><%= client.address %></div>
-  <div class="env-name"><%= client.name %>　<%= client.contact_person.present? ? "#{client.contact_person} 様" : "御中" %></div>
+<div class="env-toolbar">
+  <%= link_to "長形3号", envelope_document_path(@document, size: "chou3", direction: @envelope_direction), class: ("active" if @envelope_size == "chou3") %>
+  <%= link_to "長形4号", envelope_document_path(@document, size: "chou4", direction: @envelope_direction), class: ("active" if @envelope_size == "chou4") %>
+  <span class="sep">｜</span>
+  <%= link_to "横書き", envelope_document_path(@document, size: @envelope_size, direction: "horizontal"), class: ("active" if !vertical) %>
+  <%= link_to "縦書き", envelope_document_path(@document, size: @envelope_size, direction: "vertical"), class: ("active" if vertical) %>
 </div>
 
-<div class="env-sender">
-  <% if tenant.postal_code.present? %>〒<%= tenant.postal_code %> <% end %><%= tenant.address %><br>
-  <%= tenant.name %>
-</div>
+<% if vertical %>
+  <% if client.postal_code.present? %>
+    <div class="env-postal-v">〒<%= client.postal_code %></div>
+  <% end %>
+  <div class="env-recipient-v">
+    <div class="env-address-v"><%= client.address %></div>
+    <div class="env-name-v"><%= client.name %>　<%= client.contact_person.present? ? "#{client.contact_person} 様" : "御中" %></div>
+  </div>
+<% else %>
+  <div class="env-recipient">
+    <% if client.postal_code.present? %>
+      <div class="env-postal">〒<%= client.postal_code %></div>
+    <% end %>
+    <div class="env-address"><%= client.address %></div>
+    <div class="env-name"><%= client.name %>　<%= client.contact_person.present? ? "#{client.contact_person} 様" : "御中" %></div>
+  </div>
+<% end %>
+
+<% if tenant.envelope_sender %>
+  <div class="env-sender">
+    <% if tenant.envelope_logo && tenant.logo_image? %>
+      <%= image_tag tenant.logo_image_data_uri, alt: "" %>
+    <% end %>
+    <% if tenant.postal_code.present? %>〒<%= tenant.postal_code %> <% end %><%= tenant.address %><br>
+    <%= tenant.name %>
+  </div>
+<% end %>
 <div class="env-doc"><%= @document.kind_label %> <%= @document.number %> 在中</div>

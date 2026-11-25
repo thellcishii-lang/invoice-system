@@ -115,6 +115,9 @@ class DocumentsController < ApplicationController
 
   # 封筒の宛名印刷（長形3号・横向き）
   def envelope
+    # 既定は事業者マスターの封筒設定。印刷画面の切り替え（パラメータ）が優先
+    @envelope_size = Tenant::ENVELOPE_SIZES.key?(params[:size]) ? params[:size] : Current.tenant.envelope_size
+    @envelope_direction = Tenant::ENVELOPE_DIRECTION_LABELS.key?(params[:direction]) ? params[:direction] : Current.tenant.envelope_direction
     render layout: "print"
   end
 

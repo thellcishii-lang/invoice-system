@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_25_090000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_25_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -293,6 +293,10 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_25_090000) do
     t.string "smtp_username"
     t.text "smtp_password_ciphertext"
     t.string "smtp_from_address"
+    t.string "envelope_size", default: "chou4", null: false
+    t.string "envelope_direction", default: "horizontal", null: false
+    t.boolean "envelope_sender", default: true, null: false
+    t.boolean "envelope_logo", default: false, null: false
     t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end

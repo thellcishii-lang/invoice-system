@@ -65,6 +65,7 @@ class SettingsController < ApplicationController
                                 logo_placement logo_alignment
                                 document_number_prefix tax_rounding tax_display
                                 document_color document_striped document_pattern
+                                envelope_size envelope_direction envelope_sender envelope_logo
                                 smtp_host smtp_port smtp_username smtp_password smtp_from_address ])
     end
 end

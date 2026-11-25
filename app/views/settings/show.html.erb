@@ -188,6 +188,37 @@
             {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
     </div>
 
+    <h3 class="font-bold text-lg mt-8 mb-3">封筒印刷</h3>
+
+    <div class="my-5">
+      <%= form.label :envelope_size, "封筒のサイズ" %>
+      <%= form.select :envelope_size,
+            Tenant::ENVELOPE_SIZE_LABELS.map { |value, label| [ label, value ] },
+            {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">封筒の印刷画面でも、その場で切り替えられます。</p>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :envelope_direction, "宛名の向き" %>
+      <%= form.select :envelope_direction,
+            Tenant::ENVELOPE_DIRECTION_LABELS.map { |value, label| [ label, value ] },
+            {}, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <label class="flex items-center gap-2">
+        <%= form.check_box :envelope_sender, class: "rounded border-gray-400" %>
+        差出人（自社の郵便番号・住所・会社名）を封筒に印刷する
+      </label>
+    </div>
+
+    <div class="my-5">
+      <label class="flex items-center gap-2">
+        <%= form.check_box :envelope_logo, class: "rounded border-gray-400" %>
+        差出人にロゴも印刷する（上のロゴ画像を使います）
+      </label>
+    </div>
+
     <h2 class="font-bold text-xl mt-8 mb-3">メール送信（SMTP）設定</h2>
     <p class="text-gray-500 text-sm mb-3">
       自分のメールアドレスから帳票を送りたい場合は、普段お使いのメールの SMTP 設定を入力してください。
