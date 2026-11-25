@@ -37,8 +37,8 @@ recipient_email: "billing@example.co.jp", email_template_id: template.id
 assert_redirected_to document_path(document)
 mail = ActionMailer::Base.deliveries.last
 assert_equal "#{document.kind_label}（#{document.number}）", mail.subject
-assert_match document.client.name, mail.body.to_s
-assert_match "48,100円", mail.body.to_s
+assert_match document.client.name, mail.text_part.body.to_s
+assert_match "48,100円", mail.text_part.body.to_s
 end
 
 test "fax cover renders the chosen template body" do

@@ -1,0 +1,45 @@
+<% if @custom_body.present? %>
+<%= simple_format(@custom_body) %>
+
+<p>
+  帳票の内容は、以下のリンクからご確認いただけます。<br>
+  （リンクの有効期限は発行から30日間です）<br>
+  <%= link_to @public_url, @public_url %>
+</p>
+<% else %>
+<p><%= @document.client.name %> 様</p>
+
+<p>
+  いつもお世話になっております。<%= @document.tenant.name %> です。<br>
+  <%= @document.kind_label %>をお送りいたします。
+</p>
+
+<table>
+  <tr><th align="left">帳票番号</th><td><%= @document.number %></td></tr>
+  <tr><th align="left">発行日</th><td><%= @document.issue_date.strftime("%Y年%m月%d日") %></td></tr>
+  <% if @document.title.present? %>
+    <tr><th align="left">件名</th><td><%= @document.title %></td></tr>
+  <% end %>
+  <tr><th align="left">合計金額</th><td><%= number_with_delimiter(@document.total) %>円（税込）</td></tr>
+  <% if @document.invoice? && @document.due_date %>
+    <tr><th align="left">お支払期限</th><td><%= @document.due_date.strftime("%Y年%m月%d日") %></td></tr>
+  <% end %>
+</table>
+
+<p>
+  帳票の内容は、以下のリンクからご確認いただけます。<br>
+  （リンクの有効期限は発行から30日間です）<br>
+  <%= link_to @public_url, @public_url %>
+</p>
+
+<p>ご不明な点がございましたら、お気軽にお問い合わせください。</p>
+
+<hr>
+
+<p>
+  <%= @document.tenant.name %><br>
+  <% if @document.tenant.postal_code.present? %>〒<%= @document.tenant.postal_code %><br><% end %>
+  <% if @document.tenant.address.present? %><%= @document.tenant.address %><br><% end %>
+  <% if @document.tenant.phone.present? %>TEL: <%= @document.tenant.phone %><% end %>
+</p>
+<% end %>

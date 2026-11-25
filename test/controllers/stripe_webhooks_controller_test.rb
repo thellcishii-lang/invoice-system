@@ -39,7 +39,7 @@ class StripeWebhooksControllerTest < ActionDispatch::IntegrationTest
     invite = ActionMailer::Base.deliveries.last
     assert_equal [ "apply@example.co.jp" ], invite.to
     assert_match "パスワード設定", invite.subject
-    mail_body = invite.multipart? ? invite.parts.map { |part| part.body.to_s }.join : invite.body.to_s
+    mail_body = invite.parts.map { |part| part.body.to_s }.join
     assert_match "/password_setup/", mail_body
   end
 
