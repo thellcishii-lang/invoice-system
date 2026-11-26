@@ -30,6 +30,12 @@ class Tenant < ApplicationRecord
     edition == "construction"
   end
 
+  # HTMLメール（年払い特典）: 年払い契約で課金中のテナントだけ使える。
+  # 月払い→年払いの途中切替は Stripe webhook 未対応のため v1 では申込時の区分で判定する。
+  def html_mail_enabled?
+    yearly? && billing_active?
+  end
+
   # --- テナント自身の SMTP 設定（帳票メールをテナントのアドレスから送る） ---
   # パスワードは平文で保存せず、secret_key_base から導いた鍵で暗号化する。
   def smtp_configured?

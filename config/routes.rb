@@ -58,6 +58,7 @@ Rails.application.routes.draw do
       post :cancel
     end
   end
+  resource :html_mail, only: %i[ show create ]
   resources :send_templates, except: %i[ show ]
   resources :document_templates, except: %i[ show ]
   resources :members, only: %i[ index new create ] do

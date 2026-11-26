@@ -1,0 +1,18 @@
+<table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 16px;">
+  <tr>
+    <td bgcolor="<%= @tenant.document_color.presence || "#334155" %>" style="padding: 14px 18px; color: #ffffff; font-size: 18px; font-weight: bold;">
+      <%= @tenant.name %>
+    </td>
+  </tr>
+</table>
+
+<%= simple_format(@body) %>
+
+<hr>
+
+<p>
+  <%= @tenant.name %><br>
+  <% if @tenant.postal_code.present? %>〒<%= @tenant.postal_code %><br><% end %>
+  <% if @tenant.address.present? %><%= @tenant.address %><br><% end %>
+  <% if @tenant.phone.present? %>TEL: <%= @tenant.phone %><% end %>
+</p>

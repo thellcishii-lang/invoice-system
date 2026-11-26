@@ -1,0 +1,7 @@
+<%= @body %>
+
+――――――――――
+<%= @tenant.name %>
+<% if @tenant.postal_code.present? %>〒<%= @tenant.postal_code %><% end %>
+<% if @tenant.address.present? %><%= @tenant.address %><% end %>
+<% if @tenant.phone.present? %>TEL: <%= @tenant.phone %><% end %>
