@@ -1,3 +1,15 @@
-<svg width="512" height="512" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="256" cy="256" r="256" fill="red"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bar" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffa41f"/>
+      <stop offset="1" stop-color="#ff6a00"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#374151"/>
+  <g fill="url(#bar)">
+    <rect x="8.5" y="39" width="8" height="13" rx="2.5"/>
+    <rect x="21.5" y="30" width="8" height="22" rx="2.5"/>
+    <rect x="34.5" y="21" width="8" height="31" rx="2.5"/>
+    <rect x="47.5" y="12" width="8" height="40" rx="2.5"/>
+  </g>
 </svg>
