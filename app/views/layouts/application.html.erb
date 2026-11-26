@@ -62,7 +62,9 @@
               <%= sidebar_link_to "定期請求", recurring_documents_path, active: controller_name == "recurring_documents" %>
               <%= sidebar_link_to "予約配信", scheduled_deliveries_path, active: controller_name == "scheduled_deliveries" %>
               <%= sidebar_link_to "送信履歴", document_deliveries_path, active: controller_name == "document_deliveries" %>
-              <%= sidebar_link_to "HTMLメール", html_mail_path, active: controller_name == "html_mails" %>
+              <% if Current.tenant&.html_mail_enabled? %>
+                <%= sidebar_link_to "HTMLメール", html_mail_path, active: controller_name == "html_mails" %>
+              <% end %>
 
               <%= sidebar_heading "テンプレート" %>
               <%= sidebar_link_to "メールテンプレート", send_templates_path(channel: "email"), active: controller_name == "send_templates" && @channel == "email" %>

@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     root "dashboards#show"
     resource :session, only: %i[ new create destroy ]
     resource :password, only: %i[ edit update ]
+    resources :tenants, only: %i[ update ]
   end
 
   # 公開申込フロー（ログイン不要）と Stripe Webhook、招待用パスワード設定

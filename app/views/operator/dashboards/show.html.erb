@@ -13,7 +13,7 @@
   <thead>
     <tr>
       <th>会社名</th><th>担当者 / メール</th><th>版</th><th>プラン</th><th>契約開始</th><th>状態</th>
-      <th>メンバー</th><th>帳票</th><th>Stripe</th>
+      <th>メンバー</th><th>帳票</th><th>HTMLメール</th><th>Stripe</th>
     </tr>
   </thead>
   <tbody>
@@ -40,6 +40,15 @@
         </td>
         <td><%= tenant.users.size %></td>
         <td><%= tenant.documents.size %></td>
+        <td>
+          <% if tenant.html_mail_enabled? %>
+            <span class="badge badge-active">ON</span>
+            <%= button_to "OFFにする", operator_tenant_path(tenant), method: :patch, params: { tenant: { html_mail_enabled: false } } %>
+          <% else %>
+            <span style="color:#94a3b8;">OFF</span>
+            <%= button_to "ONにする", operator_tenant_path(tenant), method: :patch, params: { tenant: { html_mail_enabled: true } } %>
+          <% end %>
+        </td>
         <td>
           <% if tenant.stripe_customer_id.present? %>
             <%= link_to "顧客", "https://dashboard.stripe.com/customers/#{tenant.stripe_customer_id}", target: "_blank", rel: "noopener" %>

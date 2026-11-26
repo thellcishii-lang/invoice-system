@@ -15,4 +15,13 @@ class TenantTest < ActiveSupport::TestCase
     assert_not tenant.valid?
     assert tenant.errors[:name].present?
   end
+
+  test "html_mail_enabled defaults to off and can be switched on" do
+    tenant = Tenant.create!(name: "スイッチ確認株式会社")
+
+    assert_not tenant.html_mail_enabled?
+
+    tenant.update!(html_mail_enabled: true)
+    assert tenant.reload.html_mail_enabled?
+  end
 end

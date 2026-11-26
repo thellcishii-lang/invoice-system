@@ -6,18 +6,20 @@ class HtmlMailsControllerTest < ActionDispatch::IntegrationTest
     sign_in_as(users(:one))
   end
 
-  test "yearly active tenant sees the composer" do
-    @tenant.update!(billing_interval: "yearly", billing_status: "active")
+  test "tenant with html mail switched on sees the composer and the sidebar link" do
+    @tenant.update!(html_mail_enabled: true)
 
     get html_mail_path
-
     assert_response :success
     assert_match "宛先", response.body
     assert_match "送信する", response.body
+
+    get root_path
+    assert_match "HTMLメール", response.body
   end
 
-  test "yearly active tenant can send an html mail with tenant branding" do
-    @tenant.update!(billing_interval: "yearly", billing_status: "active")
+  test "tenant with html mail switched on can send an html mail with tenant branding" do
+    @tenant.update!(html_mail_enabled: true)
 
     assert_emails 1 do
       post html_mail_path, params: { html_mail: {
@@ -35,26 +37,20 @@ class HtmlMailsControllerTest < ActionDispatch::IntegrationTest
     assert_match "いつもお世話になっております", mail.text_part.body.decoded
   end
 
-  test "monthly tenant sees the yearly-plan guidance and cannot send" do
-    @tenant.update!(billing_interval: "monthly", billing_status: "active")
+  test "tenant with html mail off sees nothing of the feature" do
+    assert_not @tenant.html_mail_enabled?
+
+    get root_path
+    assert_no_match "HTMLメール", response.body
 
     get html_mail_path
-    assert_response :success
-    assert_match "年払いプランに含まれる機能です", response.body
+    assert_redirected_to root_path
 
     assert_no_emails do
       post html_mail_path, params: { html_mail: {
         recipient_email: "dest@example.co.jp", subject: "ご挨拶", body: "本文"
       } }
     end
-  end
-
-  test "yearly but cancelled tenant is not html mail enabled" do
-    @tenant.update!(billing_interval: "yearly", billing_status: "cancelled")
-
-    assert_not @tenant.html_mail_enabled?
-    # 解約済みテナントは課金ゲートでログイン画面へ戻される（既存の挙動）
-    get html_mail_path
-    assert_redirected_to new_session_path
+    assert_redirected_to root_path
   end
 end

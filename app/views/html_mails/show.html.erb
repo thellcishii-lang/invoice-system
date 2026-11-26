@@ -1,42 +1,31 @@
 <div class="mx-auto md:w-2/3 w-full">
   <h1 class="font-bold text-3xl mb-5">HTMLメール</h1>
 
-  <% if @tenant.html_mail_enabled? %>
-    <p class="text-gray-600 mb-5">
-      自社の会社名と帳票色のブランド付きで、自由な業務メールをHTMLで送れます。
-      <% if @tenant.smtp_configured? %>
-        送信は事業者マスターで設定した自社SMTP（<%= @tenant.smtp_from_address %>）から行われます。
-      <% else %>
-        送信は運営のアドレスから行われ、返信は自社のメールアドレスに届きます。自社アドレスから送りたい場合は、事業者マスターで自社SMTPを設定してください。
-      <% end %>
-    </p>
-
-    <%= form_with url: html_mail_path, scope: :html_mail, class: "contents" do |form| %>
-      <div class="my-5">
-        <%= form.label :recipient_email, "宛先" %>
-        <%= form.email_field :recipient_email, value: @mail_form[:recipient_email], required: true, placeholder: "相手先のメールアドレス", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :subject, "件名" %>
-        <%= form.text_field :subject, value: @mail_form[:subject], required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <div class="my-5">
-        <%= form.label :body, "本文" %>
-        <%= form.text_area :body, value: @mail_form[:body], rows: 12, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
-      </div>
-
-      <%= form.submit "送信する", class: "btn btn-primary" %>
+  <p class="text-gray-600 mb-5">
+    自社の会社名と帳票色のブランド付きで、自由な業務メールをHTMLで送れます。
+    <% if @tenant.smtp_configured? %>
+      送信は事業者マスターで設定した自社SMTP（<%= @tenant.smtp_from_address %>）から行われます。
+    <% else %>
+      送信は運営のアドレスから行われ、返信は自社のメールアドレスに届きます。自社アドレスから送りたい場合は、事業者マスターで自社SMTPを設定してください。
     <% end %>
-  <% else %>
-    <div class="py-4 px-4 bg-blue-50 text-gray-700 rounded-lg">
-      <p class="font-bold mb-2">HTMLメールは年払いプランに含まれる機能です</p>
-      <p>
-        年払い（年額25,000円・税別／月払いより2ヶ月分お得）でご契約の間、帳票メールとは別に、
-        自社の会社名・帳票色のブランド付きで自由な業務メールをHTMLで送れるようになります。
-      </p>
-      <p class="mt-2">ご利用中のプランでは、この機能は使えません。</p>
+  </p>
+
+  <%= form_with url: html_mail_path, scope: :html_mail, class: "contents" do |form| %>
+    <div class="my-5">
+      <%= form.label :recipient_email, "宛先" %>
+      <%= form.email_field :recipient_email, value: @mail_form[:recipient_email], required: true, placeholder: "相手先のメールアドレス", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
     </div>
+
+    <div class="my-5">
+      <%= form.label :subject, "件名" %>
+      <%= form.text_field :subject, value: @mail_form[:subject], required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <div class="my-5">
+      <%= form.label :body, "本文" %>
+      <%= form.text_area :body, value: @mail_form[:body], rows: 12, required: true, class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+    </div>
+
+    <%= form.submit "送信する", class: "btn btn-primary" %>
   <% end %>
 </div>

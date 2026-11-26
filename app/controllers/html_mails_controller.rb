@@ -1,4 +1,7 @@
 class HtmlMailsController < ApplicationController
+  # HTMLメールが OFF のテナントには機能自体を見せない（入口も画面も出さない）。
+  before_action :require_html_mail_enabled
+
   def show
     @tenant = Current.tenant
     @mail_form = {}
@@ -6,11 +9,6 @@ class HtmlMailsController < ApplicationController
 
   def create
     @tenant = Current.tenant
-    unless @tenant.html_mail_enabled?
-      redirect_to html_mail_path, alert: "HTMLメールは年払いプランの機能です。"
-      return
-    end
-
     @mail_form = params.require(:html_mail).permit(:recipient_email, :subject, :body)
     recipient = @mail_form[:recipient_email].to_s.strip
     subject = @mail_form[:subject].to_s.strip
@@ -30,5 +28,11 @@ class HtmlMailsController < ApplicationController
       flash.now[:alert] = "送信に失敗しました。宛先をご確認のうえ、時間をおいて再度お試しください。"
       render :show, status: :unprocessable_entity
     end
+  end
+
+  private
+
+  def require_html_mail_enabled
+    redirect_to root_path unless Current.tenant&.html_mail_enabled?
   end
 end
