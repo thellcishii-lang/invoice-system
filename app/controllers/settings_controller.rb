@@ -3,6 +3,20 @@ class SettingsController < ApplicationController
     @tenant = Current.tenant
   end
 
+  def test_html_mail_link
+    @tenant = Current.tenant
+    unless @tenant.html_mail_linked?
+      return redirect_to setting_path, alert: "連動キーが未入力です。先に保存してください。"
+    end
+
+    result = HtmlMailLinkClient.new(@tenant).check
+    if result.ok?
+      redirect_to setting_path, notice: "HTMLメールと接続できました（#{result.account_name}）。"
+    else
+      redirect_to setting_path, alert: "HTMLメールに接続できませんでした：#{result.error}"
+    end
+  end
+
   def test_smtp
     @tenant = Current.tenant
     unless @tenant.smtp_configured?
@@ -26,6 +40,7 @@ class SettingsController < ApplicationController
     end
     # パスワードが空欄なら、保存済みのものを保持する
     permitted.delete(:smtp_password) if permitted[:smtp_password].blank?
+    permitted.delete(:html_mail_link_key) if permitted[:html_mail_link_key].blank?
 
     unless @tenant.update(permitted)
       return render :show, status: :unprocessable_entity
@@ -66,6 +81,7 @@ class SettingsController < ApplicationController
                                 document_number_prefix tax_rounding tax_display
                                 document_color document_striped document_pattern
                                 envelope_size envelope_direction envelope_sender envelope_logo
-                                smtp_host smtp_port smtp_username smtp_password smtp_from_address ])
+                                smtp_host smtp_port smtp_username smtp_password smtp_from_address
+                                html_mail_link_key ])
     end
 end

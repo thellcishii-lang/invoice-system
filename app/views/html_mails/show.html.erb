@@ -3,7 +3,9 @@
 
   <p class="text-gray-600 mb-5">
     自社の会社名と帳票色のブランド付きで、自由な業務メールをHTMLで送れます。
-    <% if @tenant.smtp_configured? %>
+    <% if @tenant.html_mail_linked? %>
+      HTMLメールと連動中です。送信はHTMLメール側の様式と会社のアドレスで行われます。
+    <% elsif @tenant.smtp_configured? %>
       送信は事業者マスターで設定した自社SMTP（<%= @tenant.smtp_from_address %>）から行われます。
     <% else %>
       送信は運営のアドレスから行われ、返信は自社のメールアドレスに届きます。自社アドレスから送りたい場合は、事業者マスターで自社SMTPを設定してください。

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_11_26_010000) do
+ActiveRecord::Schema[8.1].define(version: 2026_11_26_020000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -308,6 +308,7 @@ ActiveRecord::Schema[8.1].define(version: 2026_11_26_010000) do
     t.boolean "envelope_logo", default: false, null: false
     t.string "billing_interval", default: "monthly", null: false
     t.boolean "html_mail_enabled", default: false, null: false
+    t.text "html_mail_link_key_ciphertext"
     t.index ["stripe_customer_id"], name: "index_tenants_on_stripe_customer_id"
     t.index ["stripe_subscription_id"], name: "index_tenants_on_stripe_subscription_id"
   end

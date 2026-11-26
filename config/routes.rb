@@ -28,6 +28,7 @@ Rails.application.routes.draw do
   root "dashboard#index"
   resource :setting, only: %i[ show update ] do
     post :test_smtp
+    post :test_html_mail_link
   end
   resources :clients
   resources :units, only: %i[ create ]

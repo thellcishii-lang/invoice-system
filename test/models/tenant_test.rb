@@ -16,6 +16,17 @@ class TenantTest < ActiveSupport::TestCase
     assert tenant.errors[:name].present?
   end
 
+  test "html mail link key is stored encrypted and round-trips" do
+    tenant = tenants(:one)
+    assert_not tenant.html_mail_linked?
+    assert_nil tenant.html_mail_link_key
+
+    tenant.update!(html_mail_link_key: "hm_test_key_123")
+    assert tenant.html_mail_linked?
+    assert_equal "hm_test_key_123", tenant.reload.html_mail_link_key
+    assert_not_includes tenant.html_mail_link_key_ciphertext, "hm_test_key_123"
+  end
+
   test "html_mail_enabled defaults to off and can be switched on" do
     tenant = Tenant.create!(name: "スイッチ確認株式会社")
 

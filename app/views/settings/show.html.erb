@@ -262,6 +262,18 @@
       </div>
     <% end %>
 
+    <h2 class="font-bold text-xl mt-8 mb-3">HTMLメールと連動</h2>
+    <p class="text-gray-500 text-sm mb-3">
+      HTMLメール（単体アプリ）と連動すると、この画面の「HTMLメール」から送るメールが、HTMLメール側の様式と会社のアドレスで送られます。
+      HTMLメールの「アドレス設定」にある連動キーを貼り付けて保存してください。未入力の場合は連動しません。
+    </p>
+
+    <div class="my-5">
+      <%= form.label :html_mail_link_key, "連動キー" %>
+      <%= form.password_field :html_mail_link_key, value: "", autocomplete: "new-password", placeholder: @tenant.html_mail_linked? ? "設定済み（変更する場合のみ入力）" : "hm_...", class: "block shadow-sm rounded-md border border-gray-400 px-3 py-2 mt-2 w-full" %>
+      <p class="text-gray-500 text-sm mt-1">連動キーは暗号化して保存されます。空欄のまま保存すると、現在のキーを保持します。</p>
+    </div>
+
     <div class="inline">
       <%= form.submit "保存する", class: "btn btn-primary" %>
     </div>
@@ -270,6 +282,12 @@
   <% if @tenant.smtp_configured? %>
     <div class="mt-6">
       <%= button_to "テスト送信（保存済みの設定で、御社のアドレス宛に送ります）", test_smtp_setting_path, class: "btn" %>
+    </div>
+  <% end %>
+
+  <% if @tenant.html_mail_linked? %>
+    <div class="mt-3">
+      <%= button_to "HTMLメールの接続テスト（保存済みの連動キーで確認します）", test_html_mail_link_setting_path, class: "btn" %>
     </div>
   <% end %>
 </div>

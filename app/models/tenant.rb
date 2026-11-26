@@ -74,6 +74,23 @@ class Tenant < ApplicationRecord
     update!(smtp_host: nil, smtp_username: nil, smtp_password_ciphertext: nil, smtp_from_address: nil)
   end
 
+  # --- HTMLメール（単体アプリ）との連動キー。SMTPパスワードと同じ暗号化で保存する ---
+  def html_mail_link_key
+    return nil if html_mail_link_key_ciphertext.blank?
+
+    self.class.smtp_encryptor.decrypt_and_verify(html_mail_link_key_ciphertext)
+  rescue ActiveSupport::MessageEncryptor::InvalidMessage
+    nil
+  end
+
+  def html_mail_link_key=(value)
+    self.html_mail_link_key_ciphertext = value.present? ? self.class.smtp_encryptor.encrypt_and_sign(value.strip) : nil
+  end
+
+  def html_mail_linked?
+    html_mail_link_key.present?
+  end
+
   def self.smtp_encryptor
     key = ActiveSupport::KeyGenerator.new(Rails.application.secret_key_base).generate_key("tenant-smtp-password", 32)
     ActiveSupport::MessageEncryptor.new(key)

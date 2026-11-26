@@ -20,6 +20,18 @@ class HtmlMailsController < ApplicationController
       return
     end
 
+    # 連動キーがあれば、HTMLメール（単体アプリ）経由で会社のメールとして送る
+    if @tenant.html_mail_linked?
+      result = HtmlMailLinkClient.new(@tenant).deliver(to: recipient, subject: subject, body: body)
+      if result.ok?
+        redirect_to html_mail_path, notice: "HTMLメールを送信しました。"
+      else
+        flash.now[:alert] = "送信に失敗しました：#{result.error}"
+        render :show, status: :unprocessable_entity
+      end
+      return
+    end
+
     begin
       HtmlMailer.business_email(tenant: @tenant, recipient_email: recipient, subject: subject, body: body).deliver_now
       redirect_to html_mail_path, notice: "HTMLメールを送信しました。"
