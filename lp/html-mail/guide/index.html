@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<script async src="https://www.googletagmanager.com/gtm.js?id=GTM-M64FMGJW"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+</script>
+
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ご利用ガイド｜HTMLメール</title>
+<meta name="description" content="HTMLメールのご利用ガイドです。ログイン、アドレス設定、様式とデザインの作り込み、作成・送信、受信トレイの整理、見積・請求書システムとの連動を説明します。">
+<link rel="icon" type="image/webp" href="/favicon.webp">
+<style>
+  :root { --navy:#1e2a3a; --accent:#2563eb; --ink:#1f2937; --muted:#6b7280; --line:#e5e7eb; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:"Noto Sans JP",sans-serif; color:var(--ink); background:#f6f7f9; line-height:1.9; }
+  header { background:var(--navy); color:#fff; }
+  .hwrap { max-width:880px; margin:0 auto; padding:14px 20px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+  .brand { color:#fff; text-decoration:none; font-weight:700; }
+  .hnav a { color:#cbd5e1; text-decoration:none; margin-left:16px; font-size:.9rem; }
+  .hnav a:hover { color:#fff; }
+  main { max-width:880px; margin:0 auto; padding:36px 20px 56px; }
+  .card { background:#fff; border-radius:12px; padding:36px 40px; box-shadow:0 1px 4px rgba(15,23,42,.06); }
+  h1 { font-size:1.6rem; margin:0 0 8px; color:var(--navy); }
+  h2 { font-size:1.15rem; margin:34px 0 10px; padding-bottom:6px; border-bottom:2px solid var(--navy); color:var(--navy); }
+  h3 { font-size:1.02rem; margin:22px 0 6px; color:var(--navy); }
+  p { margin:8px 0; }
+  ul, ol { margin:8px 0 8px 1.2em; padding:0; }
+  li { margin:4px 0; }
+  table { border-collapse:collapse; width:100%; margin:12px 0; font-size:.94rem; }
+  th, td { border:1px solid var(--line); padding:8px 10px; text-align:left; vertical-align:top; }
+  th { background:#eef2f7; color:var(--navy); }
+  blockquote { margin:12px 0; padding:10px 16px; background:#eef2f7; border-left:4px solid var(--accent); color:#334155; }
+  blockquote p { margin:2px 0; }
+  code { background:#f1f5f9; padding:0 5px; border-radius:4px; font-size:.9em; }
+  hr { border:none; border-top:1px solid var(--line); margin:28px 0; }
+  footer { background:var(--navy); color:#cbd5e1; }
+  .fwrap { max-width:880px; margin:0 auto; padding:24px 20px; font-size:.88rem; }
+  .fwrap a { color:#cbd5e1; margin-right:16px; text-decoration:none; }
+  .fwrap a:hover { color:#fff; }
+  .copy { margin-top:12px; color:#94a3b8; }
+  @media (max-width:640px) { .card { padding:24px 18px; } }
+</style>
+</head>
+<body>
+<header><div class="hwrap">
+  <a class="brand" href="/html-mail/">HTMLメール</a>
+  <nav class="hnav"><a href="/">見積・請求書システム</a><a href="/construction/">建築版</a><a href="/html-mail/guide/">ご利用ガイド</a></nav>
+</div></header>
+<main><div class="card">
+<h1>HTMLメール ご利用ガイド</h1>
+<blockquote><p>このページは、HTMLメールの利用者向けガイドです。</p><p>ログインから、アドレス設定、様式とデザインの作り込み、メールの作成・送信、受信トレイの整理までを順に説明します。</p></blockquote>
+<hr>
+<h2>1. はじめに</h2>
+<p>HTMLメールは、様式（テンプレート）に沿って、会社の体裁で業務メールを送受信するサービスです。契約は会社（アカウント）単位で、会社の中に複数のメールアドレスを登録して使います。</p>
+<ul>
+<li>送信は、様式を選んで作成し、各アドレスに設定したメールサーバー（SMTP）から送ります。</li>
+<li>受信は、お使いのメールサーバー（IMAP）から、受信トレイを開くたびに読み込みます。メール本文をこのサービス内に蓄積しないため、今のメール環境のまま使えます。</li>
+<li>様式や送信履歴は会社（アカウント）単位で共有され、アドレスごとに担当を分けることができます。</li>
+</ul>
+<hr>
+<h2>2. ログイン（管理者とアドレス）</h2>
+<p>ログインには2種類あります。</p>
+<table><thead><tr><th>ログイン</th><th>使う人</th><th>できること</th></tr></thead><tbody>
+<tr><td>管理者ログイン</td><td>契約を管理する担当者</td><td>すべてのアドレスのメール、様式、送信履歴に加えて、アドレス設定（アドレスの追加・設定変更、連動キーの管理）ができます。</td></tr>
+<tr><td>アドレスごとのログイン</td><td>各アドレスを使う担当者</td><td>自分のアドレスのメールだけが表示されます。アドレス設定は表示されません。</td></tr>
+</tbody></table>
+<p>どちらのログインも、メールアドレスとパスワードで入ります。アドレスごとのログインパスワードは、管理者がアドレス設定で設定します。</p>
+<hr>
+<h2>3. アドレス設定</h2>
+<p>アドレス設定は管理者だけが開けます。会社のメールアドレスを登録し、それぞれに送受信の設定を持たせます。</p>
+<ul>
+<li>アドレスごとに、受信（IMAP）と送信（SMTP）のサーバー設定を登録します。サーバーのパスワードは暗号化して保管されます。</li>
+<li>アドレスごとに、ログイン用のパスワードを設定します。そのアドレスを使う担当者は、このパスワードでログインします。</li>
+<li>登録できるアドレス数は、契約の口数×10が上限です（基本は1口＝10アドレスまで）。</li>
+<li>見積・請求書システムとの連動に使う「連動キー」も、この画面で確認と再発行ができます（詳しくは10章）。</li>
+</ul>
+<hr>
+<h2>4. 様式とスタイル</h2>
+<h3>4.1 様式</h3>
+<p>様式には、差出人アドレス、ヘッダーとフッターのデザイン、署名などを保存します。メールを作成するときに様式を選ぶと、その体裁で送信されます。様式は会社の全アドレスで共有されます。</p>
+<h3>4.2 スタイルから作る</h3>
+<p>様式の一覧にある「スタイルから作る」から、6つのプリセットスタイルを選んで様式を作成できます。会社の名前が入った見本が表示されるので、雰囲気を確認してから選べます。</p>
+<table><thead><tr><th>スタイル</th><th>ヘッダー色</th><th>キャッチフレーズ</th></tr></thead><tbody>
+<tr><td>ネイビー（信頼・堅実）</td><td>#0f2740</td><td>確かな仕事で、地域に貢献する。</td></tr>
+<tr><td>チャコール（モダン・汎用）</td><td>#374151</td><td>確かな品質を、すべてのお客様へ。</td></tr>
+<tr><td>ワイン（上質・落ち着き）</td><td>#9f1239</td><td>丁寧な仕事と、誠実な対応を。</td></tr>
+<tr><td>ブラウン（職人・温かみ）</td><td>#7c4a1e</td><td>職人の技と誠実な対応を。</td></tr>
+<tr><td>グリーン（安心・地域密着）</td><td>#1d8a5f</td><td>安心をお届けするパートナー。</td></tr>
+<tr><td>ブルー（爽やか・スピード）</td><td>#1f8fd1</td><td>スピードと丁寧さでお応えします。</td></tr>
+</tbody></table>
+<hr>
+<h2>5. デザインの作り込み</h2>
+<p>様式の編集画面で、デザインを細かく設定できます。</p>
+<ul>
+<li><strong>会社ロゴ</strong>：PNG／JPEG／GIF／WebP（500KBまで）をアップロードし、ヘッダー（ブランド名の横）、フッター、本文の背景（透かし）に配置できます。ヘッダーでのロゴの配置（左／中央／ロゴのみ）と大きさ、帯の余白も選べます。</li>
+<li><strong>色</strong>：ヘッダーとフッターの色は、丸いカラーピッカーか16進数の入力で指定できます。</li>
+<li><strong>本文の画像</strong>：画像をライブラリに登録して（1枚1MBまで、会社あたり30枚まで）、本文に挿入できます。</li>
+<li><strong>透かし</strong>：ロゴやライブラリの画像を、最大3つまで本文の背景に重ねられます。それぞれ位置（9か所）、大きさ、薄さを指定できます。</li>
+<li><strong>フッター</strong>：色、余白、配置のほか、フッターの上に画像を入れることもできます。</li>
+</ul>
+<blockquote><p>透かしなどの背景画像は、受け取る側のメールソフトによっては表示されない場合があります（Outlookなど）。文字情報だけでも伝わる本文にしておくことをおすすめします。</p></blockquote>
+<hr>
+<h2>6. メールの作成（ブロック編集・プレビュー）</h2>
+<h3>6.1 ブロック編集</h3>
+<p>本文は、文章ブロックと画像ブロックを組み合わせて作ります。</p>
+<ul>
+<li>「文章を追加」「画像を追加」でブロックを足し、ドラッグ（つまみを引く）か上下ボタンで並べ替えます。</li>
+<li>画像ブロックは、大きさ（100%／70%／50%／30%）と配置（左／中央／右）を選べます。ブロックを右クリックすると、大きさ・配置・移動・削除のメニューが出ます。</li>
+<li>画像はライブラリから選ぶほか、作成画面からその場でアップロードして挿入できます。</li>
+</ul>
+<h3>6.2 プレビュー</h3>
+<p>作成画面と一斉送信の画面には「プレビュー」があり、選んだ様式で実際に届く表示を確認してから送信できます。様式の一覧からも、保存済みの設定で見本を表示できます（様式のプレビューは保存済みの内容が反映されます）。</p>
+<hr>
+<h2>7. 送信</h2>
+<ol>
+<li>様式と差出人アドレスを選びます。</li>
+<li>宛先と件名を入れ、本文をブロックで組み立てます。</li>
+<li>プレビューで表示を確認し、送信します。</li>
+</ol>
+<p>送信は、そのアドレスに設定したSMTPサーバーから行われます。送信したメールは送信履歴に残ります。</p>
+<hr>
+<h2>8. 受信トレイの整理（一括削除・削除済み・復元・旗）</h2>
+<h3>8.1 フォルダ</h3>
+<p>左のメニューから、受信トレイ、迷惑メール、削除済み、旗付きを切り替えられます。受信トレイはメールサーバーから開くたびに読み込むため、他のメールソフトで整理した状態もそのまま反映されます。</p>
+<h3>8.2 一括削除と復元</h3>
+<ul>
+<li>一覧でメールにチェックを入れると、「選択したメールを削除」でまとめて削除できます（すべて選択もできます）。</li>
+<li>削除したメールは削除済みフォルダに移ります。削除済みでは、1件ずつの「戻す」と、チェックしたメールの一括復元ができ、受信トレイに戻せます。詳細画面からも戻せます。</li>
+</ul>
+<h3>8.3 旗付け</h3>
+<ul>
+<li>メールには旗（⚑）を付けたり外したりできます。一覧の旗ボタンと、詳細画面の両方から操作できます。</li>
+<li>旗はメールサーバー側に付きます。そのため、管理者が担当者のアドレスのメールに旗を付けると、本人の画面にも同じ旗が見えます。「旗付き」一覧で旗の付いたメールだけをまとめて確認できます。</li>
+<li>旗付き一覧には、受信トレイにある旗付きメールが表示されます。</li>
+</ul>
+<hr>
+<h2>9. 送信履歴</h2>
+<p>送信したメールは、会社（アカウント）単位で送信履歴に記録されます。宛先、使った様式、差出人アドレス、日時を確認できます。</p>
+<hr>
+<h2>10. 見積・請求書システムとの連動</h2>
+<p>HTMLメールと見積・請求書システムを連動させると、見積・請求書システム側のメール送信が、様式の整ったHTMLメールとして届くようになります。</p>
+<ol>
+<li>HTMLメールのアドレス設定で「連動キー」を確認します（キーは自動で発行されています。再発行もできます）。</li>
+<li>見積・請求書システムの設定にある「HTMLメールと連動」に、連動キーを貼り付けます。</li>
+<li>「接続テスト」で疎通を確認します。連動が有効な間、見積・請求書システムからの送信はHTMLメール経由になります。</li>
+</ol>
+<p>連動をやめる場合は、見積・請求書システム側の設定から連動キーを外します（従来の送信に戻ります）。</p>
+<hr>
+<h2>11. サポート</h2>
+<p>お問い合わせは admin@agent-partners.space までお願いします。運営：Everyone&#x27;s 合同会社（〒357-0123 埼玉県飯能市中藤下郷23-21）</p>
+</div></main>
+<footer><div class="fwrap">
+  <nav><a href="/terms/">利用規約</a><a href="/privacy/">プライバシーポリシー</a><a href="/tokushoho/">特定商取引法に基づく表記</a><a href="/guide/">ご利用ガイド（一般版）</a><a href="/guide-construction/">ご利用ガイド（建築版）</a><a href="/html-mail/guide/">HTMLメール ご利用ガイド</a><a href="/product/">製品ページ（一般版）</a><a href="/construction/product/">製品ページ（建築版）</a><a href="/html-mail/product/">HTMLメール 製品ページ</a></nav>
+  <div class="copy">© Everyone's 合同会社</div>
+</div></footer>
+</body>
+</html>
